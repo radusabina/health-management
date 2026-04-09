@@ -1,6 +1,6 @@
 package com.example.healthmanagementbackend.config;
 
-import com.example.healthmanagement.service.security.JwtService;
+import com.example.healthmanagementbackend.service.security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,6 +1,6 @@
 package com.example.healthmanagementbackend.repository;
 
-import com.example.healthmanagement.model.User;
+import com.example.healthmanagementbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

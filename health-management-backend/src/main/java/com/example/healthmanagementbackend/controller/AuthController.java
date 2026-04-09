@@ -1,9 +1,9 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagement.dto.LoginRequest;
-import com.example.healthmanagement.dto.LoginResponse;
-import com.example.healthmanagement.dto.RegisterRequest;
-import com.example.healthmanagement.service.UserService;
+import com.example.healthmanagementbackend.dto.LoginRequest;
+import com.example.healthmanagementbackend.dto.LoginResponse;
+import com.example.healthmanagementbackend.dto.RegisterRequest;
+import com.example.healthmanagementbackend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

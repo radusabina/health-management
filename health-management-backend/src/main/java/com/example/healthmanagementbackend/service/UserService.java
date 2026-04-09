@@ -1,10 +1,10 @@
 package com.example.healthmanagementbackend.service;
 
-import com.example.healthmanagement.dto.LoginResponse;
-import com.example.healthmanagement.exception.InvalidCredentialsException;
-import com.example.healthmanagement.model.User;
-import com.example.healthmanagement.repository.UserRepository;
-import com.example.healthmanagement.service.security.JwtService;
+import com.example.healthmanagementbackend.dto.LoginResponse;
+import com.example.healthmanagementbackend.exception.InvalidCredentialsException;
+import com.example.healthmanagementbackend.model.User;
+import com.example.healthmanagementbackend.repository.UserRepository;
+import com.example.healthmanagementbackend.service.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

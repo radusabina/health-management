@@ -1,8 +1,19 @@
 package com.example.healthmanagementbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import lombok.Setter;
+import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -40,5 +51,5 @@ public class DailyGoal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "general_goal_id")
-    private GeneralGoals generalGoals;
+    private GeneralGoal generalGoals;
 }
