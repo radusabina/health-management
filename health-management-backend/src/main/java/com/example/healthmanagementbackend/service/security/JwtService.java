@@ -1,22 +1,27 @@
 package com.example.healthmanagementbackend.service.security;
 
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
 
-    private final String SECRET_KEY = "mysupersecretkeymysupersecretkey123";
+    private static final String SECRET_KEY = "mysupersecretkeymysupersecretkey123";
+    private static final String REFRESH_SECRET_KEY = "myrefreshsupersecretkeymyrefresh123";
 
-    private Key getSigningKey() {
+    public Key getAccessKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    }
+
+    private Key getRefreshKey() {
+        return Keys.hmacShaKeyFor(REFRESH_SECRET_KEY.getBytes());
     }
 
     public String generateToken(UUID userId, String email) {
@@ -24,36 +29,58 @@ public class JwtService {
                 .subject(email)
                 .claim("userId", userId.toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 24h
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .expiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // 15 min
+                .signWith(getAccessKey())
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        return Jwts.parser()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    public String generateRefreshToken(UUID userId, String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("userId", userId.toString())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 7L * 24 * 60 * 60 * 1000)) // 7 days
+                .signWith(getRefreshKey())
+                .compact();
     }
 
-    public boolean validateToken(String token, String email) {
+    public boolean validateAccessToken(String token, String email) {
+        return validate(token, email, getAccessKey());
+    }
+
+    public boolean validateRefreshToken(String token, String email) {
+        return validate(token, email, getRefreshKey());
+    }
+
+    private boolean validate(String token, String email, Key key) {
         try {
-            String tokenEmail = extractEmail(token);
-            return (tokenEmail.equals(email) && !isTokenExpired(token));
-        } catch (JwtException | IllegalArgumentException e) {
+            String subject = extractClaim(token, Claims::getSubject, key);
+            return subject.equals(email) && !isExpired(token, key);
+        } catch (Exception e) {
             return false;
         }
     }
 
-    private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parser()
-                .setSigningKey(getSigningKey())
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver, Key key) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getExpiration();
+                .getBody();
+        return claimsResolver.apply(claims);
+    }
+
+    public boolean isExpired(String token, Key key) {
+        Date expiration = extractClaim(token, Claims::getExpiration, key);
         return expiration.before(new Date());
+    }
+
+    public UUID extractUserIdFromRefresh(String token) {
+        String idString = extractClaim(token, claims -> claims.get("userId", String.class), getRefreshKey());
+        return UUID.fromString(idString);
+    }
+
+    public String extractEmailFromRefresh(String token) {
+        return extractClaim(token, Claims::getSubject, getRefreshKey());
     }
 }
