@@ -42,4 +42,5 @@ public class DailyGoalService {
         }
         LOGGER.info("Daily goals have been reset: {}", today);
     }
+
 }

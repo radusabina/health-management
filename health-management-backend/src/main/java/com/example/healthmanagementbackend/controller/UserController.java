@@ -27,31 +27,24 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<Object> register(@PathVariable UUID id) {
+    public ResponseEntity<Object> getUserById(@PathVariable UUID id) {
         try {
             User user = userService.getUserById(id);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("type", e.getClass().getSimpleName(),
-                            "message", e.getMessage()));
+            return handleException(e);
         }
     }
 
-    @PutMapping("/update-user")
+    @PutMapping("/update")
     public ResponseEntity<Object> update(@RequestBody UpdateUserRequest request) {
         try {
             userService.updateUser(request.getUserId(), request.getEmail(), request.getPassword(),
                     request.getFullName(), request.getHeightCm(), request.getGender(), request.getAge());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("type", e.getClass().getSimpleName(),
-                            "message", e.getMessage()));
+            return handleException(e);
         }
     }
 
@@ -60,10 +53,7 @@ public class UserController {
         try {
             return ResponseEntity.ok(userService.isPasswordValid(password));
         }  catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("type", e.getClass().getSimpleName(),
-                            "message", e.getMessage()));
+            return handleException(e);
         }
     }
 
@@ -72,10 +62,14 @@ public class UserController {
         try {
             return ResponseEntity.ok(userService.deleteUser(id));
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("type", e.getClass().getSimpleName(),
-                            "message", e.getMessage()));
+            return handleException(e);
         }
+    }
+
+    private static ResponseEntity<Object> handleException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("type", e.getClass().getSimpleName(),
+                        "message", e.getMessage()));
     }
 }

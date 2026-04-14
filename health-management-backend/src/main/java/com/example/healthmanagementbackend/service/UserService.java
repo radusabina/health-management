@@ -1,12 +1,15 @@
 package com.example.healthmanagementbackend.service;
 
+import com.example.healthmanagementbackend.exception.InvalidCredentialsException;
 import com.example.healthmanagementbackend.exception.NoUserFoundException;
+import com.example.healthmanagementbackend.exception.UserAlreadyExistsException;
 import com.example.healthmanagementbackend.model.User;
 import com.example.healthmanagementbackend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -25,6 +28,11 @@ public class UserService {
     }
 
     public void register(String email, String password, String fullName, int heightCm, String gender, int age) {
+        Optional<User> existing = userRepository.findByEmail(email);
+        if (existing.isPresent()) {
+            throw new UserAlreadyExistsException("An user with this email already exists");
+        }
+
         User user = User.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
@@ -37,14 +45,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User login(String email, String password) {
+    public User login(String email, String password) throws InvalidCredentialsException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
+        LOGGER.info("Logged in user: " + user.getEmail());
         return user;
     }
 
@@ -71,8 +80,13 @@ public class UserService {
     }
 
     public boolean deleteUser(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            LOGGER.info("User not found");
+            return false;
+        }
         userRepository.delete(user);
+        LOGGER.info("User with id " + userId + " deleted");
         return true;
     }
 
