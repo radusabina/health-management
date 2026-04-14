@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.Getter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Meal {
 
     @Id
@@ -37,8 +39,8 @@ public class Meal {
     @Column(name = "calories")
     private int calories;
 
-    @Column(name = "created_at")
-    private LocalDateTime timestamp;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

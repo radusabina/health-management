@@ -9,8 +9,7 @@ import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 public class LoginResponse {
 
     private UUID userId;

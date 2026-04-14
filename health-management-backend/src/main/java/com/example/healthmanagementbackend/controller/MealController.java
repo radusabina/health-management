@@ -1,9 +1,9 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.dto.GeneralGoalRequest;
-import com.example.healthmanagementbackend.dto.UpdateGeneralGoalRequest;
-import com.example.healthmanagementbackend.model.GeneralGoal;
-import com.example.healthmanagementbackend.service.GeneralGoalService;
+import com.example.healthmanagementbackend.dto.MealRequest;
+import com.example.healthmanagementbackend.dto.UpdateMealRequest;
+import com.example.healthmanagementbackend.model.Meal;
+import com.example.healthmanagementbackend.service.MealService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,20 +19,19 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/general-goal")
-public class GeneralGoalController {
+@RequestMapping("/api/meal")
+public class MealController {
 
-    private final GeneralGoalService generalGoalService;
+    private final MealService mealService;
 
-    public GeneralGoalController(GeneralGoalService generalGoalService) {
-        this.generalGoalService = generalGoalService;
+    public MealController(MealService mealService) {
+        this.mealService = mealService;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> add(@RequestBody GeneralGoalRequest request) {
+    public ResponseEntity<Object> add(@RequestBody MealRequest request) {
         try {
-            generalGoalService.addGeneralGoal(request.getCalorieGoal(), request.getStepsGoal(), request.getWaterGoal(),
-                    request.getWeightTarget(), request.getUserId());
+            mealService.addMeal(request.getMealType(), request.getDescription(), request.getCalories(), request.getUserId());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             return handleException(e);
@@ -40,10 +39,9 @@ public class GeneralGoalController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> update(@RequestBody UpdateGeneralGoalRequest request) {
+    public ResponseEntity<Object> update(@RequestBody UpdateMealRequest request) {
         try {
-            generalGoalService.updateGeneralGoal(request.getGeneralGoalId(), request.getCalorieGoal(), request.getStepsGoal(),
-                    request.getWaterGoal(), request.getWeightTarget());
+            mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription(), request.getCalories());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return handleException(e);
@@ -51,10 +49,10 @@ public class GeneralGoalController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Object> getGeneralGoalByUserId(@PathVariable UUID userId) {
+    public ResponseEntity<Object> getMealByUserId(@PathVariable UUID userId) {
         try {
-            GeneralGoal generalGoal = generalGoalService.getGeneralGoalByUserId(userId);
-            return ResponseEntity.ok(generalGoal);
+            Meal meal = mealService.getMealByUserId(userId);
+            return ResponseEntity.ok(meal);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -63,7 +61,7 @@ public class GeneralGoalController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable UUID id) {
         try {
-            return ResponseEntity.ok(generalGoalService.deleteGeneralGoal(id));
+            return ResponseEntity.ok(mealService.deleteMeal(id));
         } catch (Exception e) {
             return handleException(e);
         }
