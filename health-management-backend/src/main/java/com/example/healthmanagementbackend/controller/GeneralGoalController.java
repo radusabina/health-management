@@ -28,10 +28,10 @@ public class GeneralGoalController {
         this.generalGoalService = generalGoalService;
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<Object> add(@RequestBody GeneralGoalRequest request) {
         try {
-            generalGoalService.addGeneralGoal(request.getCalorieGoal(), request.getStepsGoal(), request.getWaterGoal(),
+            generalGoalService.addGeneralGoal(request.getCalorieGoal(), request.getWaterGoal(),
                     request.getWeightTarget(), request.getUserId());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class GeneralGoalController {
     @PutMapping("/update")
     public ResponseEntity<Object> update(@RequestBody UpdateGeneralGoalRequest request) {
         try {
-            generalGoalService.updateGeneralGoal(request.getGeneralGoalId(), request.getCalorieGoal(), request.getStepsGoal(),
+            generalGoalService.updateGeneralGoal(request.getGeneralGoalId(), request.getCalorieGoal(),
                     request.getWaterGoal(), request.getWeightTarget());
             return ResponseEntity.ok().build();
         } catch (Exception e) {

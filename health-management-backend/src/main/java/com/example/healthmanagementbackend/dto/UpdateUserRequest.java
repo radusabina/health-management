@@ -34,4 +34,6 @@ public class UpdateUserRequest {
     @NotBlank(message = "Height must not be blank")
     private int heightCm;
 
+    @NotBlank(message = "Weight must not be blank")
+    private int weightKg;
 }

@@ -27,7 +27,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(String email, String password, String fullName, int heightCm, String gender, int age) {
+    public void register(String email, String password, String fullName, int heightCm, int weightKg, String gender, int age) {
         Optional<User> existing = userRepository.findByEmail(email);
         if (existing.isPresent()) {
             throw new UserAlreadyExistsException("An user with this email already exists");
@@ -38,6 +38,7 @@ public class UserService {
                 .password(passwordEncoder.encode(password))
                 .fullName(fullName)
                 .heightCm(heightCm)
+                .weightKg(weightKg)
                 .gender(gender)
                 .age(age)
                 .createdAt(LocalDateTime.now()).build();
@@ -61,13 +62,14 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
     }
 
-    public void updateUser(UUID userId, String email, String password, String fullName, int heightCm, String gender, int age) {
+    public void updateUser(UUID userId, String email, String password, String fullName, int heightCm, int weightKg, String gender, int age) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
 
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setFullName(fullName);
         user.setHeightCm(heightCm);
+        user.setWeightKg(weightKg);
         user.setGender(gender);
         user.setAge(age);
 

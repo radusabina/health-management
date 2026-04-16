@@ -33,7 +33,7 @@ public class AuthController {
     public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
         try {
             userService.register(request.getEmail(), request.getPassword(), request.getFullName(),
-                    request.getHeightCm(), request.getGender(), request.getAge());
+                    request.getHeightCm(), request.getWeightKg(), request.getGender(), request.getAge());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             return ResponseEntity

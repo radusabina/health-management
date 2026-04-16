@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.JoinColumn;
 import lombok.Setter;
 import lombok.Getter;
@@ -19,7 +20,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "daily_goals")
+@Table(
+        name = "daily_goals",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "date"})
+        }
+)
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
@@ -38,18 +44,15 @@ public class DailyGoal {
     @Column(name = "calories_done")
     private int caloriesDone;
 
-    @Column(name = "steps_done")
-    private int stepsDone;
-
     @Column(name = "water_done")
     private int waterDone;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "general_goal_id")
-    private GeneralGoal generalGoals;
+    private GeneralGoal generalGoal;
 }

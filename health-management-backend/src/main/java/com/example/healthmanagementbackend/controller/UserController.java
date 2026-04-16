@@ -41,7 +41,8 @@ public class UserController {
     public ResponseEntity<Object> update(@RequestBody UpdateUserRequest request) {
         try {
             userService.updateUser(request.getUserId(), request.getEmail(), request.getPassword(),
-                    request.getFullName(), request.getHeightCm(), request.getGender(), request.getAge());
+                    request.getFullName(), request.getHeightCm(), request.getWeightKg(),
+                    request.getGender(), request.getAge());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return handleException(e);

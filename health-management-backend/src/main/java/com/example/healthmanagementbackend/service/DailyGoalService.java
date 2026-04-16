@@ -32,7 +32,6 @@ public class DailyGoalService {
         for (DailyGoal goal : yesterdayGoals) {
             DailyGoal newDailyGoal = DailyGoal.builder()
                     .user(goal.getUser())
-                    .stepsDone(0)
                     .caloriesDone(0)
                     .waterDone(0)
                     .date(today)

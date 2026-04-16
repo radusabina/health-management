@@ -19,9 +19,6 @@ public class UpdateGeneralGoalRequest {
     @NotBlank(message = "Calorie goal must not be blank")
     private int calorieGoal;
 
-    @NotBlank(message = "Steps goal must not be blank")
-    private int stepsGoal;
-
     @NotBlank(message = "Water goal must not be blank")
     private int waterGoal;
 

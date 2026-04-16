@@ -9,6 +9,7 @@ import com.example.healthmanagementbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -25,7 +26,7 @@ public class MealService {
         this.userRepository = userRepository;
     }
 
-    public void addMeal(String mealType, String description, int calories, UUID userId) {
+    public void addMeal(String mealType, String description, UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoUserFoundException("No user found"));
 
@@ -33,29 +34,26 @@ public class MealService {
                 .user(user)
                 .mealType(mealType)
                 .description(description)
-                .calories(calories)
                 .updatedAt(LocalDateTime.now()).build();
 
          mealRepository.save(meal);
         LOGGER.info("Meal added for user: " + userId);
     }
 
-    public void updateMeal(UUID mealId, String mealType, String description, int calories) {
+    public void updateMeal(UUID mealId, String mealType, String description) {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new NoMealFoundException("No meal found"));
 
         meal.setMealType(mealType);
         meal.setDescription(description);
-        meal.setCalories(calories);
         meal.setUpdatedAt(LocalDateTime.now());
 
         mealRepository.save(meal);
         LOGGER.info("Meal updated for user: " + meal.getUser().getId());
     }
 
-    public Meal getMealByUserId(UUID userId) {
-        return mealRepository.findMealByUserId(userId)
-                .orElseThrow(() -> new NoMealFoundException("No meal found"));
+    public List<Meal> getMealsByUserId(UUID userId) {
+        return mealRepository.getMealsByUserId(userId);
     }
 
     public boolean deleteMeal(UUID mealId) {

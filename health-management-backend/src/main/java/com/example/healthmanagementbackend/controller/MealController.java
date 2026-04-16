@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,10 +29,10 @@ public class MealController {
         this.mealService = mealService;
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<Object> add(@RequestBody MealRequest request) {
         try {
-            mealService.addMeal(request.getMealType(), request.getDescription(), request.getCalories(), request.getUserId());
+            mealService.addMeal(request.getMealType(), request.getDescription(), request.getUserId());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             return handleException(e);
@@ -41,7 +42,7 @@ public class MealController {
     @PutMapping("/update")
     public ResponseEntity<Object> update(@RequestBody UpdateMealRequest request) {
         try {
-            mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription(), request.getCalories());
+            mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return handleException(e);
@@ -49,9 +50,9 @@ public class MealController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Object> getMealByUserId(@PathVariable UUID userId) {
+    public ResponseEntity<Object> getMealsByUserId(@PathVariable UUID userId) {
         try {
-            Meal meal = mealService.getMealByUserId(userId);
+            List<Meal> meal = mealService.getMealsByUserId(userId);
             return ResponseEntity.ok(meal);
         } catch (Exception e) {
             return handleException(e);

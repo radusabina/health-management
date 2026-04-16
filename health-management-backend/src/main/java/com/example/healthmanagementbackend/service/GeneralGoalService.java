@@ -25,14 +25,13 @@ public class GeneralGoalService {
         this.userRepository = userRepository;
     }
 
-    public void addGeneralGoal(int calorieGoal, int stepsGoal, int waterGoal, int weightTarget, UUID userId) {
+    public void addGeneralGoal(int calorieGoal, int waterGoal, int weightTarget, UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoUserFoundException("No user found"));
 
         GeneralGoal generalGoal = GeneralGoal.builder()
                 .user(user)
                 .calorieGoal(calorieGoal)
-                .stepsGoal(stepsGoal)
                 .waterGoal(waterGoal)
                 .weightTarget(weightTarget)
                 .updatedAt(LocalDateTime.now()).build();
@@ -41,12 +40,11 @@ public class GeneralGoalService {
         LOGGER.info("General goal added for user: " + userId);
     }
 
-    public void updateGeneralGoal(UUID generalGoalId, int calorieGoal, int stepsGoal, int waterGoal, int weightTarget) {
+    public void updateGeneralGoal(UUID generalGoalId, int calorieGoal, int waterGoal, int weightTarget) {
         GeneralGoal generalGoal = generalGoalRepository.findById(generalGoalId)
                 .orElseThrow(() -> new NoGeneralGoalFoundException("No general goal found"));
 
         generalGoal.setCalorieGoal(calorieGoal);
-        generalGoal.setStepsGoal(stepsGoal);
         generalGoal.setWaterGoal(waterGoal);
         generalGoal.setWeightTarget(weightTarget);
         generalGoal.setUpdatedAt(LocalDateTime.now());

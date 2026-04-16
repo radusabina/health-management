@@ -1,6 +1,5 @@
 package com.example.healthmanagementbackend.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
@@ -30,12 +29,15 @@ public class RegisterRequest {
 
     @NotBlank(message = "Age must not be blank")
     @Min(value = 18)
-    private Integer age;
+    private int age;
 
     @NotBlank(message = "Gender must not be blank")
     private String gender;
 
-    @Column(name = "height_cm")
+    @NotBlank(message = "Weight must not be blank")
+    private int weightKg;
+
+    @NotBlank(message = "Height must not be blank")
     @Max(value = 220)
-    private Integer heightCm;
+    private int heightCm;
 }
