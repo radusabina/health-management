@@ -55,15 +55,12 @@ public class User {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private LocalDateTime createdAt;
 
-    // 🔗 1:1 cu GeneralGoal
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private GeneralGoal generalGoal;
 
-    // 🔗 1:N cu Meal
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Meal> meals;
 
-    // 🔗 1:N cu DailyGoal
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DailyGoal> dailyGoals;
 }
