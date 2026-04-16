@@ -9,8 +9,6 @@ import com.example.healthmanagementbackend.model.User;
 import com.example.healthmanagementbackend.repository.DailyGoalRepository;
 import com.example.healthmanagementbackend.repository.GeneralGoalRepository;
 import com.example.healthmanagementbackend.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +17,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class DailyGoalService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DailyGoalService.class);
+    private static final Logger LOGGER = Logger.getLogger(DailyGoalService.class.getName());
 
     private final DailyGoalRepository dailyGoalRepository;
     private final GeneralGoalRepository generalGoalRepository;
@@ -55,7 +54,7 @@ public class DailyGoalService {
                         .updatedAt(LocalDateTime.now()).build();
 
                 dailyGoalRepository.save(newDailyGoal);
-                LOGGER.info("Daily goals have been reset: {}", today);
+                LOGGER.info("Daily goals have been reset: " + today);
             }
         }
     }
@@ -80,7 +79,7 @@ public class DailyGoalService {
                     .build();
 
             DailyGoal savedDailyGoal = dailyGoalRepository.save(dailyGoal);
-            LOGGER.info("Daily goal created for user: {} on {}", userId, date);
+            LOGGER.info("Daily goal created for user: " + userId + " on " + date);
             return savedDailyGoal;
         }
         return existingDailyGoal.get();
@@ -93,6 +92,11 @@ public class DailyGoalService {
 
     public DailyGoal getTodayDailyGoalForUser(UUID userId) {
         return dailyGoalRepository.findByUserIdAndDate(userId, LocalDate.now())
+                .orElseThrow(() -> new NoDailyGoalFoundException("No daily goal found"));
+    }
+
+    public void getDailyGoalForUserByDate(UUID userId, LocalDate date) {
+        dailyGoalRepository.findByUserIdAndDate(userId, date)
                 .orElseThrow(() -> new NoDailyGoalFoundException("No daily goal found"));
     }
 
@@ -113,43 +117,41 @@ public class DailyGoalService {
         dailyGoal.setUpdatedAt(LocalDateTime.now());
 
         DailyGoal updatedDailyGoal = dailyGoalRepository.save(dailyGoal);
-        LOGGER.info("Daily goal progress updated: {}", id);
+        LOGGER.info("Daily goal progress updated: " + id);
         return updatedDailyGoal;
     }
 
-    public DailyGoal incrementCalories(UUID id, int caloriesToAdd) {
+    public void incrementCalories(UUID id, int caloriesToAdd) {
         DailyGoal dailyGoal = dailyGoalRepository.findById(id)
                 .orElseThrow(() -> new NoDailyGoalFoundException("No daily goal found"));
 
         dailyGoal.setCaloriesDone(dailyGoal.getCaloriesDone() + caloriesToAdd);
         dailyGoal.setUpdatedAt(LocalDateTime.now());
 
-        DailyGoal updatedDailyGoal = dailyGoalRepository.save(dailyGoal);
-        LOGGER.info("Daily goal calories incremented: {}", id);
-        return updatedDailyGoal;
+        dailyGoalRepository.save(dailyGoal);
+        LOGGER.info("Daily goal calories incremented: " + id);
     }
 
-    public DailyGoal incrementWater(UUID id, int waterToAdd) {
+    public void incrementWater(UUID id, int waterToAdd) {
         DailyGoal dailyGoal = dailyGoalRepository.findById(id)
                 .orElseThrow(() -> new NoDailyGoalFoundException("No daily goal found"));
 
         dailyGoal.setWaterDone(dailyGoal.getWaterDone() + waterToAdd);
         dailyGoal.setUpdatedAt(LocalDateTime.now());
 
-        DailyGoal updatedDailyGoal = dailyGoalRepository.save(dailyGoal);
-        LOGGER.info("Daily goal water incremented: {}", id);
-        return updatedDailyGoal;
+        dailyGoalRepository.save(dailyGoal);
+        LOGGER.info("Daily goal water incremented: " + id);
     }
 
     public boolean deleteDailyGoal(UUID id) {
         DailyGoal dailyGoal = dailyGoalRepository.findById(id).orElse(null);
         if (dailyGoal == null) {
-            LOGGER.info("Daily goal not found: {}", id);
+            LOGGER.info("Daily goal not found: " + id);
             return false;
         }
 
         dailyGoalRepository.delete(dailyGoal);
-        LOGGER.info("Daily goal deleted: {}", id);
+        LOGGER.info("Daily goal deleted: " + id);
         return true;
     }
 

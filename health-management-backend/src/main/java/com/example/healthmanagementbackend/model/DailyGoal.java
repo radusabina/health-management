@@ -1,6 +1,7 @@
 package com.example.healthmanagementbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
@@ -55,5 +56,6 @@ public class DailyGoal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "general_goal_id")
+    @JsonIgnoreProperties({"user", "dailyGoals"})
     private GeneralGoal generalGoal;
 }
