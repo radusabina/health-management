@@ -32,14 +32,14 @@ public class MealController {
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody MealRequest request) {
         try {
-            mealService.addMeal(request.getMealType(), request.getDescription(), request.getUserId());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            Meal meal = mealService.addMeal(request.getMealType(), request.getDescription(), request.getUserId());
+            return new ResponseEntity<>(meal, HttpStatus.CREATED);
         } catch (Exception e) {
             return handleException(e);
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<Object> update(@RequestBody UpdateMealRequest request) {
         try {
             mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription());
@@ -52,7 +52,7 @@ public class MealController {
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getMealsByUserId(@PathVariable UUID userId) {
         try {
-            List<Meal> meal = mealService.getMealsByUserId(userId);
+            List<Meal> meal = mealService.getMealsForUser(userId);
             return ResponseEntity.ok(meal);
         } catch (Exception e) {
             return handleException(e);

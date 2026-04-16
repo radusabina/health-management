@@ -1,5 +1,6 @@
 package com.example.healthmanagementbackend.dto;
 
+import com.example.healthmanagementbackend.model.enums.MealType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class MealRequest {
     private UUID userId;
 
     @NotBlank(message = "Meal type must not be blank")
-    private String mealType;
+    private MealType mealType;
 
     @NotBlank(message = "Description must not be blank")
     private String description;
