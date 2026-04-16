@@ -1,6 +1,7 @@
 package com.example.healthmanagementbackend.controller;
 
 import com.example.healthmanagementbackend.dto.GeneralGoalRequest;
+import com.example.healthmanagementbackend.dto.UpdateGeneralGoalForUserRequest;
 import com.example.healthmanagementbackend.dto.UpdateGeneralGoalRequest;
 import com.example.healthmanagementbackend.model.GeneralGoal;
 import com.example.healthmanagementbackend.service.GeneralGoalService;
@@ -31,39 +32,71 @@ public class GeneralGoalController {
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody GeneralGoalRequest request) {
         try {
-            generalGoalService.addGeneralGoal(request.getCalorieGoal(), request.getWaterGoal(),
-                    request.getWeightTarget(), request.getUserId());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            boolean alreadyExists = generalGoalService.existsForUser(request.getUserId());
+            GeneralGoal generalGoal = generalGoalService.addGeneralGoal(request.getUserId(),
+                    request.getCalorieGoal(), request.getWaterGoal(), request.getWeightTarget());
+
+            return new ResponseEntity<>(generalGoal, alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
         } catch (Exception e) {
             return handleException(e);
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<Object> update(@RequestBody UpdateGeneralGoalRequest request) {
         try {
             generalGoalService.updateGeneralGoal(request.getGeneralGoalId(), request.getCalorieGoal(),
                     request.getWaterGoal(), request.getWeightTarget());
-            return ResponseEntity.ok().build();
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Object> getGeneralGoalByUserId(@PathVariable UUID userId) {
+    @GetMapping("/getByUserId/{userId}")
+    public ResponseEntity<Object> getGeneralGoalByUserId(@PathVariable("userId") UUID userId) {
         try {
             GeneralGoal generalGoal = generalGoalService.getGeneralGoalByUserId(userId);
-            return ResponseEntity.ok(generalGoal);
+            return new ResponseEntity<>(generalGoal, HttpStatus.OK);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getGeneralGoalById(@PathVariable("id") UUID id) {
+        try {
+            GeneralGoal generalGoal = generalGoalService.getGeneralGoalById(id);
+            return new ResponseEntity<>(generalGoal, HttpStatus.OK);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @PutMapping("/updateGeneralGoalForUser")
+    public ResponseEntity<Object> updateGeneralGoalForUser(@RequestBody UpdateGeneralGoalForUserRequest req) {
+        try {
+           generalGoalService.updateGeneralGoalForUser(req.getUserId(), req.getCalorieGoal(),
+                   req.getWaterGoal(), req.getWeightTarget());
+           return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable UUID id) {
+    public ResponseEntity<Object> delete(@PathVariable("id") UUID id) {
         try {
             return ResponseEntity.ok(generalGoalService.deleteGeneralGoal(id));
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @DeleteMapping("/deleteByUserId/{userId}")
+    public ResponseEntity<Object> deleteGeneralGoalForUser(@PathVariable("userId") UUID userId) {
+        try {
+            return ResponseEntity.ok(generalGoalService.deleteGeneralGoalForUser(userId));
         } catch (Exception e) {
             return handleException(e);
         }

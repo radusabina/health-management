@@ -33,7 +33,7 @@ public class DailyGoalController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createDailyGoal(@RequestBody DailyGoalRequest req) {
+    public ResponseEntity<Object> add(@RequestBody DailyGoalRequest req) {
         try {
             LocalDate requestedDate = req.getDate() != null ? req.getDate() : LocalDate.now();
             boolean alreadyExists = true;
@@ -86,7 +86,7 @@ public class DailyGoalController {
     }
 
     @PutMapping
-    public ResponseEntity<Object> updateDailyGoal(@RequestBody UpdateDailyGoalRequest req) {
+    public ResponseEntity<Object> update(@RequestBody UpdateDailyGoalRequest req) {
         try {
             DailyGoal dailyGoal = dailyGoalService.updateDailyGoal(req.getId(), req.getCaloriesDone(), req.getWaterDone());
             return new ResponseEntity<>(dailyGoal, HttpStatus.OK);

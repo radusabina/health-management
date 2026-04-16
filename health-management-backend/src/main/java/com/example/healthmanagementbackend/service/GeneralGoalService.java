@@ -25,19 +25,31 @@ public class GeneralGoalService {
         this.userRepository = userRepository;
     }
 
-    public void addGeneralGoal(int calorieGoal, int waterGoal, int weightTarget, UUID userId) {
+    public GeneralGoal addGeneralGoal(UUID userId, int calorieGoal, int waterGoal, int weightTarget) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoUserFoundException("No user found"));
+
+        GeneralGoal existingGeneralGoal = generalGoalRepository.findGeneralGoalByUserId(userId).orElse(null);
+        if (existingGeneralGoal != null) {
+            return existingGeneralGoal;
+        }
 
         GeneralGoal generalGoal = GeneralGoal.builder()
                 .user(user)
                 .calorieGoal(calorieGoal)
                 .waterGoal(waterGoal)
                 .weightTarget(weightTarget)
-                .updatedAt(LocalDateTime.now()).build();
+                .updatedAt(LocalDateTime.now())
+                .build();
 
-        generalGoalRepository.save(generalGoal);
+        GeneralGoal savedGeneralGoal = generalGoalRepository.save(generalGoal);
         LOGGER.info("General goal added for user: " + userId);
+        return savedGeneralGoal;
+    }
+
+    public GeneralGoal getGeneralGoalById(UUID generalGoalId) {
+        return generalGoalRepository.findById(generalGoalId)
+                .orElseThrow(() -> new NoGeneralGoalFoundException("No general goal found"));
     }
 
     public void updateGeneralGoal(UUID generalGoalId, int calorieGoal, int waterGoal, int weightTarget) {
@@ -53,9 +65,29 @@ public class GeneralGoalService {
         LOGGER.info("General goal updated for user: " + generalGoal.getUser().getId());
     }
 
-    public GeneralGoal getGeneralGoalByUserId(UUID userId) {
+    public GeneralGoal getGeneralGoalForUser(UUID userId) {
         return generalGoalRepository.findGeneralGoalByUserId(userId)
                 .orElseThrow(() -> new NoGeneralGoalFoundException("No general goal found"));
+    }
+
+    public GeneralGoal getGeneralGoalByUserId(UUID userId) {
+        return getGeneralGoalForUser(userId);
+    }
+
+    public void updateGeneralGoalForUser(UUID userId, int calorieGoal, int waterGoal, int weightTarget) {
+        GeneralGoal generalGoal = getGeneralGoalForUser(userId);
+
+        generalGoal.setCalorieGoal(calorieGoal);
+        generalGoal.setWaterGoal(waterGoal);
+        generalGoal.setWeightTarget(weightTarget);
+        generalGoal.setUpdatedAt(LocalDateTime.now());
+
+        generalGoalRepository.save(generalGoal);
+        LOGGER.info("General goal updated for user: " + userId);
+    }
+
+    public boolean existsForUser(UUID userId) {
+        return generalGoalRepository.existsByUserId(userId);
     }
 
     public boolean deleteGeneralGoal(UUID generalGoalId) {
@@ -66,6 +98,18 @@ public class GeneralGoalService {
         }
         generalGoalRepository.delete(generalGoal);
         LOGGER.info("General goal deleted for user: " + generalGoal.getUser().getId());
+        return true;
+    }
+
+    public boolean deleteGeneralGoalForUser(UUID userId) {
+        GeneralGoal generalGoal = generalGoalRepository.findGeneralGoalByUserId(userId).orElse(null);
+        if (generalGoal == null) {
+            LOGGER.info("General goal not found for user: " + userId);
+            return false;
+        }
+
+        generalGoalRepository.delete(generalGoal);
+        LOGGER.info("General goal deleted for user: " + userId);
         return true;
     }
 }

@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface GeneralGoalRepository extends JpaRepository<GeneralGoal, UUID> {
 
     Optional<GeneralGoal> findGeneralGoalByUserId(UUID userId);
+    boolean existsByUserId(UUID userId);
 }
