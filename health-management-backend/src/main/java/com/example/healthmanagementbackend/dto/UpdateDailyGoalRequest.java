@@ -10,8 +10,7 @@ import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 public class UpdateDailyGoalRequest {
 
     @NotBlank(message = "Daily goal id must not be blank")
