@@ -1,5 +1,6 @@
 package com.example.healthmanagementbackend.dto;
 
+import com.example.healthmanagementbackend.model.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
@@ -32,7 +33,7 @@ public class RegisterRequest {
     private int age;
 
     @NotBlank(message = "Gender must not be blank")
-    private String gender;
+    private Gender gender;
 
     @NotBlank(message = "Weight must not be blank")
     private int weightKg;

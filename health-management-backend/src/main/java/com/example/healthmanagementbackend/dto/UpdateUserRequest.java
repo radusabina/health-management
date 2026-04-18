@@ -1,5 +1,6 @@
 package com.example.healthmanagementbackend.dto;
 
+import com.example.healthmanagementbackend.model.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class UpdateUserRequest {
     private int age;
 
     @NotBlank(message = "Gender must not be blank")
-    private String gender;
+    private Gender gender;
 
     @NotBlank(message = "Height must not be blank")
     private int heightCm;

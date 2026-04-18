@@ -1,6 +1,7 @@
 package com.example.healthmanagementbackend.model;
 
 import com.example.healthmanagementbackend.model.enums.MealType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
@@ -48,6 +49,7 @@ public class Meal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"meals"})
     private User user;
 
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL)

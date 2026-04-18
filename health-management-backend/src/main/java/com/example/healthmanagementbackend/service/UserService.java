@@ -4,6 +4,7 @@ import com.example.healthmanagementbackend.exception.InvalidCredentialsException
 import com.example.healthmanagementbackend.exception.NoUserFoundException;
 import com.example.healthmanagementbackend.exception.UserAlreadyExistsException;
 import com.example.healthmanagementbackend.model.User;
+import com.example.healthmanagementbackend.model.enums.Gender;
 import com.example.healthmanagementbackend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(String email, String password, String fullName, int heightCm, int weightKg, String gender, int age) {
+    public void register(String email, String password, String fullName, int heightCm, int weightKg, Gender gender, int age) {
         Optional<User> existing = userRepository.findByEmail(email);
         if (existing.isPresent()) {
             throw new UserAlreadyExistsException("An user with this email already exists");
@@ -62,7 +63,7 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
     }
 
-    public void updateUser(UUID userId, String email, String password, String fullName, int heightCm, int weightKg, String gender, int age) {
+    public void updateUser(UUID userId, String email, String password, String fullName, int heightCm, int weightKg, Gender gender, int age) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
 
         user.setEmail(email);

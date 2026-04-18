@@ -1,5 +1,6 @@
 package com.example.healthmanagementbackend.model;
 
+import com.example.healthmanagementbackend.model.enums.Gender;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
@@ -44,7 +45,7 @@ public class User {
     private int age;
 
     @Column(name = "gender", length = 20)
-    private String gender;
+    private Gender gender;
 
     @Column(name = "height_cm")
     private int heightCm;
