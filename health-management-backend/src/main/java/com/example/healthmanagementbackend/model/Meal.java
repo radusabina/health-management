@@ -1,7 +1,7 @@
 package com.example.healthmanagementbackend.model;
 
 import com.example.healthmanagementbackend.model.enums.MealType;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
@@ -20,6 +20,7 @@ import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,9 +50,10 @@ public class Meal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties({"meals"})
+    @JsonIgnore
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL)
-    private List<MealItem> items;
+    private List<MealItem> items = new ArrayList<>();
 }

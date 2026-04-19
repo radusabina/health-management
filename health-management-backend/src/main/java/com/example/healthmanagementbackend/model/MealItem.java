@@ -1,5 +1,7 @@
 package com.example.healthmanagementbackend.model;
 
+import com.example.healthmanagementbackend.apininjas.FoodItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -31,6 +33,7 @@ public class MealItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meal_id")
+    @JsonIgnore
     private Meal meal;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,5 +41,5 @@ public class MealItem {
     private FoodItem foodItem;
 
     @Column(name = "quantity_grams")
-    private int quantityGrams;
+    private double quantityGrams;
 }

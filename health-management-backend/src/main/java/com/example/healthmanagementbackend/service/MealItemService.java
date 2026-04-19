@@ -1,8 +1,8 @@
 package com.example.healthmanagementbackend.service;
 
+import com.example.healthmanagementbackend.apininjas.FoodItem;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.example.healthmanagementbackend.exception.NoMealFoundException;
-import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.model.Meal;
 import com.example.healthmanagementbackend.model.MealItem;
 import com.example.healthmanagementbackend.repository.FoodItemRepository;
@@ -45,19 +45,20 @@ public class MealItemService {
     }
 
     public MealItem addMealItemToMeal(UUID mealId, String foodItemName, int quantityGrams) {
-        Meal meal = mealRepository.findById(mealId)
-                .orElseThrow(() -> new NoMealFoundException("No meal found"));
-        FoodItem foodItem = findOrCreateFoodItem(foodItemName);
-
-        MealItem mealItem = MealItem.builder()
-                .meal(meal)
-                .foodItem(foodItem)
-                .quantityGrams(quantityGrams)
-                .build();
-
-        MealItem savedMealItem = mealItemRepository.save(mealItem);
-        LOGGER.info("Meal item added to meal: " + mealId + " using food item: " + foodItem.getName());
-        return savedMealItem;
+//        Meal meal = mealRepository.findById(mealId)
+//                .orElseThrow(() -> new NoMealFoundException("No meal found"));
+//        FoodItem foodItem = findOrCreateFoodItem(foodItemName);
+//
+//        MealItem mealItem = MealItem.builder()
+//                .meal(meal)
+//                .foodItem(foodItem)
+//                .quantityGrams(quantityGrams)
+//                .build();
+//
+//        MealItem savedMealItem = mealItemRepository.save(mealItem);
+//        LOGGER.info("Meal item added to meal: " + mealId + " using food item: " + foodItem.getName());
+//        return savedMealItem;
+        return MealItem.builder().build();
     }
 
     private FoodItem findOrCreateFoodItem(String foodItemName) {
@@ -95,10 +96,8 @@ public class MealItemService {
             throw new IllegalArgumentException("Nutrition data for food item is incomplete: " + foodItemName);
         }
 
-        int caloriesPer100g = (int) Math.round((firstItem.getCalories() * 100) / firstItem.getServingSizeG());
         FoodItem foodItem = FoodItem.builder()
                 .name(firstItem.getName() != null && !firstItem.getName().isBlank() ? firstItem.getName() : foodItemName)
-                .caloriesPer100g(caloriesPer100g)
                 .build();
 
         FoodItem savedFoodItem = foodItemRepository.save(foodItem);

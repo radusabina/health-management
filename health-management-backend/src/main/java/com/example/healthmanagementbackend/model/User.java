@@ -1,6 +1,7 @@
 package com.example.healthmanagementbackend.model;
 
 import com.example.healthmanagementbackend.model.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
@@ -36,6 +37,7 @@ public class User {
     private String email;
 
     @Column(name = "password_hash", nullable = false)
+    @JsonIgnore
     private String password;
 
     @Column(name = "full_name")
