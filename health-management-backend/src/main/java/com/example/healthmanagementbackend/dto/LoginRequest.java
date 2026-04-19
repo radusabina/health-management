@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter @Setter
 public class LoginRequest {
+
     @NotBlank(message = "Email must not be blank")
     private String email;
 

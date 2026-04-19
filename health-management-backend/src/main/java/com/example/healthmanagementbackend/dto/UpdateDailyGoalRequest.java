@@ -6,19 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
-public class DailyGoalRequest {
+public class UpdateDailyGoalRequest {
 
-    @NotBlank(message = "User id must not be blank")
-    private UUID userId;
+    @NotBlank(message = "Daily goal id must not be blank")
+    private UUID id;
 
-    @NotBlank(message = "General goal id must not be blank")
-    private UUID generalGoalId;
+    @NotBlank(message = "Calories done must not be blank")
+    private int caloriesDone;
 
-    private LocalDate date;
+    @NotBlank(message = "Water done must not be blank")
+    private int waterDone;
 }
