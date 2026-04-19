@@ -34,7 +34,7 @@
 
           <!-- Form -->
           <div class="card-body pt-2">
-            <form #loginForm="ngForm">
+            <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
               <!-- Email -->
               <div class="mb-3">
                 <label class="form-label">

@@ -73,15 +73,15 @@ public class MealController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<Object> getTodayMealsForUser(@RequestParam("userId") UUID userId) {
-        try {
-            List<MealDto> meals = mealService.getTodayMealsForUser(userId);
-            return ResponseEntity.ok(meals);
-        } catch (Exception e) {
-            return handleException(e);
-        }
-    }
+//    @GetMapping
+//    public ResponseEntity<Object> getTodayMealsForUser(@RequestParam("userId") UUID userId) {
+//        try {
+//            List<MealDto> meals = mealService.getTodayMealsForUser(userId);
+//            return ResponseEntity.ok(meals);
+//        } catch (Exception e) {
+//            return handleException(e);
+//        }
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getMealById(@PathVariable("id") UUID id) {
