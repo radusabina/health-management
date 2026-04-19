@@ -29,7 +29,6 @@ export class DashboardComponent {
   constructor(private authService: AuthService) {
     this.authService.currentUser$.subscribe((user) => {
       this.user = user;
-      console.log('User in DashboardComponent:', this.user);
     });
   }
 }

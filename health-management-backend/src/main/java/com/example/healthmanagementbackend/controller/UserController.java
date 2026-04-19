@@ -37,10 +37,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Object> update(@RequestBody UpdateUserRequest request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@PathVariable("id") UUID id, @RequestBody UpdateUserRequest request) {
         try {
-            userService.updateUser(request.getUserId(), request.getEmail(), request.getPassword(),
+            userService.updateUser(id, request.getEmail(), request.getPassword(),
                     request.getFullName(), request.getHeightCm(), request.getWeightKg(),
                     request.getGender(), request.getAge());
             return ResponseEntity.ok().build();
@@ -52,7 +52,7 @@ public class UserController {
     @GetMapping("/is-password-valid")
     public ResponseEntity<Object> isPasswordValid(@RequestParam String password) {
         try {
-            return ResponseEntity.ok(userService.isPasswordValid(password));
+            return ResponseEntity.ok().body(Map.of("valid", userService.isPasswordValid(password)));
         }  catch (Exception e) {
             return handleException(e);
         }

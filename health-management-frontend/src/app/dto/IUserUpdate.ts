@@ -1,5 +1,4 @@
-export interface IUser {
-  id: string;
+export interface IUserUpdate {
   email: string;
   fullName: string;
   age: number | null;

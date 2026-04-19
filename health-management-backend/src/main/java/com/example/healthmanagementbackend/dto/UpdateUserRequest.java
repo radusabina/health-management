@@ -13,28 +13,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter @Setter
 public class UpdateUserRequest {
-
-    @NotBlank(message = "User id must not be blank")
-    private UUID userId;
-
-    @NotBlank(message = "Email must not be blank")
     private String email;
-
-    @NotBlank(message = "Password must not be blank")
     private String password;
-
-    @NotBlank(message = "Full name must not be blank")
     private String fullName;
-
-    @NotBlank(message = "Age must not be blank")
     private int age;
-
-    @NotBlank(message = "Gender must not be blank")
     private Gender gender;
-
-    @NotBlank(message = "Height must not be blank")
     private int heightCm;
-
-    @NotBlank(message = "Weight must not be blank")
     private int weightKg;
 }
