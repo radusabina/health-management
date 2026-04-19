@@ -49,10 +49,10 @@ public class UserService {
 
     public User login(String email, String password) throws InvalidCredentialsException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new InvalidCredentialsException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid password");
         }
 
         LOGGER.info("Logged in user: " + user.getEmail());

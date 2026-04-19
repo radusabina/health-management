@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IUserLogin } from '../../dto/IUserLogin';
 import { IUserLoginResponse } from '../../dto/IUserLoginResponse';
 import { endpointAPI } from '../../config/appconfig';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { filter, take, map, tap, finalize, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,10 @@ export class AuthService {
   private authSubject = new BehaviorSubject<IUserLoginResponse | null>(
     this.loadFromStorage(),
   );
+
+  // refresh control
+  private refreshInProgress = false;
+  private refreshSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -61,5 +66,55 @@ export class AuthService {
     } catch (e) {
       return null;
     }
+  }
+
+  private updateAccessToken(newAccessToken: string): void {
+    const current = this.authSubject.value;
+    if (!current) return;
+    const updated: IUserLoginResponse = {
+      ...current,
+      accessToken: newAccessToken,
+    };
+    this.setAuth(updated);
+  }
+
+  refreshToken(): Observable<string> {
+    const current = this.authSubject.value;
+    const refreshToken = current?.refreshToken;
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    if (this.refreshInProgress) {
+      return this.refreshSubject.pipe(
+        filter((t): t is string => t != null),
+        take(1),
+      ) as Observable<string>;
+    }
+
+    this.refreshInProgress = true;
+    this.refreshSubject.next(null);
+
+    const params = new HttpParams().set('refreshToken', refreshToken);
+
+    return this.http
+      .post<{
+        accessToken: string;
+      }>(endpointAPI + 'auth/refresh', null, { params })
+      .pipe(
+        map((res) => res.accessToken),
+        tap((newToken) => {
+          this.updateAccessToken(newToken);
+          this.refreshSubject.next(newToken);
+        }),
+        finalize(() => {
+          this.refreshInProgress = false;
+        }),
+        catchError((err) => {
+          this.refreshSubject.next(null);
+          this.clearAuth();
+          return throwError(() => err);
+        }),
+      );
   }
 }
