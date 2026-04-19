@@ -1,0 +1,105 @@
+<div
+  class="min-vh-100 py-4"
+  style="
+    background: linear-gradient(
+      to bottom,
+      var(--fitbite-bg-start),
+      var(--fitbite-bg-end)
+    );
+  "
+>
+  <div class="container">
+    <!-- HEADER -->
+    <div class="text-center mb-4">
+      <h4 class="mb-1">Welcome, {{ user?.fullName }}</h4>
+      <small class="text-muted">
+        {{
+          isNewUser ? "Let’s get you started" : "Here is your daily overview"
+        }}
+      </small>
+    </div>
+
+    <!-- EMPTY STATE (NEW USER) -->
+    <div *ngIf="isNewUser" class="row justify-content-center mb-4">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm text-center p-4">
+          <h5 class="mb-2">Start your health journey</h5>
+          <p class="text-muted mb-3">
+            Track meals, water intake and reach your goals easily.
+          </p>
+
+          <button class="btn btn-fitbite text-white mb-2">
+            Add your first meal
+          </button>
+
+          <button class="btn btn-outline-secondary">
+            Set your fitness goal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD (EXISTING USER) -->
+    <div *ngIf="!isNewUser">
+      <!-- OVERVIEW CARDS -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <h6 class="text-muted">Calories</h6>
+            <h4 class="mb-0">20 /1000</h4>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <h6 class="text-muted">Water</h6>
+            <h4 class="mb-0">2 / 3 L</h4>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <h6 class="text-muted">Meals</h6>
+            <h4 class="mb-0">3</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="row mb-4">
+        <div class="col-12 d-flex gap-2 justify-content-center flex-wrap">
+          <button class="btn btn-fitbite text-white">+ Add meal</button>
+
+          <button class="btn btn-outline-secondary">Add water</button>
+
+          <button class="btn btn-outline-secondary">Edit goal</button>
+        </div>
+      </div>
+
+      <!-- MEALS LIST -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="mb-3">Today’s meals</h6>
+
+          <!-- EMPTY MEALS STATE -->
+          <div *ngIf="meals.length === 0" class="text-center text-muted py-4">
+            No meals logged yet. Start tracking your nutrition.
+          </div>
+
+          <!-- MEALS -->
+          <div
+            *ngFor="let meal of meals"
+            class="d-flex justify-content-between py-2 border-bottom"
+          >
+            <div>
+              <strong>{{ meal.name }}</strong>
+              <div class="small text-muted">{{ meal.calories }}</div>
+            </div>
+
+            <div>{{ meal.calories }} kcal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

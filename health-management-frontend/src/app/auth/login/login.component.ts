@@ -34,7 +34,7 @@ export class LoginComponent {
       .subscribe({
         next: (res) => {
           this.authService.setAuth(res);
-          this.router.navigate(['/']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           this.errorMessage =

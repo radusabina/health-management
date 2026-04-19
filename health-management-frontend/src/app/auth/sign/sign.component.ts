@@ -63,7 +63,7 @@ export class SignComponent {
             next: (res) => {
               this.auth.setAuth(res);
               this.loading = false;
-              this.router.navigate(['/']);
+              this.router.navigate(['/dashboard']);
             },
             error: (loginErr) => {
               console.error('Auto-login failed', loginErr);

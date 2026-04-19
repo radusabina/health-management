@@ -3,6 +3,7 @@ package com.example.healthmanagementbackend.controller;
 import com.example.healthmanagementbackend.dto.LoginRequest;
 import com.example.healthmanagementbackend.dto.LoginResponse;
 import com.example.healthmanagementbackend.dto.RegisterRequest;
+import com.example.healthmanagementbackend.dto.UserDto;
 import com.example.healthmanagementbackend.model.User;
 import com.example.healthmanagementbackend.service.UserService;
 import com.example.healthmanagementbackend.service.security.JwtService;
@@ -49,8 +50,12 @@ public class AuthController {
 
             String accessToken = jwtService.generateToken(user.getId(), user.getEmail());
             String refreshToken = jwtService.generateRefreshToken(user.getId(), user.getEmail());
+            UserDto userDto = UserDto.builder().id(user.getId())
+                    .email(user.getEmail()).password(user.getPassword())
+                    .fullName(user.getFullName()).age(user.getAge()).gender(user.getGender())
+                    .heightCm(user.getHeightCm()).weightKg(user.getWeightKg()).build();
 
-            return ResponseEntity.ok(new LoginResponse(user.getId(), accessToken, refreshToken));
+            return ResponseEntity.ok(new LoginResponse(userDto, accessToken, refreshToken));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

@@ -1,5 +1,7 @@
+import { IUser } from './IUser';
+
 export interface IUserLoginResponse {
-  userId: string;
+  user: IUser;
   accessToken: string;
   refreshToken: string;
 }

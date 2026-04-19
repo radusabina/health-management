@@ -19,13 +19,32 @@ export class AuthService {
   private refreshInProgress = false;
   private refreshSubject = new BehaviorSubject<string | null>(null);
 
+  private currentUserSubject = new BehaviorSubject<any | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+
   constructor(private http: HttpClient) {}
 
+  setUser(user: any): void {
+    this.currentUserSubject.next(user);
+  }
+
+  getUser(): any | null {
+    return this.currentUserSubject.value;
+  }
+
   login(credentials: IUserLogin): Observable<IUserLoginResponse> {
-    return this.http.post<IUserLoginResponse>(
-      endpointAPI + 'auth/login',
-      credentials,
-    );
+    return this.http
+      .post<IUserLoginResponse>(endpointAPI + 'auth/login', credentials)
+      .pipe(
+        tap((res) => {
+          try {
+            this.setAuth(res);
+          } catch (e) {
+            console.error('Failed to persist auth on login', e);
+          }
+          this.setUser(res.user);
+        }),
+      );
   }
 
   register(user: IUserRegister): Observable<any> {
