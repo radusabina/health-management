@@ -30,7 +30,7 @@ export class UserService {
   }
 
   updatePassword(id: string, newPassword: string): Observable<void> {
-    return this.http.put<void>(endpointAPI + 'password/' + id, {
+    return this.http.put<void>(endpointAPI + 'user/password/' + id, {
       newPassword,
     });
   }
