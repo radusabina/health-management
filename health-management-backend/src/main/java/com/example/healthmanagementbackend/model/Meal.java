@@ -54,6 +54,6 @@ public class Meal {
     private User user;
 
     @Builder.Default
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealItem> items = new ArrayList<>();
 }

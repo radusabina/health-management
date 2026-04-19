@@ -1,8 +1,10 @@
 package com.example.healthmanagementbackend.controller;
 
+import com.example.healthmanagementbackend.dto.MealDto;
 import com.example.healthmanagementbackend.dto.MealRequest;
 import com.example.healthmanagementbackend.dto.UpdateMealRequest;
 import com.example.healthmanagementbackend.model.Meal;
+import com.example.healthmanagementbackend.model.enums.MealType;
 import com.example.healthmanagementbackend.service.MealService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -49,10 +52,41 @@ public class MealController {
         }
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<Object> getMealsByUserId(@PathVariable UUID userId) {
         try {
-            List<Meal> meal = mealService.getMealsForUser(userId);
+            List<MealDto> meals = mealService.getMealsForUser(userId);
+            return ResponseEntity.ok(meals);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> getMealsForUserByType(@RequestParam("userId") UUID userId,
+                                                        @RequestParam("mealType") MealType mealType) {
+        try {
+            List<MealDto> meals = mealService.getMealsForUserByType(userId, mealType);
+            return ResponseEntity.ok(meals);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> getTodayMealsForUser(@RequestParam("userId") UUID userId) {
+        try {
+            List<MealDto> meals = mealService.getTodayMealsForUser(userId);
+            return ResponseEntity.ok(meals);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getMealById(@PathVariable("id") UUID id) {
+        try {
+            MealDto meal = mealService.getMealById(id);
             return ResponseEntity.ok(meal);
         } catch (Exception e) {
             return handleException(e);
