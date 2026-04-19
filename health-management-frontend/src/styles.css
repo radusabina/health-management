@@ -1,1 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --fitbite-bg-start: #ffffff;
+  --fitbite-bg-end: #dafcdd;
+  --fitbite-primary: #569069;
+  --fitbite-secondary: #1f4d2a;
+  --fitbite-primary-hover: #456f57;
+}
+
+.form-control:focus {
+  border-color: var(--fitbite-primary);
+  box-shadow: 0 0 0 0.2rem var(--fitbite-focus);
+}
+
+.form-check-input:focus {
+  border-color: var(--fitbite-primary);
+  box-shadow: 0 0 0 0.2rem var(--fitbite-focus);
+}
+
+.btn-fitbite {
+  background-color: var(--fitbite-primary);
+  border-color: var(--fitbite-primary);
+  color: white;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.btn-fitbite:hover {
+  background-color: var(--fitbite-primary-hover);
+  border-color: var(--fitbite-primary-hover);
+  color: white;
+}

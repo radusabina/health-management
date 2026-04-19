@@ -1,0 +1,112 @@
+<div
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="
+    background: linear-gradient(
+      to bottom,
+      var(--fitbite-bg-start),
+      var(--fitbite-bg-end)
+    );
+  "
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
+        <div class="card border-0 shadow">
+          <!-- Logo -->
+          <div class="card-body text-center pt-3 pb-2">
+            <div class="d-flex justify-content-center">
+              <div
+                class="rounded-circle overflow-hidden border border-2"
+                style="
+                  width: 6rem;
+                  height: 6rem;
+                  border-color: var(--fitbite-primary) !important;
+                "
+              >
+                <img
+                  src="assets/fitbite.png"
+                  class="img-fluid"
+                  alt="FitBite Logo"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="card-body pt-2">
+            <form #loginForm="ngForm">
+              <!-- Email -->
+              <div class="mb-3">
+                <label class="form-label">
+                  Email <span class="text-danger">*</span>
+                </label>
+
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  required
+                  minlength="5"
+                  email
+                  [(ngModel)]="email"
+                  #emailCtrl="ngModel"
+                  placeholder="name@example.com"
+                  autocomplete="email"
+                  [class.is-invalid]="emailCtrl.invalid && emailCtrl.touched"
+                />
+
+                <div class="invalid-feedback">
+                  Please enter a valid email address
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="mb-3">
+                <label class="form-label">
+                  Password <span class="text-danger">*</span>
+                </label>
+
+                <input
+                  type="password"
+                  class="form-control"
+                  name="password"
+                  required
+                  minlength="6"
+                  [(ngModel)]="password"
+                  #passwordCtrl="ngModel"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  [class.is-invalid]="
+                    passwordCtrl.invalid && passwordCtrl.touched
+                  "
+                />
+
+                <div class="invalid-feedback">
+                  Password must be at least 6 characters
+                </div>
+              </div>
+
+              <!-- Primary action -->
+              <div class="d-grid">
+                <button class="btn btn-fitbite text-white" type="submit">
+                  Log in
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Secondary action -->
+          <div class="card-body pt-0 text-center">
+            <a
+              href="/signUp"
+              class="text-decoration-none"
+              style="color: var(--fitbite-secondary)"
+            >
+              Create account
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

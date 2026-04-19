@@ -1,0 +1,187 @@
+<div
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="
+    background: linear-gradient(
+      to bottom,
+      var(--fitbite-bg-start),
+      var(--fitbite-bg-end)
+    );
+  "
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="card border-0 shadow">
+          <!-- Logo -->
+          <div class="card-body text-center pt-3 pb-2">
+            <div class="d-flex justify-content-center">
+              <div
+                class="rounded-circle overflow-hidden border border-2"
+                style="
+                  width: 6rem;
+                  height: 6rem;
+                  border-color: var(--fitbite-primary) !important;
+                "
+              >
+                <img
+                  src="assets/fitbite.png"
+                  class="img-fluid"
+                  alt="FitBite Logo"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="card-body pt-2">
+            <form #registerForm="ngForm">
+              <div class="row">
+                <!-- Email -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Email <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    required
+                    email
+                    [(ngModel)]="user.email"
+                    #emailCtrl="ngModel"
+                    [class.is-invalid]="emailCtrl.invalid && emailCtrl.touched"
+                    placeholder="name@example.com"
+                  />
+
+                  <div class="invalid-feedback">Valid email is required</div>
+                </div>
+
+                <!-- Password -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Password <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    required
+                    minlength="6"
+                    [(ngModel)]="user.password"
+                    #passCtrl="ngModel"
+                    [class.is-invalid]="passCtrl.invalid && passCtrl.touched"
+                    placeholder="At least 6 characters"
+                  />
+
+                  <div class="invalid-feedback">
+                    Password must be at least 6 characters
+                  </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Full name <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="fullName"
+                    required
+                    [(ngModel)]="user.fullName"
+                    #nameCtrl="ngModel"
+                    [class.is-invalid]="nameCtrl.invalid && nameCtrl.touched"
+                    placeholder="John Doe"
+                  />
+                </div>
+
+                <!-- Age -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Age <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="age"
+                    required
+                    min="1"
+                    max="120"
+                    [(ngModel)]="user.age"
+                    #ageCtrl="ngModel"
+                    [class.is-invalid]="ageCtrl.invalid && ageCtrl.touched"
+                  />
+                </div>
+
+                <!-- Gender -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Gender <span class="text-danger">*</span>
+                  </label>
+
+                  <select
+                    class="form-select"
+                    name="gender"
+                    required
+                    [(ngModel)]="user.gender"
+                    #genderCtrl="ngModel"
+                    [class.is-invalid]="
+                      genderCtrl.invalid && genderCtrl.touched
+                    "
+                  >
+                    <option value="" disabled selected>Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <!-- Height -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Height (cm) <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="heightCm"
+                    required
+                    min="50"
+                    max="250"
+                    [(ngModel)]="user.heightCm"
+                    #heightCtrl="ngModel"
+                    [class.is-invalid]="
+                      heightCtrl.invalid && heightCtrl.touched
+                    "
+                  />
+                </div>
+              </div>
+
+              <!-- Submit full width -->
+              <div class="d-grid mt-2">
+                <button type="submit" class="btn btn-fitbite text-white">
+                  Create account
+                </button>
+              </div>
+            </form>
+          </div>
+          <!-- Secondary action -->
+          <div class="card-body pt-0 text-center">
+            <a
+              href="/login"
+              class="text-decoration-none"
+              style="color: var(--fitbite-secondary)"
+            >
+              Log in
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
