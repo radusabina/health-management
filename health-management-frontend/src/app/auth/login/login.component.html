@@ -91,7 +91,7 @@
                 <button
                   class="btn btn-fitbite text-white"
                   type="submit"
-                  [disabled]="loading"
+                  [disabled]="loginForm.invalid || loading"
                 >
                   <span *ngIf="!loading">Log in</span>
                   <span *ngIf="loading">Signing in...</span>

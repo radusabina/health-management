@@ -5,6 +5,7 @@ import { IUserLoginResponse } from '../../dto/IUserLoginResponse';
 import { endpointAPI } from '../../config/appconfig';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { filter, take, map, tap, finalize, catchError } from 'rxjs/operators';
+import { IUserRegister } from '../../dto/IUserRegister';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,6 @@ export class AuthService {
     this.loadFromStorage(),
   );
 
-  // refresh control
   private refreshInProgress = false;
   private refreshSubject = new BehaviorSubject<string | null>(null);
 
@@ -26,6 +26,10 @@ export class AuthService {
       endpointAPI + 'auth/login',
       credentials,
     );
+  }
+
+  register(user: IUserRegister): Observable<any> {
+    return this.http.post(endpointAPI + 'auth/register', user);
   }
 
   setAuth(response: IUserLoginResponse): void {

@@ -13,8 +13,8 @@ import { finalize } from 'rxjs';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  email = '';
-  password = '';
+  email: string = '';
+  password: string = '';
 
   errorMessage: string | null = null;
   loading = false;

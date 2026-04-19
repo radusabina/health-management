@@ -37,7 +37,6 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       catchError((err: HttpErrorResponse) => {
         if (err.status === 403) {
-          // try refresh and retry once
           return this.auth.refreshToken().pipe(
             switchMap((newToken) => {
               const retryReq = req.clone({

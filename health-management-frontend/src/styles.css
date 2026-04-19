@@ -30,3 +30,16 @@
   border-color: var(--fitbite-primary-hover);
   color: white;
 }
+
+.btn-fitbite:disabled {
+  background-color: var(--fitbite-primary);
+  border-color: var(--fitbite-primary);
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: white;
+}
+
+.form-select:focus {
+  border-color: var(--fitbite-primary);
+  box-shadow: 0 0 0 0.2rem var(--fitbite-focus);
+}
