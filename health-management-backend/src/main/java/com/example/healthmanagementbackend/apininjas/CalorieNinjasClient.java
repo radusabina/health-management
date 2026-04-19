@@ -2,6 +2,7 @@ package com.example.healthmanagementbackend.apininjas;
 
 import com.example.healthmanagementbackend.apininjas.dto.FoodItemResponse;
 import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
+import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.repository.FoodItemRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

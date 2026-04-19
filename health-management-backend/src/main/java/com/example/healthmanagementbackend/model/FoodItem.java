@@ -1,4 +1,4 @@
-package com.example.healthmanagementbackend.apininjas;
+package com.example.healthmanagementbackend.model;
 
 
 import jakarta.persistence.*;

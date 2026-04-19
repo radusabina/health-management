@@ -1,6 +1,5 @@
 package com.example.healthmanagementbackend.model;
 
-import com.example.healthmanagementbackend.apininjas.FoodItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

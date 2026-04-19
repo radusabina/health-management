@@ -1,7 +1,7 @@
 package com.example.healthmanagementbackend.service;
 
 import com.example.healthmanagementbackend.apininjas.CalorieNinjasClient;
-import com.example.healthmanagementbackend.apininjas.FoodItem;
+import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
 import com.example.healthmanagementbackend.exception.NoMealFoundException;
 import com.example.healthmanagementbackend.exception.NoUserFoundException;
