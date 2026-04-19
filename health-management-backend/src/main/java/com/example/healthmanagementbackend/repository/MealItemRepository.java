@@ -1,14 +1,11 @@
 package com.example.healthmanagementbackend.repository;
 
-import com.example.healthmanagementbackend.model.User;
+import com.example.healthmanagementbackend.model.MealItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
-
-    Optional<User> findByEmail(String email);
+public interface MealItemRepository extends JpaRepository<MealItem, UUID> {
 }

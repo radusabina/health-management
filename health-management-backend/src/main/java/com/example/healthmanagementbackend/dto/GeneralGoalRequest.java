@@ -1,7 +1,6 @@
 package com.example.healthmanagementbackend.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,17 +12,17 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GeneralGoalUpdateRequest {
+public class GeneralGoalRequest {
 
-    @NotBlank(message = "Daily goal id must not be empty")
-    @NotNull
-    private UUID dailyGoalId;
-
-    @NotBlank(message = "User id must not be empty")
-    @NotNull
+    @NotBlank(message = "User id must not be blank")
     private UUID userId;
 
-    private int caloriesGoal;
-    private int stepsGoal;
+    @NotBlank(message = "Calorie goal must not be blank")
+    private int calorieGoal;
+
+    @NotBlank(message = "Water goal must not be blank")
     private int waterGoal;
+
+    @NotBlank(message = "Weight target must not be blank")
+    private int weightTarget;
 }
