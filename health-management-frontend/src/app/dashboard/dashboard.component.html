@@ -1,0 +1,132 @@
+<div class="min-vh-100 d-flex bg-fitbite">
+  <div class="container py-4">
+    <!-- LOADING -->
+    <div *ngIf="!user" class="text-center mt-5">
+      <p>Loading user...</p>
+    </div>
+
+    <!-- DASHBOARD NEW USER-->
+    <div *ngIf="user && !isNewUser">
+      <!-- HEADER -->
+      <div class="mb-4 mt-4">
+        <h3>Welcome, {{ user.fullName }} 👋</h3>
+        <p class="text-muted mb-0">
+          Track meals, monitor progress, and explore recommendations anytime.
+        </p>
+      </div>
+
+      <div class="card border-0 shadow-sm p-3 mb-4">
+        <h6>Daily Progress</h6>
+
+        <div class="progress mb-2" style="height: 8px">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <small class="text-muted"
+          >Set a goal or add a meal to see your daily progress.</small
+        >
+      </div>
+      <!-- QUICK STATS -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <small class="text-muted">Calories Today</small>
+            <h5 class="mb-0">0</h5>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <small class="text-muted">Meals Logged</small>
+            <h5 class="mb-0">0</h5>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <small class="text-muted">Goal Progress</small>
+            <h5 class="mb-0">0%</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-muted small mb-3">
+        You can start by doing one of the above:
+      </div>
+
+      <!-- ACTIONS (EQUAL IMPORTANCE) -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+            <h5>Personalize your plan</h5>
+
+            <p class="text-muted small">
+              Optional setup to improve personalization of calories and
+              recommendations.
+            </p>
+
+            <div class="mt-auto">
+              <!-- BUTTON -->
+              <button
+                class="btn btn-fitbite text-white w-100"
+                (click)="openGoalModal()"
+              >
+                Set Goal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+            <h5>Log a meal</h5>
+
+            <p class="text-muted small">
+              Track what you eat to monitor calories and nutrition.
+            </p>
+
+            <div class="mt-auto">
+              <button class="btn btn-outline-fitbite w-100">Add Meal</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+            <h5>Recommendations</h5>
+
+            <p class="text-muted small">
+              Get meal suggestions based on your activity and preferences.
+            </p>
+
+            <div class="mt-auto">
+              <button class="btn btn-outline-secondary w-100">View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT MEALS -->
+      <div class="card border-0 shadow-sm p-3 mb-4">
+        <h6 class="mb-3">Today’s Meals</h6>
+
+        <div class="text-muted small">
+          No meals logged yet. Add your first meal to start tracking.
+        </div>
+      </div>
+
+      <!-- CONTEXTUAL TIP (NOT SEPARATE SECTION) -->
+      <div class="text-muted small mb-3">
+        💡 Tip: Logging meals regularly improves accuracy of your nutrition
+        insights.
+      </div>
+    </div>
+  </div>
+  <!-- MODAL -->
+  <app-add-general-goal
+    [isOpen]="showGoalModal"
+    (close)="closeGoalModal()"
+    (save)="onGoalSave($event)"
+  >
+  </app-add-general-goal>
+</div>

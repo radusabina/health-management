@@ -31,7 +31,7 @@ export class AuthService {
     this.currentUserSubject.next(user);
   }
 
-  getUser(): any | null {
+  getUser(id: string): any | null {
     return this.currentUserSubject.value;
   }
 
