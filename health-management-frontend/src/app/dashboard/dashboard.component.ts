@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth/auth.service';
-import { IUser } from '../dto/IUser';
+import { IUser, UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,24 +11,30 @@ import { IUser } from '../dto/IUser';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   user: IUser | null = null;
-  userName: string = 'John Doe';
-  isNewUser = true;
-  meals = [
-    { name: 'Breakfast', calories: 500 },
-    { name: 'Lunch', calories: 700 },
-    { name: 'Dinner', calories: 600 },
-  ];
-  totalCalories = this.meals.reduce((sum, meal) => sum + meal.calories, 0);
-  dailyGoalCalories = 2000;
-  waterDrank = 2;
-  dailyWaterGoal = 3;
-  mealsCount = this.meals.length;
+  isNewUser = false;
 
-  constructor(private authService: AuthService) {
-    this.authService.currentUser$.subscribe((user) => {
-      this.user = user;
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
+
+  ngOnInit(): void {
+    this.user = this.authService.getUser();
+
+    if (!this.user) {
+      console.error('No user found in auth');
+      return;
+    }
+
+    this.userService.isNewUser(this.user.id).subscribe({
+      next: (res) => {
+        this.isNewUser = res.isNewUser;
+      },
+      error: (err) => {
+        console.error('Operation=isNewUser; failed to check user state:', err);
+      },
     });
   }
 }

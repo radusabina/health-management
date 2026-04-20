@@ -22,7 +22,4 @@ public class MealRequest {
 
     @NotBlank(message = "Description must not be blank")
     private String description;
-
-    @NotBlank(message = "Calories must not be blank")
-    private int calories;
 }

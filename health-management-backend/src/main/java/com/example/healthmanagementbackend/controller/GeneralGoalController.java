@@ -1,10 +1,13 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.dto.GeneralGoalRequest;
 import com.example.healthmanagementbackend.dto.UpdateGeneralGoalForUserRequest;
-import com.example.healthmanagementbackend.dto.UpdateGeneralGoalRequest;
 import com.example.healthmanagementbackend.model.GeneralGoal;
 import com.example.healthmanagementbackend.service.GeneralGoalService;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -108,4 +111,39 @@ public class GeneralGoalController {
                 .body(Map.of("type", e.getClass().getSimpleName(),
                         "message", e.getMessage()));
     }
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class UpdateGeneralGoalRequest {
+
+        @NotBlank(message = "General goal id must not be blank")
+        private UUID generalGoalId;
+
+        @NotBlank(message = "Calorie goal must not be blank")
+        private int calorieGoal;
+
+        @NotBlank(message = "Water goal must not be blank")
+        private int waterGoal;
+
+        @NotBlank(message = "Weight target must not be blank")
+        private int weightTarget;
+    }
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class GeneralGoalRequest {
+
+        @NotBlank(message = "User id must not be blank")
+        private UUID userId;
+
+        @NotBlank(message = "Calorie goal must not be blank")
+        private int calorieGoal;
+
+        @NotBlank(message = "Water goal must not be blank")
+        private int waterGoal;
+
+        @NotBlank(message = "Weight target must not be blank")
+        private int weightTarget;
+    }
+
 }

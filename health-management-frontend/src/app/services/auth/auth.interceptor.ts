@@ -18,7 +18,9 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
+    // Let auth-related and preflight (OPTIONS) requests pass through unchanged
     if (
+      req.method === 'OPTIONS' ||
       req.url.includes('/auth/login') ||
       req.url.includes('/auth/refresh') ||
       req.url.includes('/auth/register')
@@ -36,7 +38,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((err: HttpErrorResponse) => {
-        if (err.status === 403) {
+        // Try refresh on 401 or 403 (expired token)
+        if (err.status === 401 || err.status === 403) {
           return this.auth.refreshToken().pipe(
             switchMap((newToken) => {
               const retryReq = req.clone({

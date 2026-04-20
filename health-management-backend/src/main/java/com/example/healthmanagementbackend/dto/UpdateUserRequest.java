@@ -14,7 +14,6 @@ import java.util.UUID;
 @Getter @Setter
 public class UpdateUserRequest {
     private String email;
-    private String password;
     private String fullName;
     private int age;
     private Gender gender;

@@ -3,6 +3,8 @@ package com.example.healthmanagementbackend.service;
 import com.example.healthmanagementbackend.exception.InvalidCredentialsException;
 import com.example.healthmanagementbackend.exception.NoUserFoundException;
 import com.example.healthmanagementbackend.exception.UserAlreadyExistsException;
+import com.example.healthmanagementbackend.model.GeneralGoal;
+import com.example.healthmanagementbackend.model.Meal;
 import com.example.healthmanagementbackend.model.User;
 import com.example.healthmanagementbackend.model.enums.Gender;
 import com.example.healthmanagementbackend.repository.UserRepository;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -63,11 +66,10 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
     }
 
-    public void updateUser(UUID userId, String email, String password, String fullName, int heightCm, int weightKg, Gender gender, int age) {
+    public void updateUser(UUID userId, String email, String fullName, int heightCm, int weightKg, Gender gender, int age) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
 
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
         user.setFullName(fullName);
         user.setHeightCm(heightCm);
         user.setWeightKg(weightKg);
@@ -93,5 +95,23 @@ public class UserService {
         return true;
     }
 
+    public void updatePassword(UUID id, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoUserFoundException("User not found"));
 
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(hashedPassword);
+
+        userRepository.save(user);
+    }
+
+    public boolean isNewUser(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoUserFoundException("User not found"));
+
+        List<Meal> meals = user.getMeals();
+        GeneralGoal generalGoal = user.getGeneralGoal();
+
+        return meals.isEmpty() && generalGoal == null;
+    }
 }

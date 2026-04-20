@@ -40,7 +40,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable("id") UUID id, @RequestBody UpdateUserRequest request) {
         try {
-            userService.updateUser(id, request.getEmail(), request.getPassword(),
+            userService.updateUser(id, request.getEmail(),
                     request.getFullName(), request.getHeightCm(), request.getWeightKg(),
                     request.getGender(), request.getAge());
             return ResponseEntity.ok().build();
@@ -58,6 +58,24 @@ public class UserController {
         }
     }
 
+    @GetMapping("/is-new-user/{userId}")
+    public ResponseEntity<Object> isNewUser(@PathVariable UUID userId) {
+        try {
+            return ResponseEntity.ok().body(new IsNewUserResponse(userService.isNewUser(userId)));
+        }  catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
+    @PutMapping("/password/{id}")
+    public ResponseEntity<Void> updatePassword(
+            @PathVariable("id") UUID id,
+            @RequestBody UpdatePasswordRequest request
+    ) {
+        userService.updatePassword(id, request.newPassword());
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable UUID id) {
         try {
@@ -73,4 +91,7 @@ public class UserController {
                 .body(Map.of("type", e.getClass().getSimpleName(),
                         "message", e.getMessage()));
     }
+
+    public record UpdatePasswordRequest(String newPassword) {}
+    public record IsNewUserResponse(boolean isNewUser) {}
 }

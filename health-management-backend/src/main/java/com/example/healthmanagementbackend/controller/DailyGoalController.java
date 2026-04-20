@@ -1,7 +1,5 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.dto.DailyGoalRequest;
-import com.example.healthmanagementbackend.dto.UpdateDailyGoalRequest;
 import com.example.healthmanagementbackend.exception.NoDailyGoalFoundException;
 import com.example.healthmanagementbackend.model.DailyGoal;
 import com.example.healthmanagementbackend.service.DailyGoalService;
@@ -35,18 +33,18 @@ public class DailyGoalController {
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody DailyGoalRequest req) {
         try {
-            LocalDate requestedDate = req.getDate() != null ? req.getDate() : LocalDate.now();
+            LocalDate requestedDate = req.date() != null ? req.date() : LocalDate.now();
             boolean alreadyExists = true;
 
             try {
-                dailyGoalService.getDailyGoalForUserByDate(req.getUserId(), requestedDate);
+                dailyGoalService.getDailyGoalForUserByDate(req.userId(), requestedDate);
             } catch (NoDailyGoalFoundException e) {
                 alreadyExists = false;
             }
 
             DailyGoal dailyGoal = dailyGoalService.createDailyGoalForUser(
-                    req.getUserId(),
-                    req.getGeneralGoalId(),
+                    req.userId(),
+                    req.generalGoalId(),
                     requestedDate
             );
             return new ResponseEntity<>(dailyGoal, alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
@@ -88,7 +86,7 @@ public class DailyGoalController {
     @PutMapping
     public ResponseEntity<Object> update(@RequestBody UpdateDailyGoalRequest req) {
         try {
-            DailyGoal dailyGoal = dailyGoalService.updateDailyGoal(req.getId(), req.getCaloriesDone(), req.getWaterDone());
+            DailyGoal dailyGoal = dailyGoalService.updateDailyGoal(req.id(), req.caloriesDone(), req.waterDone());
             return new ResponseEntity<>(dailyGoal, HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
@@ -132,4 +130,7 @@ public class DailyGoalController {
                 .body(Map.of("type", e.getClass().getSimpleName(),
                         "message", e.getMessage()));
     }
+
+    public record UpdateDailyGoalRequest(UUID id, Integer caloriesDone, Integer waterDone) {}
+    public record DailyGoalRequest(UUID userId, UUID generalGoalId, LocalDate date) {}
 }

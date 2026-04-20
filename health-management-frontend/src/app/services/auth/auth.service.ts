@@ -1,11 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IUserLogin } from '../../dto/IUserLogin';
-import { IUserLoginResponse } from '../../dto/IUserLoginResponse';
 import { endpointAPI } from '../../config/appconfig';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { filter, take, map, tap, finalize, catchError } from 'rxjs/operators';
-import { IUserRegister } from '../../dto/IUserRegister';
+import { IUser } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +20,12 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<any | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const stored = this.authSubject.value;
+    if (stored?.user) {
+      this.currentUserSubject.next(stored.user);
+    }
+  }
 
   setUser(user: any): void {
     this.currentUserSubject.next(user);
@@ -55,6 +58,8 @@ export class AuthService {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(response));
       this.authSubject.next(response);
+      // update current user for subscribers
+      this.currentUserSubject.next(response.user);
     } catch (e) {
       console.error('Failed to save auth response', e);
     }
@@ -67,6 +72,7 @@ export class AuthService {
       console.error('Failed to clear auth response', e);
     }
     this.authSubject.next(null);
+    this.currentUserSubject.next(null);
   }
 
   getToken(): string | null {
@@ -140,4 +146,25 @@ export class AuthService {
         }),
       );
   }
+}
+
+export interface IUserLogin {
+  email: string;
+  password: string;
+}
+
+export interface IUserLoginResponse {
+  user: IUser;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface IUserRegister {
+  email: string;
+  password: string;
+  fullName: string;
+  age: number | null;
+  gender: 'MALE' | 'FEMALE' | 'OTHER' | string;
+  weightKg: number | null;
+  heightCm: number | null;
 }
