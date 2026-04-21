@@ -85,11 +85,11 @@ public class CalorieNinjasClient {
 
         FoodItemResponse firstItem = response.getItems().get(0);
 
-        double factor = 100.0 / firstItem.getServingSizeG();
+        double factor = 100.0 / firstItem.getQuantityGrams();
 
         FoodItem foodItem = FoodItem.builder()
                 .sugarG(firstItem.getSugarG() * factor)
-                .servingSizeG(firstItem.getServingSizeG() * factor)
+                .quantityGrams(firstItem.getQuantityGrams() * factor)
                 .fiberG(firstItem.getFiberG() * factor)
                 .sodiumMg(firstItem.getSodiumMg() * factor)
                 .name(firstItem.getName())

@@ -1,5 +1,6 @@
 package com.example.healthmanagementbackend.controller;
 
+import com.example.healthmanagementbackend.dto.AnalyzeResponse;
 import com.example.healthmanagementbackend.dto.MealDto;
 import com.example.healthmanagementbackend.dto.MealRequest;
 import com.example.healthmanagementbackend.dto.UpdateMealRequest;
@@ -35,7 +36,7 @@ public class MealController {
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody MealRequest request) {
         try {
-            Meal meal = mealService.addMeal(request.getMealType(), request.getDescription(), request.getUserId());
+            Meal meal = mealService.addMeal(request.getMealType(), request.getDescription(), request.getUserId(), request.getItems());
             return new ResponseEntity<>(meal, HttpStatus.CREATED);
         } catch (Exception e) {
             return handleException(e);
@@ -105,7 +106,7 @@ public class MealController {
     @PostMapping("/analyze")
     public ResponseEntity<Object> analyze(@RequestParam String description) {
         try{
-            MealDto meal = mealService.analyzeMeal(description);
+            AnalyzeResponse meal = mealService.analyzeMeal(description);
             return ResponseEntity.ok(meal);
         } catch (Exception e) {
             return handleException(e);
@@ -118,4 +119,6 @@ public class MealController {
                 .body(Map.of("type", e.getClass().getSimpleName(),
                         "message", e.getMessage()));
     }
+
+
 }

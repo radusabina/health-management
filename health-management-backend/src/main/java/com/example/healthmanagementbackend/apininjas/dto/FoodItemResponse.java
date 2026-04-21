@@ -19,7 +19,7 @@ public class FoodItemResponse {
     private Double calories;
 
     @JsonProperty("serving_size_g")
-    private Double servingSizeG;
+    private int quantityGrams;
 
     @JsonProperty("fat_saturated_g")
     private Double fatSaturatedG;

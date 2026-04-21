@@ -11,5 +11,5 @@ public class MealItemResponse {
     private String name;
 
     @JsonProperty("serving_size_g")
-    private Double servingSizeG;
+    private int quantityGrams;
 }

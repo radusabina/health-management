@@ -1,8 +1,7 @@
 package com.example.healthmanagementbackend.service;
 
 import com.example.healthmanagementbackend.apininjas.CalorieNinjasClient;
-import com.example.healthmanagementbackend.dto.MealDto;
-import com.example.healthmanagementbackend.dto.MealItemDto;
+import com.example.healthmanagementbackend.dto.*;
 import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
 import com.example.healthmanagementbackend.exception.NoMealFoundException;
@@ -45,10 +44,9 @@ public class MealService {
         this.calorieNinjasClient = calorieNinjasClient;
     }
 
-    public Meal addMeal(MealType mealType, String description, UUID userId) {
+    public Meal addMeal(MealType mealType, String description, UUID userId, List<MealItemResponse> items) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoUserFoundException("No user found"));
-        List<MealItemResponse> itemsInMeal = calorieNinjasClient.getFoodItemsFromDescription(description);
 
         Meal meal = Meal.builder()
                 .user(user)
@@ -59,7 +57,7 @@ public class MealService {
 
         meal = mealRepository.save(meal);
 
-        setMealItems(itemsInMeal, meal);
+        setMealItems(items, meal);
 
         meal = mealRepository.save(meal);
 
@@ -76,7 +74,7 @@ public class MealService {
             MealItem mealItem = MealItem.builder()
                     .foodItem(foodItem)
                     .meal(meal)
-                    .quantityGrams(item.getServingSizeG()).build();
+                    .quantityGrams(item.getQuantityGrams()).build();
 
             meal.getItems().add(mealItem);
         }
@@ -102,7 +100,7 @@ public class MealService {
 
             MealItem mealItem = MealItem.builder()
                     .foodItem(foodItem)
-                    .quantityGrams(item.getServingSizeG())
+                    .quantityGrams(item.getQuantityGrams())
                     .build();
 
             meal.getItems().add(mealItem);
@@ -163,18 +161,10 @@ public class MealService {
         return true;
     }
 
-    public MealDto analyzeMeal(String description) {
+    public AnalyzeResponse analyzeMeal(String description) {
         List<MealItemResponse> itemsInMeal = calorieNinjasClient.getFoodItemsFromDescription(description);
-
-        Meal meal = Meal.builder()
-                .description(description)
-                .date(LocalDate.now())
-                .updatedAt(LocalDateTime.now()).build();
-
-        setMealItems(itemsInMeal, meal);
-
         LOGGER.info("Operation=analyzeMeal");
-        return mapToDto(meal);
+        return mapToAnalyzeResponse(itemsInMeal);
     }
 
     private String normalize(String name) {
@@ -241,6 +231,20 @@ public class MealService {
                 .date(meal.getDate())
                 .totalCalories(Math.round(totalCalories))
                 .items(itemDtos)
+                .build();
+    }
+
+    private AnalyzeResponse mapToAnalyzeResponse(List<MealItemResponse> items) {
+        List<AnalyzeItem> analyzeItems = items.stream()
+                .map(item -> AnalyzeItem.builder()
+                        .name(item.getName())
+                        .quantityGrams(item.getQuantityGrams())
+                        .build()
+                )
+                .toList();
+
+        return AnalyzeResponse.builder()
+                .items(analyzeItems)
                 .build();
     }
 }
