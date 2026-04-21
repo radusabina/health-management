@@ -209,22 +209,34 @@
 
               <p class="text-muted small mb-3">Amount is displayed in grams</p>
 
+              <!-- TABLE HEADER -->
+              <div
+                *ngIf="mealItems.items.length > 0"
+                class="row small text-muted fw-semibold mb-2 px-1"
+              >
+                <div class="col-6">Name</div>
+                <div class="col-4">Quantity (g)</div>
+                <div class="col-2 text-end">Actions</div>
+              </div>
+
               <div
                 *ngFor="let item of mealItems.items; let i = index"
                 class="card border-0 shadow-sm p-3 mb-2"
               >
                 <div class="row g-2 align-items-center">
                   <div class="col-6">
-                    <input class="form-control" [(ngModel)]="item.name" />
+                    <input
+                      class="form-control"
+                      placeholder="Food name"
+                      [(ngModel)]="item.name"
+                    />
                   </div>
 
-                  <div class="col-3">
-                    <label class="form-label small text-muted mb-1"
-                      >Quantity (g)</label
-                    >
+                  <div class="col-4">
                     <input
                       type="number"
                       class="form-control"
+                      placeholder="g"
                       [(ngModel)]="item.quantityGrams"
                     />
                   </div>
