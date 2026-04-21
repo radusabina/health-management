@@ -26,7 +26,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/meal")
 public class MealController {
-
     private final MealService mealService;
 
     public MealController(MealService mealService) {

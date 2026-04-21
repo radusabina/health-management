@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -16,7 +17,7 @@ import { IMealRequest } from '../dtos/meal/IMealRequest';
   templateUrl: './add-meal.component.html',
   styleUrl: './add-meal.component.css',
 })
-export class AddMealComponent {
+export class AddMealComponent implements OnInit, OnDestroy {
   // states
   manualMode: boolean = false;
   isAnalyzing = false;
@@ -30,14 +31,28 @@ export class AddMealComponent {
   // enums
   mealTypes: string[] = ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK'];
 
+  private userSub: Subscription | null = null;
+  private currentUser: any | null = null;
+
   constructor(
     private router: Router,
     private mealService: MealService,
     private authService: AuthService,
   ) {}
 
+  ngOnInit(): void {
+    this.userSub = this.authService.currentUser$.subscribe((u) => {
+      this.currentUser = u;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.userSub?.unsubscribe();
+  }
+
+  // use the reactive currentUser value populated from AuthService
   private get user() {
-    return this.authService.getAuthResponse()?.user ?? null;
+    return this.currentUser;
   }
 
   analyzeMeal() {

@@ -44,7 +44,7 @@ public class MealService {
         this.calorieNinjasClient = calorieNinjasClient;
     }
 
-    public Meal addMeal(MealType mealType, String description, UUID userId, List<MealItemResponse> items) {
+    public Meal addMeal(MealType mealType, String description, UUID userId, List<MealItemRequest> items) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoUserFoundException("No user found"));
 
@@ -65,8 +65,8 @@ public class MealService {
         return meal;
     }
 
-    private void setMealItems(List<MealItemResponse> itemsInMeal, Meal meal) {
-        for (MealItemResponse item : itemsInMeal) {
+    private void setMealItems(List<MealItemRequest> itemsInMeal, Meal meal) {
+        for (MealItemRequest item : itemsInMeal) {
             String normalizedFoodItemName = normalize(item.getName());
             FoodItem foodItem = foodItemRepository.findByNameIgnoreCase(normalizedFoodItemName)
                     .orElseGet(() -> calorieNinjasClient.fetchFoodItem(normalizedFoodItemName));

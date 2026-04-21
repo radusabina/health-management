@@ -25,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/general-goal")
 public class GeneralGoalController {
-
     private final GeneralGoalService generalGoalService;
 
     public GeneralGoalController(GeneralGoalService generalGoalService) {
@@ -79,9 +78,9 @@ public class GeneralGoalController {
     @PutMapping("/updateGeneralGoalForUser")
     public ResponseEntity<Object> updateGeneralGoalForUser(@RequestBody UpdateGeneralGoalForUserRequest req) {
         try {
-           generalGoalService.updateGeneralGoalForUser(req.getUserId(), req.getCalorieGoal(),
-                   req.getWaterGoal(), req.getWeightTarget());
-           return new ResponseEntity<>(HttpStatus.OK);
+            generalGoalService.updateGeneralGoalForUser(req.getUserId(), req.getCalorieGoal(),
+                    req.getWaterGoal(), req.getWeightTarget());
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -112,8 +111,10 @@ public class GeneralGoalController {
                         "message", e.getMessage()));
     }
 
-    @NoArgsConstructor @AllArgsConstructor
-    @Getter @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class UpdateGeneralGoalRequest {
 
         @NotBlank(message = "General goal id must not be blank")
@@ -129,8 +130,10 @@ public class GeneralGoalController {
         private int weightTarget;
     }
 
-    @NoArgsConstructor @AllArgsConstructor
-    @Getter @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class GeneralGoalRequest {
 
         @NotBlank(message = "User id must not be blank")

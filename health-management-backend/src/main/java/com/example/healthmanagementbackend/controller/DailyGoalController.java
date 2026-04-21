@@ -23,7 +23,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/daily-goal")
 public class DailyGoalController {
-
     private final DailyGoalService dailyGoalService;
 
     public DailyGoalController(DailyGoalService dailyGoalService) {
@@ -106,7 +105,7 @@ public class DailyGoalController {
 
     @PutMapping("/incrementWater")
     public ResponseEntity<Object> incrementWater(@RequestParam("id") UUID id,
-                                                    @RequestParam("waterToAdd") int waterToAdd) {
+                                                 @RequestParam("waterToAdd") int waterToAdd) {
         try {
             dailyGoalService.incrementWater(id, waterToAdd);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -131,6 +130,9 @@ public class DailyGoalController {
                         "message", e.getMessage()));
     }
 
-    public record UpdateDailyGoalRequest(UUID id, Integer caloriesDone, Integer waterDone) {}
-    public record DailyGoalRequest(UUID userId, UUID generalGoalId, LocalDate date) {}
+    public record UpdateDailyGoalRequest(UUID id, Integer caloriesDone, Integer waterDone) {
+    }
+
+    public record DailyGoalRequest(UUID userId, UUID generalGoalId, LocalDate date) {
+    }
 }

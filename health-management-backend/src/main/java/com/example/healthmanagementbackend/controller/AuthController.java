@@ -21,7 +21,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
     private final UserService userService;
     private final JwtService jwtService;
 

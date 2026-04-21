@@ -27,5 +27,5 @@ public class MealRequest {
     private String description;
 
     @NotNull(message = "Meal items must contain at least one element")
-    private List<MealItemResponse> items;
+    private List<MealItemRequest> items;
 }

@@ -18,7 +18,6 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
-    // Let auth-related and preflight (OPTIONS) requests pass through unchanged
     if (
       req.method === 'OPTIONS' ||
       req.url.includes('/auth/login') ||
@@ -29,21 +28,23 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     const token = this.auth.getToken();
-    let authReq = req;
-    if (token) {
-      authReq = req.clone({
-        setHeaders: { Authorization: `Bearer ${token}` },
-      });
-    }
+    const authReq = token
+      ? req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      : req;
 
     return next.handle(authReq).pipe(
       catchError((err: HttpErrorResponse) => {
-        // Try refresh on 401 or 403 (expired token)
-        if (err.status === 401 || err.status === 403) {
+        if (err.status === 401) {
           return this.auth.refreshToken().pipe(
             switchMap((newToken) => {
               const retryReq = req.clone({
-                setHeaders: { Authorization: `Bearer ${newToken}` },
+                setHeaders: {
+                  Authorization: `Bearer ${newToken}`,
+                },
               });
               return next.handle(retryReq);
             }),
@@ -53,6 +54,7 @@ export class AuthInterceptor implements HttpInterceptor {
             }),
           );
         }
+
         return throwError(() => err);
       }),
     );

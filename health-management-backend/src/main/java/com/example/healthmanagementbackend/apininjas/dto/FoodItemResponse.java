@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
 public class FoodItemResponse {
     private String name;
