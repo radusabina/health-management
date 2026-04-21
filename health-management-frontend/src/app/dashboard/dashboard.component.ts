@@ -8,6 +8,9 @@ import { GeneralGoalService } from '../services/general-goal/general-goal.servic
 import { AddGeneralGoalComponent } from '../add-general-goal/add-general-goal.component';
 import { IMeal } from '../dtos/meal/IMeal';
 import { Router, RouterOutlet } from '@angular/router';
+import { DailyGoalService } from '../services/daily-goal/daily-goal.service';
+import { IDailyGoal } from '../dtos/daily-goal/IDailyGoal';
+import { IGeneralGoal } from '../dtos/general-goal/IGeneralGoal';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,11 +20,13 @@ import { Router, RouterOutlet } from '@angular/router';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
+  // state
+  showGoalModal = false;
   user: IUser | null = null;
   isNewUser = false;
   meals: IMeal[] = [];
-
-  showGoalModal = false;
+  dailyGoal: IDailyGoal | null = null;
+  generalGoal: IGeneralGoal | null = null;
 
   constructor(
     private router: Router,
@@ -29,24 +34,23 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private mealService: MealService,
     private generalGoalService: GeneralGoalService,
+    private dailyGoalService: DailyGoalService,
   ) {}
 
   ngOnInit(): void {
     this.user = this.authService.getAuthResponse()?.user || null;
 
     if (!this.user) {
-      console.error('No user found in auth');
       return;
     }
 
     this.loadUserState();
     this.loadMeals();
+    this.loadDailyGoal();
+    this.loadGeneralGoal();
   }
 
-  // -------------------------
-  // DATA LOADING
-  // -------------------------
-
+  // data loading
   private loadUserState(): void {
     if (!this.user) return;
 
@@ -73,10 +77,35 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // -------------------------
-  // MODAL CONTROL
-  // -------------------------
+  private loadDailyGoal(): void {
+    if (!this.user) return;
 
+    this.dailyGoalService.getToday(this.user.id).subscribe({
+      next: (goal: IDailyGoal) => {
+        this.dailyGoal = goal;
+        this.dailyGoal.waterDone = this.dailyGoal.waterDone / 1000;
+      },
+      error: (err: any) => {
+        console.error('getTodayDailyGoal failed:', err);
+      },
+    });
+  }
+
+  private loadGeneralGoal(): void {
+    if (!this.user) return;
+
+    this.generalGoalService.getByUserId(this.user.id).subscribe({
+      next: (goal) => {
+        this.generalGoal = goal;
+        this.generalGoal.waterGoal = this.generalGoal.waterGoal / 1000;
+      },
+      error: (err) => {
+        console.error('getByUserId failed:', err);
+      },
+    });
+  }
+
+  // modal control
   openGoalModal(): void {
     this.showGoalModal = true;
   }
@@ -85,16 +114,13 @@ export class DashboardComponent implements OnInit {
     this.showGoalModal = false;
   }
 
-  // -------------------------
-  // SAVE GOAL
-  // -------------------------
-
+  // operations
   onGoalSave(goal: any): void {
     console.log('Saving goal:', goal);
     if (!this.user) return;
 
     this.generalGoalService
-      .addGeneralGoal({
+      .add({
         ...goal,
         userId: this.user.id,
       })
@@ -109,10 +135,7 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  // -------------------------
-  // REFRESH
-  // -------------------------
-
+  // dashboard refresh
   refreshDashboard(): void {
     if (!this.user) return;
 
@@ -128,7 +151,22 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // others
   navigateToAddMeal(): void {
     this.router.navigate(['/addMeal']);
+  }
+
+  get progressBar(): number {
+    if (!this.dailyGoal || !this.generalGoal) return 0;
+
+    const caloriesProgress =
+      (this.dailyGoal.caloriesDone / this.generalGoal.calorieGoal) * 100;
+
+    const waterProgress =
+      (this.dailyGoal.waterDone / this.generalGoal.waterGoal) * 100;
+
+    const avg = (caloriesProgress + waterProgress) / 2;
+
+    return Math.min(100, Math.round(avg));
   }
 }

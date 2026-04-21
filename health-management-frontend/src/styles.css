@@ -89,3 +89,7 @@
 .btn-link:hover {
   color: var(--fitbite-secondary);
 }
+
+.progress-bar {
+  background-color: var(--fitbite-primary);
+}

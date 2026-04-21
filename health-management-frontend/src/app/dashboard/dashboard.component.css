@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  background-image: url("/assets/bg-desktop.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.content-card {
+  max-width: 900px;
+  background: #ffffffee;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}

@@ -6,17 +6,15 @@
     </div>
 
     <!-- DASHBOARD NEW USER-->
-    <div *ngIf="user && !isNewUser">
+    <div *ngIf="user && isNewUser">
       <!-- HEADER -->
-      <div class="mb-4 mt-4">
+      <div class="card border-0 shadow-sm p-3 mb-4">
         <h3>Welcome, {{ user.fullName }} 👋</h3>
         <p class="text-muted mb-0">
           Track meals, monitor progress, and explore recommendations anytime.
         </p>
-      </div>
 
-      <div class="card border-0 shadow-sm p-3 mb-4">
-        <h6>Daily Progress</h6>
+        <h6 class="mb-0 mt-3">Daily Progress</h6>
 
         <div class="progress mb-2" style="height: 8px">
           <div class="progress-bar" style="width: 0%"></div>
@@ -124,6 +122,114 @@
       <div class="text-muted small mb-3">
         💡 Tip: Logging meals regularly improves accuracy of your nutrition
         insights.
+      </div>
+    </div>
+    <!-- DASHBOARD EXISTING USER -->
+    <div *ngIf="user && !isNewUser">
+      <!-- HEADER -->
+      <div class="card border-0 shadow-sm p-3 mb-4">
+        <h3>Good to see you back, {{ user.fullName }} 👋</h3>
+        <p class="text-muted mb-0">Here is your daily overview.</p>
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0 mt-3">Daily Progress</h6>
+          <p class="text-muted fs-3">{{ progressBar }}%</p>
+        </div>
+
+        <div class="progress mb-2" style="height: 8px">
+          <div class="progress-bar" [style.width.%]="progressBar"></div>
+        </div>
+      </div>
+
+      <!-- QUICK STATS -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <small class="text-muted">Calories Today</small>
+            <h5 class="mb-0">
+              {{ dailyGoal?.caloriesDone }} / {{ generalGoal?.calorieGoal }}
+            </h5>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <small class="text-muted">Meals Logged</small>
+            <h5 class="mb-0">{{ meals.length }}</h5>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <small class="text-muted">Water</small>
+            <h5 class="mb-0">
+              {{ dailyGoal?.waterDone }} / {{ generalGoal?.waterGoal }} l
+            </h5>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="card border-0 shadow-sm p-3 text-center">
+            <small class="text-muted">Goal</small>
+            <h5 class="mb-0">{{ generalGoal?.weightTarget }} kg</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+            <h5>Log a meal</h5>
+            <p class="text-muted small">
+              Add what you eat and track your nutrition instantly.
+            </p>
+
+            <div class="mt-auto">
+              <button
+                class="btn btn-fitbite text-white w-100"
+                (click)="navigateToAddMeal()"
+              >
+                Add Meal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+            <h5>Update goals</h5>
+            <p class="text-muted small">
+              Adjust your daily calorie and water targets.
+            </p>
+
+            <div class="mt-auto">
+              <button
+                class="btn btn-outline-fitbite w-100"
+                (click)="openGoalModal()"
+              >
+                Edit Goal
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT MEALS -->
+      <div class="card border-0 shadow-sm p-3 mb-4">
+        <h6 class="mb-3">Today’s Meals</h6>
+
+        <div *ngIf="meals.length === 0" class="text-muted small">
+          No meals logged today.
+        </div>
+
+        <div *ngFor="let meal of meals" class="mb-2">
+          <div class="d-flex justify-content-between">
+            <strong>{{ meal.mealType }}</strong>
+            <small class="text-muted">{{ meal.totalCalories }} kcal</small>
+          </div>
+          <small class="text-muted">{{ meal.description }}</small>
+        </div>
       </div>
     </div>
   </div>

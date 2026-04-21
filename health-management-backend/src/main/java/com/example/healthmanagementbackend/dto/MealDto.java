@@ -13,6 +13,7 @@ public class MealDto {
     private MealType mealType;
     private String description;
     private LocalDate date;
+    NutritionDto nutrition;
     private double totalCalories;
     private List<MealItemDto> items;
 }

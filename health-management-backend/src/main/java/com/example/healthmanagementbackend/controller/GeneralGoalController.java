@@ -3,11 +3,11 @@ package com.example.healthmanagementbackend.controller;
 import com.example.healthmanagementbackend.dto.UpdateGeneralGoalForUserRequest;
 import com.example.healthmanagementbackend.model.GeneralGoal;
 import com.example.healthmanagementbackend.service.GeneralGoalService;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +38,7 @@ public class GeneralGoalController {
             GeneralGoal generalGoal = generalGoalService.addGeneralGoal(request.getUserId(),
                     request.getCalorieGoal(), request.getWaterGoal(), request.getWeightTarget());
 
-            return new ResponseEntity<>(generalGoal, alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
+            return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -59,7 +59,7 @@ public class GeneralGoalController {
     public ResponseEntity<Object> getGeneralGoalByUserId(@PathVariable("userId") UUID userId) {
         try {
             GeneralGoal generalGoal = generalGoalService.getGeneralGoalByUserId(userId);
-            return new ResponseEntity<>(generalGoal, HttpStatus.OK);
+            return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -69,7 +69,7 @@ public class GeneralGoalController {
     public ResponseEntity<Object> getGeneralGoalById(@PathVariable("id") UUID id) {
         try {
             GeneralGoal generalGoal = generalGoalService.getGeneralGoalById(id);
-            return new ResponseEntity<>(generalGoal, HttpStatus.OK);
+            return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -111,41 +111,38 @@ public class GeneralGoalController {
                         "message", e.getMessage()));
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class UpdateGeneralGoalRequest {
+    private GeneralGoalDto mapToGeneralGoalDto(GeneralGoal generalGoal) {
+        return GeneralGoalDto.builder()
+                .id(generalGoal.getId())
+                .calorieGoal(generalGoal.getCalorieGoal())
+                .waterGoal(generalGoal.getWaterGoal())
+                .weightTarget(generalGoal.getWeightTarget()).build();
+    }
 
-        @NotBlank(message = "General goal id must not be blank")
-        private UUID generalGoalId;
-
-        @NotBlank(message = "Calorie goal must not be blank")
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter @Builder
+    public static class GeneralGoalDto {
+        private UUID id;
         private int calorieGoal;
-
-        @NotBlank(message = "Water goal must not be blank")
         private int waterGoal;
-
-        @NotBlank(message = "Weight target must not be blank")
         private int weightTarget;
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class GeneralGoalRequest {
-
-        @NotBlank(message = "User id must not be blank")
-        private UUID userId;
-
-        @NotBlank(message = "Calorie goal must not be blank")
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class UpdateGeneralGoalRequest {
+        private UUID generalGoalId;
         private int calorieGoal;
-
-        @NotBlank(message = "Water goal must not be blank")
         private int waterGoal;
+        private int weightTarget;
+    }
 
-        @NotBlank(message = "Weight target must not be blank")
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class GeneralGoalRequest {
+        private UUID userId;
+        private int calorieGoal;
+        private int waterGoal;
         private int weightTarget;
     }
 
