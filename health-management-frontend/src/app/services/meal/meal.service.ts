@@ -7,6 +7,8 @@ import { IMealRequest } from '../../dtos/meal/IMealRequest';
 import { IMealUpdateRequest } from '../../dtos/meal/IMealUpdateRequest';
 import { IMeal } from '../../dtos/meal/IMeal';
 import { MealType } from '../../dtos/enums/MealType';
+import { INutrition } from '../../dtos/meal/INutrition';
+import { IMealItem } from '../../dtos/meal/IMealItem';
 
 @Injectable({
   providedIn: 'root',
@@ -46,5 +48,11 @@ export class MealService {
 
   deleteMeal(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  analyzeMeal(description: string): Observable<any> {
+    const params = new HttpParams().set('description', description);
+
+    return this.http.post(`${this.baseUrl}/analyze`, null, { params });
   }
 }

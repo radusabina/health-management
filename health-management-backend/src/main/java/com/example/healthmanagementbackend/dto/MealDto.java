@@ -14,6 +14,5 @@ public class MealDto {
     private String description;
     private LocalDate date;
     private double totalCalories;
-    private NutritionDto nutritions;
     private List<MealItemDto> items;
 }

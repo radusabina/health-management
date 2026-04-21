@@ -7,6 +7,7 @@ import { MealService } from '../services/meal/meal.service';
 import { GeneralGoalService } from '../services/general-goal/general-goal.service';
 import { AddGeneralGoalComponent } from '../add-general-goal/add-general-goal.component';
 import { IMeal } from '../dtos/meal/IMeal';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +24,7 @@ export class DashboardComponent implements OnInit {
   showGoalModal = false;
 
   constructor(
+    private router: Router,
     private authService: AuthService,
     private userService: UserService,
     private mealService: MealService,
@@ -124,5 +126,9 @@ export class DashboardComponent implements OnInit {
         console.error('refreshDashboard failed:', err);
       },
     });
+  }
+
+  navigateToAddMeal(): void {
+    this.router.navigate(['/addMeal']);
   }
 }

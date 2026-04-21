@@ -102,6 +102,16 @@ public class MealController {
         }
     }
 
+    @PostMapping("/analyze")
+    public ResponseEntity<Object> analyze(@RequestParam String description) {
+        try{
+            MealDto meal = mealService.analyzeMeal(description);
+            return ResponseEntity.ok(meal);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
     private static ResponseEntity<Object> handleException(Exception e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

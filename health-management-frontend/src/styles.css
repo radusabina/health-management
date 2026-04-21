@@ -5,6 +5,7 @@
   --fitbite-secondary: #1f4d2a;
   --fitbite-primary-hover: #456f57;
   --fitbite-on-primary: #05582a;
+  --fitlite-link: #0e5230;
 }
 
 .form-control:focus {
@@ -79,4 +80,12 @@
   opacity: 1;
 
   transition: opacity 0.8s ease;
+}
+
+.btn-link {
+  color: var(--fitlite-link);
+}
+
+.btn-link:hover {
+  color: var(--fitbite-secondary);
 }

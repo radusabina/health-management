@@ -1,4 +1,17 @@
 /* Center the description card when there are no items and manual mode is off */
+
+:host {
+  display: block;
+  background-image: url("/assets/bg-desktop.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* @media (max-width: 768px) {
+  body {
+    background-image: url("bg-mobile.jpg");
+  }
+} */
 .centered-card {
   max-width: 720px;
   margin-left: auto;
@@ -40,5 +53,33 @@
   .manual-row .items-col,
   .manual-row .summary-col {
     border-right: none;
+  }
+}
+
+.logo-responsive {
+  width: 120px; /* mobile default */
+  height: auto;
+}
+
+@media (min-width: 576px) {
+  .logo-responsive {
+    width: 150px;
+  }
+}
+
+@media (min-width: 992px) {
+  .logo-responsive {
+    width: 180px;
+  }
+}
+
+.title-meal {
+  font-size: 2.2rem; /* desktop */
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .title-meal {
+    font-size: 1.6rem;
   }
 }

@@ -101,6 +101,7 @@ public class CalorieNinjasClient {
                 .carbohydratesTotalG(firstItem.getCarbohydratesTotalG() * factor)
                 .build();
 
+        LOGGER.info("CalorieNinjas returned " + foodItem.getName());
         return foodItemRepository.save(foodItem);
     }
 

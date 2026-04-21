@@ -3,7 +3,6 @@ package com.example.healthmanagementbackend.service;
 import com.example.healthmanagementbackend.apininjas.CalorieNinjasClient;
 import com.example.healthmanagementbackend.dto.MealDto;
 import com.example.healthmanagementbackend.dto.MealItemDto;
-import com.example.healthmanagementbackend.dto.NutritionDto;
 import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
 import com.example.healthmanagementbackend.exception.NoMealFoundException;
@@ -60,6 +59,15 @@ public class MealService {
 
         meal = mealRepository.save(meal);
 
+        setMealItems(itemsInMeal, meal);
+
+        meal = mealRepository.save(meal);
+
+        LOGGER.info("Operation=addMeal, Message=Meal added for userId=" + userId);
+        return meal;
+    }
+
+    private void setMealItems(List<MealItemResponse> itemsInMeal, Meal meal) {
         for (MealItemResponse item : itemsInMeal) {
             String normalizedFoodItemName = normalize(item.getName());
             FoodItem foodItem = foodItemRepository.findByNameIgnoreCase(normalizedFoodItemName)
@@ -72,11 +80,6 @@ public class MealService {
 
             meal.getItems().add(mealItem);
         }
-
-        meal = mealRepository.save(meal);
-
-        LOGGER.info("Operation=addMeal, Message=Meal added for userId=" + userId);
-        return meal;
     }
 
     public void updateMeal(UUID mealId, MealType mealType, String description) {
@@ -160,6 +163,20 @@ public class MealService {
         return true;
     }
 
+    public MealDto analyzeMeal(String description) {
+        List<MealItemResponse> itemsInMeal = calorieNinjasClient.getFoodItemsFromDescription(description);
+
+        Meal meal = Meal.builder()
+                .description(description)
+                .date(LocalDate.now())
+                .updatedAt(LocalDateTime.now()).build();
+
+        setMealItems(itemsInMeal, meal);
+
+        LOGGER.info("Operation=analyzeMeal");
+        return mapToDto(meal);
+    }
+
     private String normalize(String name) {
         return name == null ? "" :
                 name.trim().toLowerCase().replaceAll("\\s+", " ");
@@ -183,8 +200,6 @@ public class MealService {
         List<MealItemDto> itemDtos = new ArrayList<>();
 
         double totalCalories = 0;
-        double sugar = 0, fiber = 0, sodium = 0, potassium = 0,
-                fatSat = 0, cholesterol = 0, protein = 0, carbs = 0;
 
         for (MealItem item : meal.getItems()) {
             FoodItem food = item.getFoodItem();
@@ -218,34 +233,13 @@ public class MealService {
             itemDtos.add(dto);
 
             totalCalories += itemCalories;
-            sugar += itemSugar;
-            fiber += itemFiber;
-            sodium += itemSodium;
-            potassium += itemPotassium;
-            fatSat += itemFatSat;
-            cholesterol += itemCholesterol;
-            protein += itemProtein;
-            carbs += itemCarbs;
         }
-
-        NutritionDto nutritionDto = NutritionDto.builder()
-                .calories(Math.round(totalCalories))
-                .sugarG(roundDecimalCustom(sugar))
-                .fiberG(roundDecimalCustom(fiber))
-                .sodiumMg(roundDecimalCustom(sodium))
-                .potassiumMg(roundDecimalCustom(potassium))
-                .fatSaturatedG(roundDecimalCustom(fatSat))
-                .cholesterolMg(roundDecimalCustom(cholesterol))
-                .proteinG(roundDecimalCustom(protein))
-                .carbohydratesTotalG(roundDecimalCustom(carbs))
-                .build();
 
         return MealDto.builder()
                 .mealType(meal.getMealType())
                 .description(meal.getDescription())
                 .date(meal.getDate())
                 .totalCalories(Math.round(totalCalories))
-                .nutritions(nutritionDto)
                 .items(itemDtos)
                 .build();
     }
