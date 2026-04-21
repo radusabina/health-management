@@ -3,6 +3,10 @@ import { Injectable } from '@angular/core';
 import { endpointAPI } from '../../config/appconfig';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
+import { IMealRequest } from '../../dtos/meal/IMealRequest';
+import { IMealUpdateRequest } from '../../dtos/meal/IMealUpdateRequest';
+import { IMeal } from '../../dtos/meal/IMeal';
+import { MealType } from '../../dtos/enums/MealType';
 
 @Injectable({
   providedIn: 'root',
@@ -43,55 +47,4 @@ export class MealService {
   deleteMeal(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
-}
-
-export type MealType = 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'SNACK';
-
-export interface IMealRequest {
-  userId: string;
-  mealType: MealType;
-  description: string;
-}
-
-export interface IMealUpdateRequest {
-  mealId: string;
-  mealType: MealType;
-  description: string;
-}
-
-export interface IMeal {
-  mealType: MealType;
-  description: string;
-  date: string;
-  totalCalories: number;
-
-  nutritions: INutrition;
-  items: IMealItem[];
-}
-
-export interface INutrition {
-  sugarG: number;
-  fiberG: number;
-  sodiumMg: number;
-  potassiumMg: number;
-  fatSaturatedG: number;
-  calories: number;
-  cholesterolMg: number;
-  proteinG: number;
-  carbohydratesTotalG: number;
-}
-
-export interface IMealItem {
-  name: string;
-  quantityGrams: number;
-  nutrition: INutrition;
-  sugarG: number;
-  fiberG: number;
-  sodiumMg: number;
-  potassiumMg: number;
-  fatSaturatedG: number;
-  calories: number;
-  cholesterolMg: number;
-  proteinG: number;
-  carbohydratesTotalG: number;
 }

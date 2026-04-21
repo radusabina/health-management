@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth/auth.service';
 import { IUser, UserService } from '../services/user/user.service';
-import { IMeal, MealService } from '../services/meal/meal.service';
+import { MealService } from '../services/meal/meal.service';
 import { GeneralGoalService } from '../services/general-goal/general-goal.service';
 import { AddGeneralGoalComponent } from '../add-general-goal/add-general-goal.component';
+import { IMeal } from '../dtos/meal/IMeal';
 
 @Component({
   selector: 'app-dashboard',

@@ -87,11 +87,11 @@ public class UserService {
     public boolean deleteUser(UUID userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            LOGGER.info("User not found");
+            LOGGER.info("Operation=deleteUser, Message=User not found, userId=" + userId);
             return false;
         }
         userRepository.delete(user);
-        LOGGER.info("User with id " + userId + " deleted");
+        LOGGER.info("Operation=deleteUser, Message=User deleted with userId=" + userId);
         return true;
     }
 

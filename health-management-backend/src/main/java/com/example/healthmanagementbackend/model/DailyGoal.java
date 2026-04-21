@@ -38,16 +38,20 @@ public class DailyGoal {
     private UUID id;
 
     @Column(name = "date")
-    private LocalDate date;
+    @Builder.Default
+    private LocalDate date = LocalDate.now();
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @Column(name = "calories_done")
-    private int caloriesDone;
+    @Column(name = "calories_done", columnDefinition = "int default 0")
+    @Builder.Default
+    private int caloriesDone = 0;
 
-    @Column(name = "water_done")
-    private int waterDone;
+    @Column(name = "water_done", columnDefinition = "int default 0")
+    @Builder.Default
+    private int waterDone = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

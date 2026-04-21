@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -27,6 +34,25 @@ export class AddGeneralGoalComponent {
 
   onSave(): void {
     console.log('AddGeneralGoalComponent: onSave called', this.goal);
-    this.save.emit(this.goal);
+    this.save.emit({ ...this.goal });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const isOpenChange = changes['isOpen'];
+    if (
+      isOpenChange &&
+      isOpenChange.previousValue === true &&
+      isOpenChange.currentValue === false
+    ) {
+      this.resetForm();
+    }
+  }
+
+  private resetForm(): void {
+    this.goal = {
+      calorieGoal: null,
+      waterGoal: null,
+      weightTarget: null,
+    };
   }
 }

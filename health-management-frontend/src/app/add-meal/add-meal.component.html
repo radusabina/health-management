@@ -1,0 +1,126 @@
+<div class="container py-4 d-flex justify-content-center">
+  <div class="w-100" style="max-width: 900px">
+    <!-- ========================= -->
+    <!-- STATE 1: SIMPLE CENTER UI -->
+    <!-- ========================= -->
+    <div *ngIf="!manualMode" class="text-center">
+      <h4 class="mb-2">Add Meal</h4>
+
+      <p class="text-muted mb-4">Describe your meal or add items manually.</p>
+
+      <!-- Meal Type -->
+      <div class="mb-3 text-start">
+        <label class="form-label">Meal Type</label>
+        <select class="form-select" [(ngModel)]="mealType">
+          <option value="" disabled selected>Select meal type</option>
+          <option *ngFor="let type of mealTypes" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3 text-start">
+        <label class="form-label">What did you eat?</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          [(ngModel)]="description"
+          placeholder="e.g. chicken 200g, rice 100g"
+        ></textarea>
+      </div>
+
+      <!-- Analyze -->
+      <button class="btn btn-fitbite text-white w-100 mb-3">
+        Analyze meal
+      </button>
+
+      <!-- LINK -->
+      <button class="btn btn-link p-0" (click)="enableManualMode()">
+        Add items manually
+      </button>
+    </div>
+
+    <!-- ========================= -->
+    <!-- STATE 2: MANUAL MODE -->
+    <!-- ========================= -->
+    <div *ngIf="manualMode">
+      <div class="row g-4">
+        <!-- LEFT COLUMN -->
+        <div class="col-12 col-md-5">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Meal Type</h5>
+
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              (click)="backToSimpleMode()"
+            >
+              Back
+            </button>
+          </div>
+
+          <select class="form-select" [(ngModel)]="mealType">
+            <option value="" disabled selected>Select meal type</option>
+            <option *ngFor="let type of mealTypes" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-12 col-md-7">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Meal Items</h5>
+
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              (click)="addItem()"
+            >
+              + Add item
+            </button>
+          </div>
+
+          <div *ngFor="let item of items; let i = index" class="row g-2 mb-2">
+            <div class="col-5">
+              <input
+                class="form-control"
+                placeholder="Food"
+                [(ngModel)]="item.name"
+              />
+            </div>
+
+            <div class="col-3">
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Qty"
+                [(ngModel)]="item.quantity"
+              />
+            </div>
+
+            <div class="col-2">
+              <input
+                class="form-control"
+                placeholder="unit"
+                [(ngModel)]="item.unit"
+              />
+            </div>
+
+            <div class="col-2">
+              <button
+                class="btn btn-outline-danger w-100"
+                (click)="removeItem(i)"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="items.length === 0" class="text-muted small">
+            No items yet.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

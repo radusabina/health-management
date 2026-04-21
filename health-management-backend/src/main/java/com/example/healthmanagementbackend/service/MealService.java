@@ -75,7 +75,7 @@ public class MealService {
 
         meal = mealRepository.save(meal);
 
-        LOGGER.info("operation=addMeal, meal added for userId=" + userId);
+        LOGGER.info("Operation=addMeal, Message=Meal added for userId=" + userId);
         return meal;
     }
 
@@ -106,13 +106,13 @@ public class MealService {
         }
 
         mealRepository.save(meal);
-        LOGGER.info("operation=updateMeal, meal updated for userId=" + meal.getUser().getId());
+        LOGGER.info("Operation=updateMeal, Message=Meal updated for userId=" + meal.getUser().getId());
     }
 
     public List<MealDto> getMealsForUser(UUID userId) {
         userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("No user found"));
         List<Meal> meals = mealRepository.getMealsByUserId(userId);
-        LOGGER.info("operation=getMealsForUser, meals size: " + meals.size() + ",userId=" + userId);
+        LOGGER.info("Operation=getMealsForUser, Message=Meals size: " + meals.size() + ", userId=" + userId);
 
         return meals.stream()
                 .map(this::mapToDto)
@@ -122,7 +122,7 @@ public class MealService {
     public List<MealDto> getMealsForUserByType(UUID userId, MealType mealType) {
         userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("No user found"));
         List<Meal> meals = mealRepository.getMealsByUserIdAndMealType(userId, mealType);
-        LOGGER.info("operation=getMealsForUserByType, meals size: " + meals.size() + ",userId=" + userId);
+        LOGGER.info("Operation=getMealsForUserByType, Message=Meals size: " + meals.size() + ", userId=" + userId);
 
         return meals.stream()
                 .map(this::mapToDto)
@@ -132,7 +132,7 @@ public class MealService {
     public List<MealDto> getTodayMealsForUser(UUID userId) {
         userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("No user found"));
         List<Meal> meals = mealRepository.getMealsByUserIdAndDate(userId, LocalDate.now());
-        LOGGER.info("operation=getTodayMealsForUser, meals size: " + meals.size() + ",userId=" + userId);
+        LOGGER.info("Operation=getTodayMealsForUser, Message=Meals size: " + meals.size() + ", userId=" + userId);
 
         return meals.stream()
                 .map(this::mapToDto)
@@ -142,7 +142,7 @@ public class MealService {
     public MealDto getMealById(UUID mealId) {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new NoMealFoundException("No meal found"));
-        LOGGER.info("operation=getMealById, mealId=" + mealId);
+        LOGGER.info("Operation=getMealById, MealId=" + mealId);
 
         return mapToDto(meal);
     }
@@ -150,11 +150,12 @@ public class MealService {
     @Transactional
     public boolean deleteMeal(UUID mealId) {
         if (!mealRepository.existsById(mealId)) {
+            LOGGER.info("Operation=deleteMeal, Message=Meal not found, MealId=" + mealId);
             return false;
         }
 
         mealRepository.deleteById(mealId);
-        LOGGER.info("operation=deleteMeal, mealId=" + mealId);
+        LOGGER.info("Operation=deleteMeal, mealId=" + mealId);
 
         return true;
     }

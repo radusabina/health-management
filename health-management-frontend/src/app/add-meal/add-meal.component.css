@@ -1,0 +1,44 @@
+/* Center the description card when there are no items and manual mode is off */
+.centered-card {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+}
+
+/* Title + logo */
+.title-row .app-logo {
+  height: 36px;
+  width: auto;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+}
+
+/* Manual mode two-column adjustments */
+.manual-row .items-col {
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.manual-row .summary-col {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Make inputs in the centered state a bit larger visually */
+.centered-card textarea.form-control {
+  min-height: 80px;
+}
+
+@media (max-width: 767px) {
+  .manual-row .items-col,
+  .manual-row .summary-col {
+    border-right: none;
+  }
+}
