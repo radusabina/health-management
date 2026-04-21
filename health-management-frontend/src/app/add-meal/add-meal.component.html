@@ -1,202 +1,82 @@
-<div class="bg-fitbite">
-  <div class="container py-4 d-flex justify-content-center">
-    <div class="w-100" style="max-width: 900px">
-      <!-- STATE 1: SIMPLE CENTER UI -->
+<div
+  class="bg-fitbite d-flex align-items-center justify-content-center"
+  style="min-height: 100vh"
+>
+  <div class="container py-4">
+    <div class="w-100 mx-auto" style="max-width: 900px">
+      <!-- STATE 1 -->
       <div
-        *ngIf="!manualMode && analyzedMode"
-        class="d-flex justify-content-center align-items-center"
-        style="min-height: 70vh"
+        *ngIf="!manualMode && !analyzedMode"
+        class="d-flex justify-content-center"
       >
-        <div class="w-100" style="max-width: 520px">
-          <!-- HEADER -->
+        <div style="max-width: 520px; width: 100%">
           <div class="d-flex align-items-center mb-3">
-            <img
-              src="assets/fitbite.png"
-              alt="logo"
-              class="me-2 logo-responsive"
-            />
+            <img src="assets/fitbite.png" class="me-2 logo-responsive" />
 
             <div class="text-start ms-3">
               <h1 class="mb-0 title-meal">Add Meal</h1>
-
               <small class="text-muted d-block fs-6">
                 Describe your meal or add items manually.
               </small>
             </div>
           </div>
 
-          <!-- Description -->
-          <div class="mb-3 text-start">
-            <label class="form-label text-muted">What did you eat?</label>
-            <textarea
-              class="form-control"
-              rows="3"
-              [(ngModel)]="description"
-              placeholder="e.g. chicken 200g, rice 100g"
-            ></textarea>
-          </div>
+          <textarea
+            class="form-control mb-3"
+            rows="3"
+            [(ngModel)]="description"
+            placeholder="e.g. chicken 200g, rice 100g"
+          ></textarea>
 
-          <!-- Primary action -->
           <button
             class="btn btn-fitbite text-white w-100 mb-2"
             (click)="analyzeMeal()"
             [disabled]="isAnalyzing"
           >
             <span *ngIf="!isAnalyzing">Analyze meal</span>
-
-            <span *ngIf="isAnalyzing">
-              Analyzing...
-              <span class="spinner-border spinner-border-sm ms-2"></span>
-            </span>
+            <span *ngIf="isAnalyzing">Analyzing...</span>
           </button>
 
-          <!-- Secondary action -->
-          <button
-            class="btn btn-link w-100 p-0 text-decoration-none"
-            (click)="enableManualMode()"
-          >
+          <button class="btn btn-link w-100 p-0" (click)="enableManualMode()">
             Add items manually
           </button>
         </div>
       </div>
 
-      <!-- STATE 2: MANUAL MODE -->
-      <div *ngIf="manualMode">
-        <div class="row g-4">
-          <!-- LEFT COLUMN -->
-          <div class="col-12 col-md-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 class="mb-0">Meal Type</h5>
+      <div
+        *ngIf="manualMode || analyzedMode"
+        class="d-flex justify-content-center"
+      >
+        <div class="w-100" style="max-width: 900px">
+          <div class="row g-4">
+            <!-- Left column -->
+            <div class="col-12 col-md-5">
+              <h5 class="mb-3">Meal</h5>
 
-              <button
-                class="btn btn-sm btn-outline-secondary"
-                (click)="backToStep1()"
-              >
-                Back
-              </button>
-            </div>
+              <label class="form-label text-muted">Meal Type</label>
+              <select class="form-select" [(ngModel)]="mealType">
+                <option value="" disabled>Select meal type</option>
+                <option *ngFor="let type of mealTypes" [value]="type">
+                  {{ type }}
+                </option>
+              </select>
 
-            <select class="form-select" [(ngModel)]="mealType">
-              <option value="" disabled selected>Select meal type</option>
-              <option *ngFor="let type of mealTypes" [value]="type">
-                {{ type }}
-              </option>
-            </select>
-          </div>
-
-          <!-- RIGHT COLUMN -->
-          <!-- RIGHT -->
-          <div class="col-12 col-md-7">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h5 class="mb-0">Detected Items</h5>
-
-              <button
-                class="btn btn-sm btn-outline-secondary"
-                (click)="addItem()"
-                [disabled]="!canAddItem()"
-              >
-                + Add item
-              </button>
-            </div>
-
-            <p class="text-muted small mb-3">Amount is displayed in grams</p>
-
-            <!-- TABLE HEADER (only if items exist) -->
-            <div
-              *ngIf="mealItems.items.length > 0"
-              class="row small text-muted fw-semibold mb-2 px-1"
-            >
-              <div class="col-6">Name</div>
-              <div class="col-4">Quantity (g)</div>
-              <div class="col-2 text-end">Actions</div>
-            </div>
-
-            <!-- ITEMS -->
-            <div
-              *ngFor="let item of mealItems.items; let i = index"
-              class="row g-2 align-items-center mb-2"
-            >
-              <!-- NAME -->
-              <div class="col-6">
-                <input
-                  class="form-control"
-                  placeholder="Food name"
-                  [(ngModel)]="item.name"
-                />
-              </div>
-
-              <!-- QUANTITY -->
-              <div class="col-4">
-                <input
-                  type="number"
-                  class="form-control"
-                  placeholder="g"
-                  [(ngModel)]="item.quantityGrams"
-                />
-              </div>
-
-              <!-- DELETE -->
-              <div class="col-2 text-end">
+              <div class="text-center">
                 <button
-                  class="btn btn-outline-danger btn-sm"
-                  (click)="removeItem(i)"
+                  class="btn btn-link mt-3 p-0 text-decoration-underline"
+                  (click)="backToStep1()"
                 >
-                  ✕
+                  Enter a different meal description
                 </button>
               </div>
             </div>
 
-            <!-- EMPTY STATE -->
-            <div
-              *ngIf="mealItems.items.length === 0"
-              class="text-muted small text-center py-3"
-            >
-              No items detected. Click “+ Add item” to start.
-            </div>
-
-            <!-- ACTIONS -->
-            <div class="mt-3 d-grid gap-2">
-              <button class="btn btn-fitbite text-white">Confirm Meal</button>
-              <button class="btn btn-outline-secondary">Re-analyze</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- STATE 3: ANALYZED MEAL -->
-      <div
-        *ngIf="!analyzedMode"
-        class="d-flex justify-content-center align-items-center"
-        style="min-height: 70vh"
-      >
-        <div class="w-100" style="max-width: 900px">
-          <div class="row g-4 align-items-start">
-            <!-- LEFT -->
-            <div class="col-12 col-md-5">
-              <div class="mb-3 text-start">
-                <label class="form-label text-muted">Meal Type</label>
-                <select class="form-select" [(ngModel)]="mealType">
-                  <option value="" disabled>Select meal type</option>
-                  <option *ngFor="let type of mealTypes" [value]="type">
-                    {{ type }}
-                  </option>
-                </select>
-              </div>
-
-              <button
-                class="btn btn-link w-100 p-0 text-decoration-underline text-center"
-                (click)="backToStep1()"
-              >
-                Enter another description
-              </button>
-            </div>
-
-            <!-- RIGHT -->
-            <div class="col-12 col-md-7">
+            <!-- Right column -->
+            <div class="col-12 col-md-7 d-flex flex-column">
               <div
-                class="d-flex justify-content-between align-items-center mb-1"
+                class="d-flex justify-content-between align-items-center mb-2"
               >
-                <h5 class="mb-0">Detected Items</h5>
+                <h5 class="mb-0">Items</h5>
 
                 <button
                   class="btn btn-sm btn-outline-secondary"
@@ -207,41 +87,52 @@
                 </button>
               </div>
 
-              <p class="text-muted small mb-3">Amount is displayed in grams</p>
-
-              <!-- TABLE HEADER -->
+              <!-- header -->
               <div
                 *ngIf="mealItems.items.length > 0"
-                class="row small text-muted fw-semibold mb-2 px-1"
+                class="row small text-muted fw-semibold mb-2"
               >
                 <div class="col-6">Name</div>
-                <div class="col-4">Quantity (g)</div>
-                <div class="col-2 text-end">Actions</div>
+                <div class="col-4">Quantity</div>
               </div>
 
+              <!-- items list -->
               <div
-                *ngFor="let item of mealItems.items; let i = index"
-                class="card border-0 shadow-sm p-3 mb-2"
+                class="d-flex flex-column"
+                style="
+                  max-height: 320px;
+                  height: 320px;
+                  overflow-y: auto;
+                  overflow-x: hidden;
+                  width: 100%;
+                "
               >
-                <div class="row g-2 align-items-center">
+                <div
+                  *ngFor="let item of mealItems.items; let i = index"
+                  class="row g-2 align-items-center mb-2 w-100"
+                  style="min-width: 0"
+                >
+                  <!-- name -->
                   <div class="col-6">
                     <input
-                      class="form-control"
-                      placeholder="Food name"
+                      class="form-control w-100"
                       [(ngModel)]="item.name"
+                      placeholder="Food name"
                     />
                   </div>
 
+                  <!-- quantity -->
                   <div class="col-4">
                     <input
+                      class="form-control w-100"
                       type="number"
-                      class="form-control"
-                      placeholder="g"
                       [(ngModel)]="item.quantityGrams"
+                      placeholder="g"
                     />
                   </div>
 
-                  <div class="col-2 text-end">
+                  <!-- DELETE -->
+                  <div class="col-2 d-flex justify-content-end">
                     <button
                       class="btn btn-outline-danger btn-sm"
                       (click)="removeItem(i)"
@@ -254,14 +145,13 @@
 
               <div
                 *ngIf="mealItems.items.length === 0"
-                class="text-muted small"
+                class="text-muted small text-center py-3"
               >
-                No items detected.
+                No items yet
               </div>
 
               <div class="mt-3 d-grid gap-2">
                 <button class="btn btn-fitbite text-white">Confirm Meal</button>
-                <button class="btn btn-outline-secondary">Re-analyze</button>
               </div>
             </div>
           </div>
