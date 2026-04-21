@@ -8,7 +8,7 @@
     <!-- DASHBOARD NEW USER-->
     <div *ngIf="user && isNewUser">
       <!-- HEADER -->
-      <div class="card border-0 shadow-sm p-3 mb-4">
+      <div class="card content-card border-0 shadow-sm p-3 mb-4">
         <h3>Welcome, {{ user.fullName }} 👋</h3>
         <p class="text-muted mb-0">
           Track meals, monitor progress, and explore recommendations anytime.
@@ -27,21 +27,21 @@
       <!-- QUICK STATS -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm p-3 text-center">
+          <div class="card content-card shadow-sm p-3 text-center">
             <small class="text-muted">Calories Today</small>
             <h5 class="mb-0">0</h5>
           </div>
         </div>
 
         <div class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm p-3 text-center">
+          <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Meals Logged</small>
             <h5 class="mb-0">0</h5>
           </div>
         </div>
 
         <div class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm p-3 text-center">
+          <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Goal Progress</small>
             <h5 class="mb-0">0%</h5>
           </div>
@@ -55,7 +55,9 @@
       <!-- ACTIONS (EQUAL IMPORTANCE) -->
       <div class="row g-3 mb-4">
         <div class="col-12 col-md-4">
-          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+          <div
+            class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
+          >
             <h5>Personalize your plan</h5>
 
             <p class="text-muted small">
@@ -76,7 +78,9 @@
         </div>
 
         <div class="col-12 col-md-4">
-          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+          <div
+            class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
+          >
             <h5>Log a meal</h5>
 
             <p class="text-muted small">
@@ -95,7 +99,9 @@
         </div>
 
         <div class="col-12 col-md-4">
-          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+          <div
+            class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
+          >
             <h5>Recommendations</h5>
 
             <p class="text-muted small">
@@ -110,7 +116,7 @@
       </div>
 
       <!-- RECENT MEALS -->
-      <div class="card border-0 shadow-sm p-3 mb-4">
+      <div class="card content-card border-0 shadow-sm p-3 mb-4">
         <h6 class="mb-3">Today’s Meals</h6>
 
         <div class="text-muted small">
@@ -127,7 +133,7 @@
     <!-- DASHBOARD EXISTING USER -->
     <div *ngIf="user && !isNewUser">
       <!-- HEADER -->
-      <div class="card border-0 shadow-sm p-3 mb-4">
+      <div class="card content-card border-0 shadow-sm p-3 mb-4">
         <h3>Good to see you back, {{ user.fullName }} 👋</h3>
         <p class="text-muted mb-0">Here is your daily overview.</p>
 
@@ -144,7 +150,7 @@
       <!-- QUICK STATS -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm p-3 text-center">
+          <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Calories Today</small>
             <h5 class="mb-0">
               {{ dailyGoal?.caloriesDone }} / {{ generalGoal?.calorieGoal }}
@@ -153,14 +159,14 @@
         </div>
 
         <div class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm p-3 text-center">
+          <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Meals Logged</small>
             <h5 class="mb-0">{{ meals.length }}</h5>
           </div>
         </div>
 
         <div class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm p-3 text-center">
+          <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Water</small>
             <h5 class="mb-0">
               {{ dailyGoal?.waterDone }} / {{ generalGoal?.waterGoal }} l
@@ -169,7 +175,7 @@
         </div>
 
         <div class="col-6 col-md-3">
-          <div class="card border-0 shadow-sm p-3 text-center">
+          <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Goal</small>
             <h5 class="mb-0">{{ generalGoal?.weightTarget }} kg</h5>
           </div>
@@ -179,7 +185,9 @@
       <!-- ACTIONS -->
       <div class="row g-3 mb-4">
         <div class="col-12 col-md-6">
-          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+          <div
+            class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
+          >
             <h5>Log a meal</h5>
             <p class="text-muted small">
               Add what you eat and track your nutrition instantly.
@@ -197,7 +205,9 @@
         </div>
 
         <div class="col-12 col-md-6">
-          <div class="card border-0 shadow-sm p-4 h-100 d-flex flex-column">
+          <div
+            class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
+          >
             <h5>Update goals</h5>
             <p class="text-muted small">
               Adjust your daily calorie and water targets.
@@ -216,7 +226,7 @@
       </div>
 
       <!-- RECENT MEALS -->
-      <div class="card border-0 shadow-sm p-3 mb-4">
+      <div class="card content-card border-0 shadow-sm p-3 mb-4">
         <h6 class="mb-3">Today’s Meals</h6>
 
         <div *ngIf="meals.length === 0" class="text-muted small">

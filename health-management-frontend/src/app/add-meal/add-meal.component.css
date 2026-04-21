@@ -1,5 +1,12 @@
 /* Center the description card when there are no items and manual mode is off */
 
+:host {
+  display: block;
+  background-image: url("/assets/bg-desktop.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 /* @media (max-width: 768px) {
   body {
     background-image: url("bg-mobile.jpg");

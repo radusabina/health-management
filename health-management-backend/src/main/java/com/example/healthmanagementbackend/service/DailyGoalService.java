@@ -38,7 +38,7 @@ public class DailyGoalService {
         this.userRepository = userRepository;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?", zone = "Europe/Bucharest")
     public void resetDailyGoals() {
         List<DailyGoal> yesterdayGoals = dailyGoalRepository.findByDate(LocalDate.now().minusDays(1));
         LocalDate today = LocalDate.now();
