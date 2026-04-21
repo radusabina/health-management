@@ -83,3 +83,11 @@
     font-size: 1.6rem;
   }
 }
+
+.content-card {
+  max-width: 900px;
+  background: #ffffffee;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}

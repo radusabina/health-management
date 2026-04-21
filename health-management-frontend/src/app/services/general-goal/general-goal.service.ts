@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { endpointAPI } from '../../config/appconfig';
+import { IGeneralGoalRequest } from '../../dtos/general-goal/IGeneralGoalRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -14,11 +15,4 @@ export class GeneralGoalService {
   addGeneralGoal(request: IGeneralGoalRequest): Observable<any> {
     return this.http.post<any>(this.baseUrl, request);
   }
-}
-
-export interface IGeneralGoalRequest {
-  userId: string;
-  calorieGoal: number;
-  waterGoal: number;
-  weightTarget: number;
 }

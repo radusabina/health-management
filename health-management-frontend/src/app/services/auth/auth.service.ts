@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { endpointAPI } from '../../config/appconfig';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { filter, take, map, tap, finalize, catchError } from 'rxjs/operators';
-import { IUser } from '../user/user.service';
+import { IUserLogin } from '../../dtos/user/IUserLogin';
+import { IUserLoginResponse } from '../../dtos/user/IUserLoginResponse';
+import { IUserRegister } from '../../dtos/user/IUserRegister';
 
 @Injectable({
   providedIn: 'root',
@@ -146,25 +148,4 @@ export class AuthService {
         }),
       );
   }
-}
-
-export interface IUserLogin {
-  email: string;
-  password: string;
-}
-
-export interface IUserLoginResponse {
-  user: IUser;
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface IUserRegister {
-  email: string;
-  password: string;
-  fullName: string;
-  age: number | null;
-  gender: 'MALE' | 'FEMALE' | 'OTHER' | string;
-  weightKg: number | null;
-  heightCm: number | null;
 }

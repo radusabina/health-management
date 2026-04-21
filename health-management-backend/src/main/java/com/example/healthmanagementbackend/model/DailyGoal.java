@@ -43,6 +43,7 @@ public class DailyGoal {
 
     @Column(name = "updated_at")
     @Builder.Default
+    @JsonIgnore
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Column(name = "calories_done", columnDefinition = "int default 0")

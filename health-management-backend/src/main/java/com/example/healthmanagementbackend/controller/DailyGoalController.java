@@ -3,6 +3,11 @@ package com.example.healthmanagementbackend.controller;
 import com.example.healthmanagementbackend.exception.NoDailyGoalFoundException;
 import com.example.healthmanagementbackend.model.DailyGoal;
 import com.example.healthmanagementbackend.service.DailyGoalService;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/daily-goal")
@@ -46,7 +52,7 @@ public class DailyGoalController {
                     req.generalGoalId(),
                     requestedDate
             );
-            return new ResponseEntity<>(dailyGoal, alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
+            return new ResponseEntity<>(mapToDailyGoalDto(dailyGoal), alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -56,7 +62,7 @@ public class DailyGoalController {
     public ResponseEntity<Object> getDailyGoalById(@PathVariable("id") UUID id) {
         try {
             DailyGoal dailyGoal = dailyGoalService.getDailyGoalById(id);
-            return new ResponseEntity<>(dailyGoal, HttpStatus.OK);
+            return new ResponseEntity<>(mapToDailyGoalDto(dailyGoal), HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -66,7 +72,7 @@ public class DailyGoalController {
     public ResponseEntity<Object> getTodayDailyGoalByUserId(@PathVariable("userId") UUID userId) {
         try {
             DailyGoal dailyGoal = dailyGoalService.getTodayDailyGoalForUser(userId);
-            return new ResponseEntity<>(dailyGoal, HttpStatus.OK);
+            return new ResponseEntity<>(mapToDailyGoalDto(dailyGoal), HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -75,7 +81,8 @@ public class DailyGoalController {
     @GetMapping("/userDailyGoals/{userId}")
     public ResponseEntity<Object> getUserDailyGoals(@PathVariable("userId") UUID userId) {
         try {
-            List<DailyGoal> dailyGoals = dailyGoalService.getDailyGoalsForUser(userId);
+            List<DailyGoalDto> dailyGoals = dailyGoalService.getDailyGoalsForUser(userId).stream()
+                    .map(this::mapToDailyGoalDto).collect(Collectors.toList());
             return new ResponseEntity<>(dailyGoals, HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
@@ -86,7 +93,7 @@ public class DailyGoalController {
     public ResponseEntity<Object> update(@RequestBody UpdateDailyGoalRequest req) {
         try {
             DailyGoal dailyGoal = dailyGoalService.updateDailyGoal(req.id(), req.caloriesDone(), req.waterDone());
-            return new ResponseEntity<>(dailyGoal, HttpStatus.OK);
+            return new ResponseEntity<>(mapToDailyGoalDto(dailyGoal), HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
         }
@@ -130,9 +137,29 @@ public class DailyGoalController {
                         "message", e.getMessage()));
     }
 
+    private DailyGoalDto mapToDailyGoalDto(DailyGoal dailyGoal) {
+        return DailyGoalDto.builder()
+                .id(dailyGoal.getId())
+                .date(dailyGoal.getDate())
+                .waterDone(dailyGoal.getWaterDone())
+                .caloriesDone(dailyGoal.getCaloriesDone())
+                .generalGoalId(dailyGoal.getGeneralGoal().getId())
+                .build();
+    }
+
     public record UpdateDailyGoalRequest(UUID id, Integer caloriesDone, Integer waterDone) {
     }
 
     public record DailyGoalRequest(UUID userId, UUID generalGoalId, LocalDate date) {
+    }
+
+    @AllArgsConstructor @NoArgsConstructor
+    @Getter @Setter @Builder
+    public static class DailyGoalDto {
+        private UUID id;
+        private LocalDate date;
+        private Integer caloriesDone;
+        private Integer waterDone;
+        private UUID generalGoalId;
     }
 }
