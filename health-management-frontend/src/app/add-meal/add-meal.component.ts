@@ -28,6 +28,7 @@ export class AddMealComponent implements OnInit, OnDestroy {
   description = '';
   mealType = '';
   mealItems: IMealAnalyzed = { items: [] };
+  itemsError: boolean = false;
 
   // enums
   mealTypes: string[] = ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK'];
@@ -162,16 +163,47 @@ export class AddMealComponent implements OnInit, OnDestroy {
 
   submitMeal(form: NgForm) {
     if (!form) {
-      // fallback: just call addMeal
       this.addMeal();
       return;
     }
 
-    if (form.invalid) {
+    // Remove trailing empty items when there is at least one other valid item
+    this.pruneTrailingEmptyItems();
+
+    const validItems = this.mealItems.items.filter((it) =>
+      this.isValidItem(it),
+    );
+    if (validItems.length === 0) {
+      this.itemsError = true;
       form.form.markAllAsTouched();
       return;
     }
 
-    this.addMeal();
+    this.itemsError = false;
+
+    // Re-evaluate form validity (pruning may have removed invalid controls)
+    // If we have at least one valid item and a meal type, submit immediately.
+    if (this.mealType && validItems.length > 0) {
+      this.addMeal();
+      return;
+    }
+
+    // Otherwise, mark form controls touched so the user sees missing-field errors.
+    form.form.markAllAsTouched();
+  }
+
+  private pruneTrailingEmptyItems() {
+    // Remove trailing invalid items but keep at least one item if removing would leave zero valid items.
+    while (this.mealItems.items.length > 1) {
+      const last = this.mealItems.items[this.mealItems.items.length - 1];
+      if (this.isValidItem(last)) break;
+
+      const others = this.mealItems.items.slice(0, -1);
+      if (others.some((it) => this.isValidItem(it))) {
+        this.mealItems.items.pop();
+      } else {
+        break;
+      }
+    }
   }
 }

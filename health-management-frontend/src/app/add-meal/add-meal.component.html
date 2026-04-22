@@ -95,6 +95,10 @@
                   </button>
                 </div>
 
+                <div *ngIf="itemsError" class="text-danger small mt-1">
+                  Add at least one food item.
+                </div>
+
                 <!-- header -->
                 <div
                   *ngIf="mealItems.items.length > 0"
@@ -125,8 +129,20 @@
                       <input
                         class="form-control w-100"
                         [(ngModel)]="item.name"
+                        name="itemName{{ i }}"
+                        required
+                        #nameCtrl="ngModel"
                         placeholder="Food name"
                       />
+
+                      <div
+                        *ngIf="
+                          nameCtrl.touched && nameCtrl.invalid && !itemsError
+                        "
+                        class="text-danger small mt-1"
+                      >
+                        Enter a food name.
+                      </div>
                     </div>
 
                     <!-- quantity -->
@@ -135,8 +151,26 @@
                         class="form-control w-100"
                         type="number"
                         [(ngModel)]="item.quantityGrams"
+                        name="itemQty{{ i }}"
+                        required
+                        min="1"
+                        #qtyCtrl="ngModel"
                         placeholder="g"
                       />
+
+                      <div
+                        *ngIf="
+                          qtyCtrl.touched && qtyCtrl.invalid && !itemsError
+                        "
+                        class="text-danger small mt-1"
+                      >
+                        <div *ngIf="qtyCtrl.errors?.['required']">
+                          Enter a quantity in grams.
+                        </div>
+                        <div *ngIf="qtyCtrl.errors?.['min']">
+                          Quantity must be greater than 0.
+                        </div>
+                      </div>
                     </div>
 
                     <!-- DELETE -->
