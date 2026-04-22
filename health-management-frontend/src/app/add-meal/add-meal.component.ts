@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -157,5 +158,20 @@ export class AddMealComponent implements OnInit, OnDestroy {
         this.isSaving = false;
       },
     });
+  }
+
+  submitMeal(form: NgForm) {
+    if (!form) {
+      // fallback: just call addMeal
+      this.addMeal();
+      return;
+    }
+
+    if (form.invalid) {
+      form.form.markAllAsTouched();
+      return;
+    }
+
+    this.addMeal();
   }
 }

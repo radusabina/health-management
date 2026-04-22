@@ -42,115 +42,134 @@
 
       <div *ngIf="manualMode" class="d-flex justify-content-center">
         <div class="w-100" style="max-width: 900px">
-          <div class="row g-4">
-            <!-- Left column -->
-            <div class="col-12 col-md-5">
-              <h5 class="mb-3">Meal</h5>
+          <form #mealForm="ngForm" novalidate>
+            <div class="row g-4">
+              <!-- Left column -->
+              <div class="col-12 col-md-5">
+                <h5 class="mb-3">Meal</h5>
 
-              <label class="form-label text-muted">Meal Type</label>
-              <select class="form-select" [(ngModel)]="mealType">
-                <option value="" disabled>Select meal type</option>
-                <option *ngFor="let type of mealTypes" [value]="type">
-                  {{ type }}
-                </option>
-              </select>
-
-              <div class="text-center">
-                <button
-                  class="btn btn-link mt-3 p-0 text-decoration-underline"
-                  (click)="backToStep1()"
+                <label class="form-label text-muted">Meal Type</label>
+                <select
+                  class="form-select"
+                  [(ngModel)]="mealType"
+                  name="mealType"
+                  required
+                  #mealTypeCtrl="ngModel"
                 >
-                  Enter a different meal description
-                </button>
-              </div>
-            </div>
+                  <option value="" disabled>Select meal type</option>
+                  <option *ngFor="let type of mealTypes" [value]="type">
+                    {{ type }}
+                  </option>
+                </select>
 
-            <!-- Right column -->
-            <div class="col-12 col-md-7 d-flex flex-column">
-              <div
-                class="d-flex justify-content-between align-items-center mb-2"
-              >
-                <h5 class="mb-0">Items</h5>
-
-                <button
-                  class="btn btn-sm btn-outline-secondary"
-                  (click)="addItem()"
-                  [disabled]="!canAddItem()"
-                >
-                  + Add item
-                </button>
-              </div>
-
-              <!-- header -->
-              <div
-                *ngIf="mealItems.items.length > 0"
-                class="row small text-muted fw-semibold mb-2"
-              >
-                <div class="col-6">Name</div>
-                <div class="col-4">Quantity</div>
-              </div>
-
-              <!-- items list -->
-              <div
-                class="d-flex flex-column"
-                style="
-                  max-height: 320px;
-                  height: 320px;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                  width: 100%;
-                "
-              >
                 <div
-                  *ngFor="let item of mealItems.items; let i = index"
-                  class="row g-2 align-items-center mb-2 w-100"
-                  style="min-width: 0"
+                  *ngIf="mealTypeCtrl.touched && mealTypeCtrl.invalid"
+                  class="text-danger small mt-1"
                 >
-                  <!-- name -->
-                  <div class="col-6">
-                    <input
-                      class="form-control w-100"
-                      [(ngModel)]="item.name"
-                      placeholder="Food name"
-                    />
-                  </div>
+                  Please select a meal type.
+                </div>
 
-                  <!-- quantity -->
-                  <div class="col-4">
-                    <input
-                      class="form-control w-100"
-                      type="number"
-                      [(ngModel)]="item.quantityGrams"
-                      placeholder="g"
-                    />
-                  </div>
-
-                  <!-- DELETE -->
-                  <div class="col-2 d-flex justify-content-end">
-                    <button
-                      class="btn btn-outline-danger btn-sm"
-                      (click)="removeItem(i)"
-                    >
-                      ✕
-                    </button>
-                  </div>
+                <div class="text-center">
+                  <button
+                    class="btn btn-link mt-3 p-0 text-decoration-underline"
+                    (click)="backToStep1()"
+                  >
+                    Enter a different meal description
+                  </button>
                 </div>
               </div>
 
-              <div
-                *ngIf="mealItems.items.length === 0"
-                class="text-muted small text-center py-3"
-              >
-                No items yet
-              </div>
+              <!-- Right column -->
+              <div class="col-12 col-md-7 d-flex flex-column">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-2"
+                >
+                  <h5 class="mb-0">Items</h5>
 
-              <div class="mt-3 d-grid gap-2">
-                <button class="btn btn-fitbite text-white" (click)="addMeal()">
-                  Save Meal
-                </button>
+                  <button
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="addItem()"
+                    [disabled]="!canAddItem()"
+                  >
+                    + Add item
+                  </button>
+                </div>
+
+                <!-- header -->
+                <div
+                  *ngIf="mealItems.items.length > 0"
+                  class="row small text-muted fw-semibold mb-2"
+                >
+                  <div class="col-6">Name</div>
+                  <div class="col-4">Quantity</div>
+                </div>
+
+                <!-- items list -->
+                <div
+                  class="d-flex flex-column"
+                  style="
+                    max-height: 320px;
+                    height: 320px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    width: 100%;
+                  "
+                >
+                  <div
+                    *ngFor="let item of mealItems.items; let i = index"
+                    class="row g-2 align-items-center mb-2 w-100"
+                    style="min-width: 0"
+                  >
+                    <!-- name -->
+                    <div class="col-6">
+                      <input
+                        class="form-control w-100"
+                        [(ngModel)]="item.name"
+                        placeholder="Food name"
+                      />
+                    </div>
+
+                    <!-- quantity -->
+                    <div class="col-4">
+                      <input
+                        class="form-control w-100"
+                        type="number"
+                        [(ngModel)]="item.quantityGrams"
+                        placeholder="g"
+                      />
+                    </div>
+
+                    <!-- DELETE -->
+                    <div class="col-2 d-flex justify-content-end">
+                      <button
+                        class="btn btn-outline-danger btn-sm"
+                        (click)="removeItem(i)"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  *ngIf="mealItems.items.length === 0"
+                  class="text-muted small text-center py-3"
+                >
+                  No items yet
+                </div>
+
+                <div class="mt-3 d-grid gap-2">
+                  <button
+                    class="btn btn-fitbite text-white"
+                    (click)="submitMeal(mealForm)"
+                    [disabled]="isSaving"
+                  >
+                    Save Meal
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
