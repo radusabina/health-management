@@ -1,14 +1,20 @@
 :host {
   display: block;
+  min-height: 100vh;
+
   background-image: url("/assets/bg-desktop.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed; /* 🔥 IMPORTANT */
 }
-
 .content-card {
   background: #ffffffee;
   border-radius: 18px;
   padding: 28px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-toggle="collapse"]:hover {
+  opacity: 0.8;
 }

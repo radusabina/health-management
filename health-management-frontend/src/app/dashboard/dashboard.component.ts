@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
   meals: IMeal[] = [];
   dailyGoal: IDailyGoal | null = null;
   generalGoal: IGeneralGoal | null = null;
+  expandedMeals: Set<number> = new Set();
 
   constructor(
     private router: Router,
@@ -114,6 +115,19 @@ export class DashboardComponent implements OnInit {
     this.showGoalModal = false;
   }
 
+  // toggle meal details
+  toggleMeal(index: number): void {
+    if (this.expandedMeals.has(index)) {
+      this.expandedMeals.delete(index);
+    } else {
+      this.expandedMeals.add(index);
+    }
+  }
+
+  isExpanded(index: number): boolean {
+    return this.expandedMeals.has(index);
+  }
+
   // operations
   onGoalSave(goal: any): void {
     console.log('Saving goal:', goal);
@@ -168,5 +182,33 @@ export class DashboardComponent implements OnInit {
     const avg = (caloriesProgress + waterProgress) / 2;
 
     return Math.min(100, Math.round(avg));
+  }
+
+  getMealNutrition(meal: IMeal) {
+    return meal.items.reduce(
+      (acc, item) => {
+        acc.calories += item.calories || 0;
+        acc.protein += item.proteinG || 0;
+        acc.carbs += item.carbohydratesTotalG || 0;
+        acc.fat += item.fatSaturatedG || 0;
+        acc.sugar += item.sugarG || 0;
+        acc.fiber += item.fiberG || 0;
+        acc.sodium += item.sodiumMg || 0;
+        acc.potassium += item.potassiumMg || 0;
+        acc.cholesterol += item.cholesterolMg || 0;
+        return acc;
+      },
+      {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        sugar: 0,
+        fiber: 0,
+        sodium: 0,
+        potassium: 0,
+        cholesterol: 0,
+      },
+    );
   }
 }
