@@ -1,4 +1,23 @@
 <div class="min-vh-100 d-flex bg-fitbite">
+  <div
+    *ngIf="showWaterToast"
+    class="toast show position-fixed top-0 end-0 m-3"
+    style="z-index: 99999"
+    role="alert"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <div class="toast-header">
+      <strong class="me-auto">Success</strong>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="showWaterToast = false"
+      ></button>
+    </div>
+    <div class="toast-body">{{ toastMessage }}</div>
+  </div>
   <div class="container py-4">
     <!-- LOADING -->
     <div *ngIf="!user" class="text-center mt-5">

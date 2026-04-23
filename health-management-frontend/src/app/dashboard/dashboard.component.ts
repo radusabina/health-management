@@ -28,6 +28,8 @@ export class DashboardComponent implements OnInit {
   dailyGoal: IDailyGoal | null = null;
   generalGoal: IGeneralGoal | null = null;
   expandedMeals: Set<number> = new Set();
+  showWaterToast = false;
+  toastMessage = '';
 
   constructor(
     private router: Router,
@@ -153,6 +155,11 @@ export class DashboardComponent implements OnInit {
     this.dailyGoalService.incrementWater(this.dailyGoal!.id, amount).subscribe({
       next: () => {
         this.refreshDashboard();
+        // show success toast
+        const amountLabel = amount > 0 ? `+${amount}ml` : `${amount}ml`;
+        this.toastMessage = `Water updated ${amountLabel}`;
+        this.showWaterToast = true;
+        setTimeout(() => (this.showWaterToast = false), 3000);
       },
       error: (err: any) => {
         console.error('addWater failed:', err);
