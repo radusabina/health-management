@@ -190,49 +190,98 @@
       </div>
 
       <!-- ACTIONS -->
-      <div class="row g-3 mb-4">
-        <div class="col-12 col-md-6">
-          <div
-            class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
-          >
-            <h5>Log a meal</h5>
-            <p class="text-muted small">
-              Add what you eat and track your nutrition instantly.
-            </p>
+      <div class="row g-3 mb-4" *ngIf="generalGoal && dailyGoal">
+        <!-- LEFT: WATER QUICK ACTIONS (20%) -->
+        <div class="col-12 col-md-3">
+          <div class="card glass-card p-3 h-100">
+            <h6 class="mb-3">Water</h6>
 
-            <div class="mt-auto">
+            <div class="d-flex flex-column gap-2 align-items-center">
+              <!-- ADD -->
               <button
-                class="btn btn-fitbite text-white w-100"
-                (click)="navigateToAddMeal()"
+                class="btn btn-outline-fitbite w-75"
+                (click)="addWater(250)"
               >
-                Add Meal
+                +1 glass
+              </button>
+
+              <button
+                class="btn btn-outline-fitbite w-75"
+                (click)="addWater(500)"
+              >
+                +1 bottle
+              </button>
+
+              <button
+                class="btn btn-outline-fitbite w-75"
+                (click)="addWater(1000)"
+              >
+                +2 bottles
+              </button>
+
+              <hr class="w-75 my-2" />
+
+              <!-- REMOVE -->
+              <button
+                class="btn btn-outline-danger w-75"
+                (click)="addWater(-250)"
+              >
+                -1 glass
+              </button>
+
+              <button
+                class="btn btn-outline-danger w-75"
+                (click)="addWater(-500)"
+              >
+                -1 bottle
               </button>
             </div>
+
+            <!-- OPTIONAL CONTEXT -->
+            <div class="text-center small text-muted mt-3">1 glass = 250ml</div>
           </div>
         </div>
 
-        <div class="col-12 col-md-6">
-          <div
-            class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
-          >
-            <h5 *ngIf="generalGoal">Update goals</h5>
-            <h5 *ngIf="!generalGoal">Set general goal</h5>
-            <p class="text-muted small" *ngIf="generalGoal">
-              Adjust your daily calorie and water targets.
-            </p>
-            <p class="text-muted small" *ngIf="!generalGoal">
-              Create a general goal to enable daily progress and tracking. Add
-              your calorie and water targets to get started.
-            </p>
+        <!-- RIGHT: MAIN ACTIONS (80%) -->
+        <div class="col-12 col-md-9">
+          <div class="d-flex flex-column gap-3 h-100">
+            <!-- LOG MEAL -->
+            <div
+              class="card content-card border-0 shadow-sm p-4 d-flex flex-column flex-grow-1"
+            >
+              <h5>Log a meal</h5>
+              <p class="text-muted small">
+                Add what you eat and track your nutrition instantly.
+              </p>
 
-            <div class="mt-auto">
-              <button
-                class="btn btn-outline-fitbite w-100"
-                (click)="openGoalModal()"
-              >
-                <span *ngIf="generalGoal">Edit Goal</span>
-                <span *ngIf="!generalGoal">Set Goal</span>
-              </button>
+              <div class="mt-auto text-center">
+                <button
+                  class="btn btn-fitbite text-white w-50"
+                  (click)="navigateToAddMeal()"
+                >
+                  Add Meal
+                </button>
+              </div>
+            </div>
+
+            <!-- GOAL -->
+            <div
+              class="card content-card border-0 shadow-sm p-4 d-flex flex-column flex-grow-1"
+            >
+              <h5>Update goals</h5>
+
+              <p class="text-muted small">
+                Adjust your daily calorie and water targets.
+              </p>
+
+              <div class="mt-auto text-center">
+                <button
+                  class="btn btn-outline-fitbite w-50"
+                  (click)="openGoalModal()"
+                >
+                  Edit Goal
+                </button>
+              </div>
             </div>
           </div>
         </div>

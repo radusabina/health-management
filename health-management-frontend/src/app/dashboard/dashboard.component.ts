@@ -149,6 +149,17 @@ export class DashboardComponent implements OnInit {
       });
   }
 
+  addWater(amount: number): void {
+    this.dailyGoalService.incrementWater(this.dailyGoal!.id, amount).subscribe({
+      next: () => {
+        this.refreshDashboard();
+      },
+      error: (err: any) => {
+        console.error('addWater failed:', err);
+      },
+    });
+  }
+
   // dashboard refresh
   refreshDashboard(): void {
     if (!this.user) return;
