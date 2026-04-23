@@ -22,6 +22,10 @@ export class NavbarComponent {
     this.router.navigate(['/dashboard']);
   }
 
+  navigateToOverview(): void {
+    this.router.navigate(['/overview']);
+  }
+
   navigateToProfile(): void {
     this.router.navigate(['/profile']);
   }

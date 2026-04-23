@@ -1,0 +1,105 @@
+:host {
+  display: block;
+  min-height: 100vh;
+
+  background-image: url("/assets/bg-desktop.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.progress-circle,
+.progress-circle-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.progress-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+  cursor: default;
+}
+
+.progress-circle:hover {
+  transform: scale(1.05);
+}
+
+.progress-circle-inner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--fitbite-secondary, #1f4d2a);
+  font-weight: 600;
+}
+
+.progress-circle.is-today .progress-circle-inner {
+  outline: 2px solid var(--fitbite-primary, #569069);
+  outline-offset: 1px;
+}
+
+.progress-circle.is-future {
+  opacity: 0.55;
+}
+
+.progress-circle.is-empty .progress-circle-inner {
+  color: #9aa5ad;
+}
+
+.progress-circle-placeholder {
+  background: transparent;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-empty {
+  background: rgba(86, 144, 105, 0.15);
+}
+
+.legend-partial {
+  background: conic-gradient(
+    var(--fitbite-primary, #569069) 180deg,
+    rgba(86, 144, 105, 0.15) 180deg 360deg
+  );
+}
+
+.legend-full {
+  background: var(--fitbite-primary, #569069);
+}
+
+@media (max-width: 575.98px) {
+  .calendar-grid {
+    gap: 4px;
+  }
+
+  .progress-circle,
+  .progress-circle-placeholder {
+    width: 38px;
+    height: 38px;
+  }
+
+  .progress-circle-inner {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+}
