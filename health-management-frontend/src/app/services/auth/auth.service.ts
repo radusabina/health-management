@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { endpointAPI } from '../../config/appconfig';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { filter, take, map, tap, finalize, catchError } from 'rxjs/operators';
+import { IUser } from '../../dtos/user/IUser';
 import { IUserLogin } from '../../dtos/user/IUserLogin';
 import { IUserLoginResponse } from '../../dtos/user/IUserLoginResponse';
 import { IUserRegister } from '../../dtos/user/IUserRegister';
@@ -31,6 +32,20 @@ export class AuthService {
 
   setUser(user: any): void {
     this.currentUserSubject.next(user);
+  }
+
+  updateStoredUser(user: IUser): void {
+    const current = this.authSubject.value;
+    if (!current) {
+      this.currentUserSubject.next(user);
+      return;
+    }
+
+    const updated: IUserLoginResponse = {
+      ...current,
+      user: { ...current.user, ...user },
+    };
+    this.setAuth(updated);
   }
 
   getUser(id: string): any | null {

@@ -110,32 +110,48 @@ export class UpdateUserComponent implements OnInit {
 
   // update user
   onUpdateUser(): void {
+    const userId = this.user?.id;
+    if (!userId) {
+      console.error('Missing user id, cannot update');
+      return;
+    }
+
     if (this.newPassword && this.newPassword === this.confirmPassword) {
-      this.userService.updatePassword(this.user?.id || '', this.newPassword).subscribe({
+      this.userService.updatePassword(userId, this.newPassword).subscribe({
         next: () => {
-          this.userService.updateUser(this.user?.id || '', this.userUpdate).subscribe({
-            next: () => {
-              this.router.navigate(['/dashboard']);
-            },
-            error: () => {
-              console.error('Failed to update user');
-            }
-          });
+          this.updateUserProfile(userId);
         },
         error: () => {
           console.error('Failed to update password');
         }
       });
     } else {
-      this.userService.updateUser(this.user?.id || '', this.userUpdate).subscribe({
-        next: () => {
-          this.router.navigate(['/dashboard']);
-        },
-        error: () => {
-          console.error('Failed to update user');
-        }
-      });
+      this.updateUserProfile(userId);
     }
+  }
+
+  private updateUserProfile(userId: string): void {
+    this.userService.updateUser(userId, this.userUpdate).subscribe({
+      next: () => {
+        this.syncAuthUser();
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
+        console.error('Failed to update user');
+      }
+    });
+  }
+
+  private syncAuthUser(): void {
+    if (!this.user) return;
+
+    const updatedUser: IUser = {
+      ...this.user,
+      ...this.userUpdate,
+    };
+
+    this.user = updatedUser;
+    this.authService.updateStoredUser(updatedUser);
   }
   private toUpdateModel(user: IUser): IUserUpdate {
     return {
