@@ -213,110 +213,112 @@
       <!-- ACTIONS -->
       <div class="row g-3 mb-4" *ngIf="generalGoal && dailyGoal">
         <!-- LEFT: WATER QUICK ACTIONS (20%) -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-4">
           <div class="card glass-card p-3 h-100">
             <h6 class="mb-3">Water</h6>
 
-            <div class="d-flex flex-column gap-2 align-items-center">
-              <!-- ADD -->
+            <!-- MOBILE: 2 coloane (+ stânga / - dreapta) -->
+            <div class="d-md-none">
+              <div class="row g-2">
+                <!-- PLUS -->
+                <div class="col-6 d-flex flex-column gap-2 align-items-center">
+                  <button
+                    class="btn btn-outline-fitbite w-100"
+                    (click)="addWater(250)"
+                    [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
+                  >
+                    +1 glass
+                  </button>
+
+                  <button
+                    class="btn btn-outline-fitbite w-100"
+                    (click)="addWater(500)"
+                    [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
+                  >
+                    +1 bottle
+                  </button>
+
+                  <button
+                    class="btn btn-outline-fitbite w-100"
+                    (click)="addWater(1000)"
+                    [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
+                  >
+                    +2 bottles
+                  </button>
+                </div>
+
+                <!-- MINUS -->
+                <div class="col-6 d-flex flex-column gap-2 align-items-center">
+                  <button
+                    class="btn btn-outline-danger w-100"
+                    (click)="addWater(-250)"
+                    [disabled]="dailyGoal.waterDone <= 0"
+                  >
+                    -1 glass
+                  </button>
+
+                  <button
+                    class="btn btn-outline-danger w-100"
+                    (click)="addWater(-500)"
+                    [disabled]="dailyGoal.waterDone <= 0"
+                  >
+                    -1 bottle
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- DESKTOP: coloană verticală -->
+            <div class="d-none d-md-flex flex-column gap-2 align-items-center">
               <button
-                class="btn btn-outline-fitbite w-75"
+                class="btn btn-outline-fitbite w-75 water-action-btn"
                 (click)="addWater(250)"
                 [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
-                [attr.title]="
-                  dailyGoal.waterDone >= generalGoal.waterGoal
-                    ? 'Water goal reached'
-                    : ''
-                "
               >
                 +1 glass
               </button>
 
               <button
-                class="btn btn-outline-fitbite w-75"
+                class="btn btn-outline-fitbite w-75 water-action-btn"
                 (click)="addWater(500)"
                 [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
-                [attr.title]="
-                  dailyGoal.waterDone >= generalGoal.waterGoal
-                    ? 'Water goal reached'
-                    : ''
-                "
               >
                 +1 bottle
               </button>
 
               <button
-                class="btn btn-outline-fitbite w-75"
+                class="btn btn-outline-fitbite w-75 water-action-btn"
                 (click)="addWater(1000)"
                 [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
-                [attr.title]="
-                  dailyGoal.waterDone >= generalGoal.waterGoal
-                    ? 'Water goal reached'
-                    : ''
-                "
               >
                 +2 bottles
               </button>
 
-              <div class="mt-2" style="min-height: 1.25rem">
-                <div
-                  *ngIf="
-                    generalGoal &&
-                    dailyGoal &&
-                    dailyGoal.waterDone >= generalGoal.waterGoal
-                  "
-                  class="text-success small"
-                  aria-live="polite"
-                >
-                  Water goal reached
-                </div>
-              </div>
-
               <hr class="w-75 my-2" />
 
-              <!-- REMOVE -->
               <button
-                class="btn btn-outline-danger w-75"
+                class="btn btn-outline-danger w-75 water-action-btn"
                 (click)="addWater(-250)"
-                [disabled]="
-                  generalGoal.waterGoal === 0 || dailyGoal.waterDone <= 0
-                "
-                [attr.title]="
-                  generalGoal.waterGoal === 0
-                    ? 'Set a water goal to enable removing water'
-                    : dailyGoal.waterDone <= 0
-                      ? 'No water logged to remove'
-                      : ''
-                "
+                [disabled]="dailyGoal.waterDone <= 0"
               >
                 -1 glass
               </button>
 
               <button
-                class="btn btn-outline-danger w-75"
+                class="btn btn-outline-danger w-75 water-action-btn"
                 (click)="addWater(-500)"
-                [disabled]="
-                  generalGoal.waterGoal === 0 || dailyGoal.waterDone <= 0
-                "
-                [attr.title]="
-                  generalGoal.waterGoal === 0
-                    ? 'Set a water goal to enable removing water'
-                    : dailyGoal.waterDone <= 0
-                      ? 'No water logged to remove'
-                      : ''
-                "
+                [disabled]="dailyGoal.waterDone <= 0"
               >
                 -1 bottle
               </button>
             </div>
 
-            <!-- OPTIONAL CONTEXT -->
             <div class="text-center small text-muted mt-3">1 glass = 250ml</div>
           </div>
         </div>
 
         <!-- RIGHT: MAIN ACTIONS (80%) -->
-        <div class="col-12 col-md-9">
+        <div class="col-12 col-md-8">
           <div class="d-flex flex-column gap-3 h-100">
             <!-- LOG MEAL -->
             <div
@@ -452,7 +454,7 @@
   <!-- MODAL -->
   <app-add-general-goal
     [isOpen]="showGoalModal"
-    (close)="closeGoalModal()"
+    (close)="onGoalClose()"
     (save)="onGoalSave($event)"
   >
   </app-add-general-goal>

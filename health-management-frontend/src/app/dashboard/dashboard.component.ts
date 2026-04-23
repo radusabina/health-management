@@ -113,7 +113,7 @@ export class DashboardComponent implements OnInit {
     this.showGoalModal = true;
   }
 
-  closeGoalModal(): void {
+  onGoalClose(): void {
     this.showGoalModal = false;
   }
 
