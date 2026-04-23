@@ -1,4 +1,4 @@
-import { IUser } from '../../services/user/user.service';
+import { IUser } from '../user/IUser';
 
 export interface IUserLoginResponse {
   user: IUser;

@@ -2,6 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { endpointAPI } from '../../config/appconfig';
 import { Observable } from 'rxjs';
+import { IIsNewUserResponse } from '../../dtos/user/IIsNewUserResponse';
+import { IUser } from '../../dtos/user/IUser';
+import { IUserUpdate } from '../../dtos/user/IUserUpdate';
 
 @Injectable({
   providedIn: 'root',
@@ -39,27 +42,4 @@ export class UserService {
       `${endpointAPI}user/is-new-user/${userId}`,
     );
   }
-}
-
-export interface IUser {
-  id: string;
-  email: string;
-  fullName: string;
-  age: number | null;
-  gender: 'MALE' | 'FEMALE' | 'OTHER' | string;
-  weightKg: number | null;
-  heightCm: number | null;
-}
-
-export interface IUserUpdate {
-  email: string;
-  fullName: string;
-  age: number | null;
-  gender: 'MALE' | 'FEMALE' | 'OTHER' | string;
-  weightKg: number | null;
-  heightCm: number | null;
-}
-
-export interface IIsNewUserResponse {
-  isNewUser: boolean;
 }

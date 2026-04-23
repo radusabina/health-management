@@ -25,7 +25,7 @@
           <a
             class="nav-link active me-lg-2 fs-5 text-dark"
             aria-current="page"
-            href="#"
+            (click)="navigateToDashboard()"
             >Overview</a
           >
         </li>
@@ -34,6 +34,7 @@
             type="button"
             class="btn nav-link text-dark p-0 border-0 bg-transparent fs-5"
             aria-label="Profile management"
+            (click)="navigateToProfile()"
           >
             <span class="d-inline d-lg-none">Profile</span>
             <svg

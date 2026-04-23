@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth/auth.service';
-import { IUser, UserService } from '../services/user/user.service';
+import { UserService } from '../services/user/user.service';
 import { MealService } from '../services/meal/meal.service';
 import { GeneralGoalService } from '../services/general-goal/general-goal.service';
 import { AddGeneralGoalComponent } from '../add-general-goal/add-general-goal.component';
@@ -11,6 +11,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { DailyGoalService } from '../services/daily-goal/daily-goal.service';
 import { IDailyGoal } from '../dtos/daily-goal/IDailyGoal';
 import { IGeneralGoal } from '../dtos/general-goal/IGeneralGoal';
+import { IUser } from '../dtos/user/IUser';
 import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
