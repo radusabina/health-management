@@ -11,11 +11,12 @@ import { Router, RouterOutlet } from '@angular/router';
 import { DailyGoalService } from '../services/daily-goal/daily-goal.service';
 import { IDailyGoal } from '../dtos/daily-goal/IDailyGoal';
 import { IGeneralGoal } from '../dtos/general-goal/IGeneralGoal';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, AddGeneralGoalComponent],
+  imports: [CommonModule, FormsModule, AddGeneralGoalComponent, NavbarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
