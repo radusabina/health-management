@@ -8,7 +8,9 @@
     aria-atomic="true"
   >
     <div class="toast-header">
-      <strong class="me-auto">Success</strong>
+      <strong class="me-auto" style="color: var(--fitbite-primary)"
+        >Success</strong
+      >
       <button
         type="button"
         class="btn-close"
@@ -220,6 +222,12 @@
               <button
                 class="btn btn-outline-fitbite w-75"
                 (click)="addWater(250)"
+                [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
+                [attr.title]="
+                  dailyGoal.waterDone >= generalGoal.waterGoal
+                    ? 'Water goal reached'
+                    : ''
+                "
               >
                 +1 glass
               </button>
@@ -227,6 +235,12 @@
               <button
                 class="btn btn-outline-fitbite w-75"
                 (click)="addWater(500)"
+                [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
+                [attr.title]="
+                  dailyGoal.waterDone >= generalGoal.waterGoal
+                    ? 'Water goal reached'
+                    : ''
+                "
               >
                 +1 bottle
               </button>
@@ -234,9 +248,29 @@
               <button
                 class="btn btn-outline-fitbite w-75"
                 (click)="addWater(1000)"
+                [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
+                [attr.title]="
+                  dailyGoal.waterDone >= generalGoal.waterGoal
+                    ? 'Water goal reached'
+                    : ''
+                "
               >
                 +2 bottles
               </button>
+
+              <div class="mt-2" style="min-height: 1.25rem">
+                <div
+                  *ngIf="
+                    generalGoal &&
+                    dailyGoal &&
+                    dailyGoal.waterDone >= generalGoal.waterGoal
+                  "
+                  class="text-success small"
+                  aria-live="polite"
+                >
+                  Water goal reached
+                </div>
+              </div>
 
               <hr class="w-75 my-2" />
 
@@ -244,6 +278,16 @@
               <button
                 class="btn btn-outline-danger w-75"
                 (click)="addWater(-250)"
+                [disabled]="
+                  generalGoal.waterGoal === 0 || dailyGoal.waterDone <= 0
+                "
+                [attr.title]="
+                  generalGoal.waterGoal === 0
+                    ? 'Set a water goal to enable removing water'
+                    : dailyGoal.waterDone <= 0
+                      ? 'No water logged to remove'
+                      : ''
+                "
               >
                 -1 glass
               </button>
@@ -251,6 +295,16 @@
               <button
                 class="btn btn-outline-danger w-75"
                 (click)="addWater(-500)"
+                [disabled]="
+                  generalGoal.waterGoal === 0 || dailyGoal.waterDone <= 0
+                "
+                [attr.title]="
+                  generalGoal.waterGoal === 0
+                    ? 'Set a water goal to enable removing water'
+                    : dailyGoal.waterDone <= 0
+                      ? 'No water logged to remove'
+                      : ''
+                "
               >
                 -1 bottle
               </button>

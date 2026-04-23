@@ -156,8 +156,8 @@ export class DashboardComponent implements OnInit {
       next: () => {
         this.refreshDashboard();
         // show success toast
-        const amountLabel = amount > 0 ? `+${amount}ml` : `${amount}ml`;
-        this.toastMessage = `Water updated ${amountLabel}`;
+        const amountLabel = amount > 0 ? `+${amount}` : `${amount}ml`;
+        this.toastMessage = `Water updated successfully! (${amountLabel})`;
         this.showWaterToast = true;
         setTimeout(() => (this.showWaterToast = false), 3000);
       },
