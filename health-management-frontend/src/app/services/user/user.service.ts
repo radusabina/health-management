@@ -17,9 +17,9 @@ export class UserService {
     return this.http.get<IUser>(endpointAPI + 'user/' + id);
   }
 
-  isPasswordValid(password: string): Observable<boolean> {
+  isPasswordValid(password: string, userId: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.baseUrl}/is-password-valid`, {
-      params: { password },
+      params: { password, userId },
     });
   }
 

@@ -49,9 +49,9 @@ public class UserController {
     }
 
     @GetMapping("/is-password-valid")
-    public ResponseEntity<Object> isPasswordValid(@RequestParam String password) {
+    public ResponseEntity<Object> isPasswordValid(@RequestParam String password, @RequestParam UUID userId) {
         try {
-            return ResponseEntity.ok().body(Map.of("valid", userService.isPasswordValid(password)));
+            return ResponseEntity.ok().body(Map.of("valid", userService.isPasswordValid(password, userId)));
         }  catch (Exception e) {
             return handleException(e);
         }

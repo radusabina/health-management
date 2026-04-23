@@ -29,6 +29,8 @@ export class UpdateUserComponent implements OnInit {
   confirmPassword = '';
   isCurrentPasswordValid = false;
   isCheckingPassword = false;
+  passwordValidationAttempted = false;
+  private passwordValidationTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private userService: UserService,
     private router: Router,
@@ -42,33 +44,54 @@ export class UpdateUserComponent implements OnInit {
     }
   }
 
+  // password validation
   onCurrentPasswordInput(): void {
+    this.clearPasswordValidationTimer();
+    this.passwordValidationAttempted = false;
+
     if (!this.currentPassword.trim()) {
       this.isCurrentPasswordValid = false;
+      this.isCheckingPassword = false;
       this.newPassword = '';
       this.confirmPassword = '';
+      return;
     }
+
+    this.isCheckingPassword = false;
+    this.passwordValidationTimer = setTimeout(() => {
+      this.isPasswordValid();
+    }, 2000);
+  }
+
+  onCurrentPasswordBlur(): void {
+    this.clearPasswordValidationTimer();
+    this.isPasswordValid();
   }
 
   isPasswordValid(): void {
     const password = this.currentPassword.trim();
     if (!password) {
       this.isCurrentPasswordValid = false;
+      this.isCheckingPassword = false;
+      this.passwordValidationAttempted = false;
       this.newPassword = '';
       this.confirmPassword = '';
       return;
     }
 
     this.isCheckingPassword = true;
-    this.userService.isPasswordValid(password).subscribe({
-      next: (isValid) => {
-        this.isCurrentPasswordValid = isValid;
-        if (!isValid) {
+    console.log('Checking password...' + password);
+    this.userService.isPasswordValid(password, this.user?.id || '').subscribe({
+      next: (response: any) => {
+        this.passwordValidationAttempted = true;
+        this.isCurrentPasswordValid = response.valid;
+        if (!response.valid) {
           this.newPassword = '';
           this.confirmPassword = '';
         }
       },
       error: () => {
+        this.passwordValidationAttempted = true;
         this.isCurrentPasswordValid = false;
         this.newPassword = '';
         this.confirmPassword = '';
@@ -79,6 +102,41 @@ export class UpdateUserComponent implements OnInit {
     });
   }
 
+  private clearPasswordValidationTimer(): void {
+    if (!this.passwordValidationTimer) return;
+    clearTimeout(this.passwordValidationTimer);
+    this.passwordValidationTimer = null;
+  }
+
+  // update user
+  onUpdateUser(): void {
+    if (this.newPassword && this.newPassword === this.confirmPassword) {
+      this.userService.updatePassword(this.user?.id || '', this.newPassword).subscribe({
+        next: () => {
+          this.userService.updateUser(this.user?.id || '', this.userUpdate).subscribe({
+            next: () => {
+              this.router.navigate(['/dashboard']);
+            },
+            error: () => {
+              console.error('Failed to update user');
+            }
+          });
+        },
+        error: () => {
+          console.error('Failed to update password');
+        }
+      });
+    } else {
+      this.userService.updateUser(this.user?.id || '', this.userUpdate).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: () => {
+          console.error('Failed to update user');
+        }
+      });
+    }
+  }
   private toUpdateModel(user: IUser): IUserUpdate {
     return {
       email: user.email,

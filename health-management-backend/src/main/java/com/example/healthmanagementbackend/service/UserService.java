@@ -80,8 +80,10 @@ public class UserService {
         LOGGER.info("User with id " + userId + " updated");
     }
 
-    public boolean isPasswordValid(String password) {
-        return passwordEncoder.matches(password, passwordEncoder.encode(password));
+    public boolean isPasswordValid(String password, UUID userId) {
+        return userRepository.findById(userId)
+                .map(user -> passwordEncoder.matches(password, user.getPassword()))
+                .orElse(false);
     }
 
     public boolean deleteUser(UUID userId) {

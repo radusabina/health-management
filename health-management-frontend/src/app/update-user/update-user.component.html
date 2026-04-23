@@ -116,15 +116,15 @@
                     placeholder="Enter current password to unlock password change"
                     [(ngModel)]="currentPassword"
                     (ngModelChange)="onCurrentPasswordInput()"
-                    (blur)="isPasswordValid()"
-                    (keyup.enter)="isPasswordValid()"
+                    (blur)="onCurrentPasswordBlur()"
+                    (keyup.enter)="onCurrentPasswordBlur()"
                   />
                   <div class="form-text" *ngIf="isCheckingPassword">
                     Validating current password...
                   </div>
                   <div
                     class="form-text text-danger"
-                    *ngIf="currentPassword && !isCheckingPassword && !isCurrentPasswordValid"
+                    *ngIf="currentPassword && passwordValidationAttempted && !isCheckingPassword && !isCurrentPasswordValid"
                   >
                     Current password is invalid.
                   </div>
@@ -153,8 +153,17 @@
                     class="form-control"
                     placeholder="Re-enter new password"
                     [required]="!!newPassword"
+                    [class.is-invalid]="
+                      !!confirmPassword && newPassword !== confirmPassword
+                    "
                     [(ngModel)]="confirmPassword"
                   />
+                  <div
+                    class="invalid-feedback d-block"
+                    *ngIf="!!confirmPassword && newPassword !== confirmPassword"
+                  >
+                    New password and confirm password must match.
+                  </div>
                 </div>
               </div>
 
@@ -164,7 +173,12 @@
                 <button type="button" class="btn btn-outline-danger px-4">
                   Delete
                 </button>
-                <button type="submit" class="btn btn-fitbite text-white px-4">
+                <button
+                  type="submit"
+                  class="btn btn-fitbite text-white px-4"
+                  (click)="onUpdateUser()"
+                  [disabled]="!!newPassword && newPassword !== confirmPassword"
+                >
                   Update
                 </button>
               </div>
