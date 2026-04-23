@@ -91,8 +91,19 @@ public class DailyGoalService {
     }
 
     public DailyGoal getTodayDailyGoalForUser(UUID userId) {
-        return dailyGoalRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .orElseThrow(() -> new NoDailyGoalFoundException("No daily goal found"));
+        Optional<DailyGoal> dailyGoal = dailyGoalRepository.findByUserIdAndDate(userId, LocalDate.now());
+        if (dailyGoal.isEmpty()) {
+            Optional<GeneralGoal> generalGoal = generalGoalRepository.findByUserId(userId);
+            if (generalGoal.isEmpty()) {
+                throw new NoGeneralGoalFoundException("No general goal found");
+            }
+            DailyGoal dailyGoalToReturn = DailyGoal.builder()
+                    .generalGoal(generalGoal.get())
+                    .user(userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("No user found"))).build();
+            dailyGoalRepository.save(dailyGoalToReturn);
+            return dailyGoalToReturn;
+        }
+        return dailyGoal.get();
     }
 
     public void getDailyGoalForUserByDate(UUID userId, LocalDate date) {

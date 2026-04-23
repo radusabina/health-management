@@ -158,6 +158,8 @@ export class DashboardComponent implements OnInit {
         this.user = user;
         this.loadMeals();
         this.loadUserState();
+        this.loadDailyGoal();
+        this.loadGeneralGoal();
       },
       error: (err) => {
         console.error('refreshDashboard failed:', err);

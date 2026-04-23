@@ -2,18 +2,12 @@ package com.example.healthmanagementbackend.service;
 
 import com.example.healthmanagementbackend.apininjas.CalorieNinjasClient;
 import com.example.healthmanagementbackend.dto.*;
-import com.example.healthmanagementbackend.model.FoodItem;
+import com.example.healthmanagementbackend.model.*;
 import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
 import com.example.healthmanagementbackend.exception.NoMealFoundException;
 import com.example.healthmanagementbackend.exception.NoUserFoundException;
-import com.example.healthmanagementbackend.model.Meal;
-import com.example.healthmanagementbackend.model.MealItem;
-import com.example.healthmanagementbackend.model.User;
 import com.example.healthmanagementbackend.model.enums.MealType;
-import com.example.healthmanagementbackend.repository.FoodItemRepository;
-import com.example.healthmanagementbackend.repository.MealItemRepository;
-import com.example.healthmanagementbackend.repository.MealRepository;
-import com.example.healthmanagementbackend.repository.UserRepository;
+import com.example.healthmanagementbackend.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -34,13 +29,15 @@ public class MealService {
     private final FoodItemRepository foodItemRepository;
     private final UserRepository userRepository;
     private final CalorieNinjasClient calorieNinjasClient;
+    private final DailyGoalRepository dailyGoalRepository;
 
     public MealService(MealRepository mealRepository, MealItemRepository mealItemRepository,
-                       FoodItemRepository foodItemRepository, UserRepository userRepository, CalorieNinjasClient calorieNinjasClient) {
+                       FoodItemRepository foodItemRepository, UserRepository userRepository, CalorieNinjasClient calorieNinjasClient, DailyGoalRepository dailyGoalRepository) {
         this.mealRepository = mealRepository;
         this.mealItemRepository = mealItemRepository;
         this.foodItemRepository = foodItemRepository;
         this.userRepository = userRepository;
+        this.dailyGoalRepository = dailyGoalRepository;
         this.calorieNinjasClient = calorieNinjasClient;
     }
 
@@ -60,6 +57,15 @@ public class MealService {
         setMealItems(items, meal);
 
         meal = mealRepository.save(meal);
+
+        // add calories to daily goal if necessary
+        MealDto mealDto = mapToDto(meal);
+        Optional<DailyGoal> dailyGoal = dailyGoalRepository.findByUserIdAndDate(userId, LocalDate.now());
+        if (dailyGoal.isPresent()) {
+            int currentCalories = dailyGoal.get().getCaloriesDone();
+            dailyGoal.get().setCaloriesDone(currentCalories + mealDto.getTotalCalories());
+            dailyGoalRepository.save(dailyGoal.get());
+        }
 
         LOGGER.info("Operation=addMeal, Message=Meal added for userId=" + userId);
         return meal;
@@ -229,7 +235,7 @@ public class MealService {
                 .mealType(meal.getMealType())
                 .description(meal.getDescription())
                 .date(meal.getDate())
-                .totalCalories(Math.round(totalCalories))
+                .totalCalories((int) Math.round(totalCalories))
                 .items(itemDtos)
                 .build();
     }

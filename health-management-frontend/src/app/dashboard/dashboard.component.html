@@ -137,23 +137,30 @@
         <h3>Good to see you back, {{ user.fullName }} 👋</h3>
         <p class="text-muted mb-0">Here is your daily overview.</p>
 
-        <div class="d-flex justify-content-between align-items-center mb-2">
+        <div
+          *ngIf="generalGoal && dailyGoal"
+          class="d-flex justify-content-between align-items-center mb-2"
+        >
           <h6 class="mb-0 mt-3">Daily Progress</h6>
           <p class="text-muted fs-3">{{ progressBar }}%</p>
         </div>
 
-        <div class="progress mb-2" style="height: 8px">
+        <div
+          *ngIf="generalGoal && dailyGoal"
+          class="progress mb-2"
+          style="height: 8px"
+        >
           <div class="progress-bar" [style.width.%]="progressBar"></div>
         </div>
       </div>
 
       <!-- QUICK STATS -->
-      <div class="row g-3 mb-4">
+      <div *ngIf="generalGoal && dailyGoal" class="row g-3 mb-4">
         <div class="col-6 col-md-3">
           <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Calories Today</small>
             <h5 class="mb-0">
-              {{ dailyGoal?.caloriesDone }} / {{ generalGoal?.calorieGoal }}
+              {{ dailyGoal.caloriesDone }} / {{ generalGoal.calorieGoal }}
             </h5>
           </div>
         </div>
@@ -169,7 +176,7 @@
           <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Water</small>
             <h5 class="mb-0">
-              {{ dailyGoal?.waterDone }} / {{ generalGoal?.waterGoal }} l
+              {{ dailyGoal.waterDone }} / {{ generalGoal.waterGoal }} l
             </h5>
           </div>
         </div>
@@ -177,7 +184,7 @@
         <div class="col-6 col-md-3">
           <div class="card content-card border-0 shadow-sm p-3 text-center">
             <small class="text-muted">Goal</small>
-            <h5 class="mb-0">{{ generalGoal?.weightTarget }} kg</h5>
+            <h5 class="mb-0">{{ generalGoal.weightTarget }} kg</h5>
           </div>
         </div>
       </div>
@@ -208,9 +215,14 @@
           <div
             class="card content-card border-0 shadow-sm p-4 h-100 d-flex flex-column"
           >
-            <h5>Update goals</h5>
-            <p class="text-muted small">
+            <h5 *ngIf="generalGoal">Update goals</h5>
+            <h5 *ngIf="!generalGoal">Set general goal</h5>
+            <p class="text-muted small" *ngIf="generalGoal">
               Adjust your daily calorie and water targets.
+            </p>
+            <p class="text-muted small" *ngIf="!generalGoal">
+              Create a general goal to enable daily progress and tracking. Add
+              your calorie and water targets to get started.
             </p>
 
             <div class="mt-auto">
@@ -218,7 +230,8 @@
                 class="btn btn-outline-fitbite w-100"
                 (click)="openGoalModal()"
               >
-                Edit Goal
+                <span *ngIf="generalGoal">Edit Goal</span>
+                <span *ngIf="!generalGoal">Set Goal</span>
               </button>
             </div>
           </div>
@@ -285,16 +298,12 @@
                     </div>
                     <div class="col-6">
                       Potassium:
-                      {{
-                        getMealNutrition(meal).potassium | number: "1.0-0"
-                      }}
+                      {{ getMealNutrition(meal).potassium | number: "1.0-0" }}
                       mg
                     </div>
                     <div class="col-6">
                       Cholesterol:
-                      {{
-                        getMealNutrition(meal).cholesterol | number: "1.0-0"
-                      }}
+                      {{ getMealNutrition(meal).cholesterol | number: "1.0-0" }}
                       mg
                     </div>
                   </div>
