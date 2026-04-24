@@ -176,6 +176,12 @@ export class OverviewComponent implements OnInit {
       });
     }
 
+    // Keep a stable calendar height by always reserving 6 full weeks (42 day cells).
+    // This prevents content below the grid from moving between months.
+    while (cells.length < 42) {
+      cells.push(null);
+    }
+
     this.calendarCells = cells;
   }
 

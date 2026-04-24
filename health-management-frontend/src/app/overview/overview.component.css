@@ -208,3 +208,12 @@
     font-size: 0.62rem;
   }
 }
+
+.btn-outline-fitbite {
+  border-color: #ffffff;
+  font-size: 1.4rem;
+}
+
+.btn-outline-fitbite:hover {
+  border-color: #ffffff;
+}
