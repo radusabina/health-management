@@ -54,22 +54,43 @@
               <ng-container *ngFor="let cell of calendarCells; let i = index">
                 <div class="calendar-cell">
                   <ng-container *ngIf="cell; else emptyCell">
-                    <div
-                      class="progress-circle"
-                      [class.is-today]="cell.isToday"
-                      [class.is-future]="cell.isFuture"
-                      [class.is-empty]="!cell.hasData"
-                      [class.is-clickable]="isClickableCell(cell)"
-                      [ngStyle]="getCircleStyle(cell)"
-                      [title]="cell.progress + '% of goal'"
-                      (click)="openDay(cell)"
+                    <ng-container
+                      *ngIf="isClickableCell(cell); else nonInteractiveCircle"
                     >
-                      <div class="progress-circle-inner">
-                        <span class="progress-day">{{
-                          cell.date.getDate()
-                        }}</span>
+                      <button
+                        type="button"
+                        class="progress-circle progress-circle-btn is-clickable"
+                        [class.is-today]="cell.isToday"
+                        [class.is-future]="cell.isFuture"
+                        [class.is-empty]="!cell.hasData"
+                        [ngStyle]="getCircleStyle(cell)"
+                        [title]="cell.progress + '% of goal'"
+                        [attr.aria-label]="getCircleAriaLabel(cell)"
+                        (click)="openDay(cell)"
+                      >
+                        <div class="progress-circle-inner">
+                          <span class="progress-day">{{
+                            cell.date.getDate()
+                          }}</span>
+                        </div>
+                      </button>
+                    </ng-container>
+                    <ng-template #nonInteractiveCircle>
+                      <div
+                        class="progress-circle"
+                        [class.is-today]="cell.isToday"
+                        [class.is-future]="cell.isFuture"
+                        [class.is-empty]="!cell.hasData"
+                        [ngStyle]="getCircleStyle(cell)"
+                        [title]="cell.progress + '% of goal'"
+                      >
+                        <div class="progress-circle-inner">
+                          <span class="progress-day">{{
+                            cell.date.getDate()
+                          }}</span>
+                        </div>
                       </div>
-                    </div>
+                    </ng-template>
                   </ng-container>
                   <ng-template #emptyCell>
                     <div class="progress-circle-placeholder"></div>
@@ -105,13 +126,20 @@
     *ngIf="selectedCell"
     class="overview-modal-backdrop"
     (click)="closeDay()"
-    role="dialog"
-    aria-modal="true"
   >
-    <div class="overview-modal-card" (click)="$event.stopPropagation()">
+    <div
+      #dayDetailsModal
+      class="overview-modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="day-details-title"
+      tabindex="-1"
+      (click)="$event.stopPropagation()"
+      (keydown)="onModalKeydown($event)"
+    >
       <div class="d-flex justify-content-between align-items-start mb-3">
         <div>
-          <h5 class="mb-1">{{ selectedDateLabel }}</h5>
+          <h5 id="day-details-title" class="mb-1">{{ selectedDateLabel }}</h5>
           <p class="text-muted small mb-0">Daily summary</p>
         </div>
         <button
@@ -126,16 +154,26 @@
         <div class="col-12 col-sm-6">
           <div class="inner-panel text-center">
             <small class="text-muted">Total Calories</small>
-            <h5 class="mb-0">
-              {{ selectedDailyGoal?.caloriesDone ?? 0 }} kcal
-            </h5>
+            <input
+              type="text"
+              class="form-control modal-metric-input text-center"
+              [value]="(selectedDailyGoal?.caloriesDone ?? 0) + ' kcal'"
+              readonly
+              aria-label="Total calories for selected day"
+            />
           </div>
         </div>
 
         <div class="col-12 col-sm-6">
           <div class="inner-panel text-center">
             <small class="text-muted">Water</small>
-            <h5 class="mb-0">{{ selectedDailyGoal?.waterDone ?? 0 }} l</h5>
+            <input
+              type="text"
+              class="form-control modal-metric-input text-center"
+              [value]="(selectedDailyGoal?.waterDone ?? 0) + ' l'"
+              readonly
+              aria-label="Water for selected day"
+            />
           </div>
         </div>
       </div>

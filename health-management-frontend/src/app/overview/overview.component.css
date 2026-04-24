@@ -73,12 +73,23 @@
   cursor: default;
 }
 
+.progress-circle-btn {
+  border: 0;
+  padding: 0;
+}
+
 .progress-circle.is-clickable {
   cursor: pointer;
 }
 
 .progress-circle.is-clickable:hover {
   transform: scale(1.08);
+}
+
+.progress-circle-btn:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.95);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 2px rgba(86, 144, 105, 0.55);
 }
 
 .progress-circle-inner {
@@ -142,6 +153,20 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.modal-metric-input {
+  margin-top: 0.35rem;
+  border-radius: 10px;
+  border: 1px solid rgba(86, 144, 105, 0.28);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--fitbite-secondary, #1f4d2a);
+  font-weight: 600;
+}
+
+.modal-metric-input:focus {
+  border-color: rgba(86, 144, 105, 0.7);
+  box-shadow: 0 0 0 0.2rem rgba(86, 144, 105, 0.2);
 }
 
 .overview-modal-backdrop {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../services/auth/auth.service';
 import { DailyGoalService } from '../services/daily-goal/daily-goal.service';
@@ -49,6 +49,8 @@ export class OverviewComponent implements OnInit {
 
   selectedCell: CalendarCell | null = null;
   selectedDailyGoal: IDailyGoal | null = null;
+  @ViewChild('dayDetailsModal') dayDetailsModal?: ElementRef<HTMLElement>;
+  private lastFocusedElement: HTMLElement | null = null;
 
   constructor(
     private authService: AuthService,
@@ -128,16 +130,77 @@ export class OverviewComponent implements OnInit {
     return cell.hasData && !cell.isFuture;
   }
 
+  getCircleAriaLabel(cell: CalendarCell): string {
+    const dateLabel = cell.date.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    return `Open details: ${cell.progress}% of daily goal on ${dateLabel}`;
+  }
+
   openDay(cell: CalendarCell): void {
     if (!this.isClickableCell(cell)) return;
+    this.lastFocusedElement =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     this.selectedCell = cell;
     this.selectedDailyGoal =
       this.dailyGoalMap.get(this.toIsoKey(cell.date)) ?? null;
+
+    setTimeout(() => this.focusModal(), 0);
   }
 
   closeDay(): void {
     this.selectedCell = null;
     this.selectedDailyGoal = null;
+
+    const focusToRestore = this.lastFocusedElement;
+    this.lastFocusedElement = null;
+    if (focusToRestore) {
+      setTimeout(() => focusToRestore.focus(), 0);
+    }
+  }
+
+  onModalKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeDay();
+      return;
+    }
+
+    if (event.key !== 'Tab') {
+      return;
+    }
+
+    const modal = this.dayDetailsModal?.nativeElement;
+    if (!modal) return;
+
+    const focusableElements = this.getFocusableElements(modal);
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      modal.focus();
+      return;
+    }
+
+    const first = focusableElements[0];
+    const last = focusableElements[focusableElements.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (event.shiftKey) {
+      if (active === first || !active || !modal.contains(active)) {
+        event.preventDefault();
+        last.focus();
+      }
+      return;
+    }
+
+    if (active === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   get selectedDateLabel(): string {
@@ -183,6 +246,39 @@ export class OverviewComponent implements OnInit {
     }
 
     this.calendarCells = cells;
+  }
+
+  private focusModal(): void {
+    const modal = this.dayDetailsModal?.nativeElement;
+    if (!modal) return;
+
+    const focusableElements = this.getFocusableElements(modal);
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus();
+      return;
+    }
+
+    modal.focus();
+  }
+
+  private getFocusableElements(container: HTMLElement): HTMLElement[] {
+    const selectors = [
+      'button:not([disabled])',
+      '[href]',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ];
+
+    return Array.from(
+      container.querySelectorAll<HTMLElement>(selectors.join(',')),
+    ).filter(
+      (el) =>
+        !el.hasAttribute('disabled') &&
+        el.getAttribute('aria-hidden') !== 'true' &&
+        el.offsetParent !== null,
+    );
   }
 
   private computeProgress(date: Date): number {
