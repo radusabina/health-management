@@ -1,14 +1,15 @@
 <div class="min-vh-100 bg-fitbite d-flex align-items-center position-relative py-4">
   <div class="card content-card shadow-sm border-0 container">
     <div class="mb-3">
-      <a
-        href="/dashboard"
+      <button
+        type="button"
         class="btn btn-link text-decoration-none px-0 d-inline-flex align-items-center gap-2"
-        aria-label="Back to dashboard"
+        aria-label="Back"
+        (click)="goBack()"
       >
         <span aria-hidden="true">&larr;</span>
-        <span>Back to dashboard</span>
-      </a>
+        <span>Back</span>
+      </button>
     </div>
 
     <div class="row justify-content-center">

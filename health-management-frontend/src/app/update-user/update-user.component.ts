@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 import { IUser } from '../dtos/user/IUser';
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IUserUpdate } from '../dtos/user/IUserUpdate';
 
@@ -35,6 +36,7 @@ export class UpdateUserComponent implements OnInit {
   constructor(private userService: UserService,
     private router: Router,
     private authService: AuthService,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +130,15 @@ export class UpdateUserComponent implements OnInit {
     } else {
       this.updateUserProfile(userId);
     }
+  }
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
+    this.router.navigate(['/dashboard']);
   }
 
   private updateUserProfile(userId: string): void {
