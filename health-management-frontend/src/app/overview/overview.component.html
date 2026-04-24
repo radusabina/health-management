@@ -1,21 +1,21 @@
-<div class="min-vh-100 bg-fitbite">
+<div class="min-vh-100 bg-fitbite d-flex flex-column">
   <app-navbar></app-navbar>
 
-  <div class="container py-4">
-    <div class="row justify-content-center">
-      <div class="col-12 col-xl-10">
-        <div class="card content-card border-0 shadow-sm p-4 p-md-5">
-          <div
-            class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2"
-          >
-            <div>
+  <div class="flex-grow-1 d-flex align-items-center">
+    <div class="container py-4 w-100">
+      <div class="row justify-content-center m-0">
+        <div class="col-12 col-xl-10">
+          <div class="card content-card overview-glass border-0 p-3 p-md-5">
+            <div class="mb-4">
               <h3 class="mb-1">Overview</h3>
               <p class="text-muted mb-0">
                 Your daily progress across the year.
               </p>
             </div>
 
-            <div class="d-flex align-items-center gap-2">
+            <div
+              class="d-flex justify-content-between align-items-center mb-4 gap-2"
+            >
               <button
                 type="button"
                 class="btn btn-outline-fitbite"
@@ -24,9 +24,11 @@
               >
                 &larr;
               </button>
-              <div class="fw-semibold fs-5 text-center" style="min-width: 11rem">
+
+              <div class="fw-semibold fs-5 text-center flex-grow-1">
                 {{ monthLabel }}
               </div>
+
               <button
                 type="button"
                 class="btn btn-outline-fitbite"
@@ -36,62 +38,110 @@
                 &rarr;
               </button>
             </div>
-          </div>
 
-          <div *ngIf="isLoading" class="text-center text-muted small mb-3">
-            Loading your progress...
-          </div>
-
-          <div class="calendar-grid">
-            <div
-              *ngFor="let label of weekdayLabels"
-              class="text-center small text-muted fw-semibold pb-2"
-            >
-              {{ label }}
+            <div *ngIf="isLoading" class="text-center text-muted small mb-3">
+              Loading your progress...
             </div>
 
-            <ng-container *ngFor="let cell of calendarCells; let i = index">
-              <div class="d-flex flex-column align-items-center p-1">
-                <ng-container *ngIf="cell; else emptyCell">
-                  <div
-                    class="progress-circle"
-                    [class.is-today]="cell.isToday"
-                    [class.is-future]="cell.isFuture"
-                    [class.is-empty]="!cell.hasData"
-                    [ngStyle]="getCircleStyle(cell)"
-                    [title]="cell.progress + '% of goal'"
-                  >
-                    <div class="progress-circle-inner">
-                      <span class="progress-day">{{
-                        cell.date.getDate()
-                      }}</span>
-                    </div>
-                  </div>
-                </ng-container>
-                <ng-template #emptyCell>
-                  <div class="progress-circle-placeholder"></div>
-                </ng-template>
+            <div class="calendar-grid">
+              <div
+                *ngFor="let label of weekdayLabels"
+                class="text-center small text-muted fw-semibold pb-2"
+              >
+                {{ label }}
               </div>
-            </ng-container>
-          </div>
 
-          <div
-            class="d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4 small text-muted"
-          >
-            <div class="d-flex align-items-center gap-2">
-              <span class="legend-dot legend-empty"></span>
-              No data
+              <ng-container *ngFor="let cell of calendarCells; let i = index">
+                <div class="calendar-cell">
+                  <ng-container *ngIf="cell; else emptyCell">
+                    <div
+                      class="progress-circle"
+                      [class.is-today]="cell.isToday"
+                      [class.is-future]="cell.isFuture"
+                      [class.is-empty]="!cell.hasData"
+                      [class.is-clickable]="isClickableCell(cell)"
+                      [ngStyle]="getCircleStyle(cell)"
+                      [title]="cell.progress + '% of goal'"
+                      (click)="openDay(cell)"
+                    >
+                      <div class="progress-circle-inner">
+                        <span class="progress-day">{{
+                          cell.date.getDate()
+                        }}</span>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #emptyCell>
+                    <div class="progress-circle-placeholder"></div>
+                  </ng-template>
+                </div>
+              </ng-container>
             </div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="legend-dot legend-partial"></span>
-              In progress
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="legend-dot legend-full"></span>
-              Goal reached
+
+            <div
+              class="d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4 small text-muted"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot legend-empty"></span>
+                No data
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot legend-partial"></span>
+                In progress
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot legend-full"></span>
+                Goal reached
+              </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY DETAILS MODAL -->
+  <div
+    *ngIf="selectedCell"
+    class="overview-modal-backdrop"
+    (click)="closeDay()"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="overview-modal-card" (click)="$event.stopPropagation()">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h5 class="mb-1">{{ selectedDateLabel }}</h5>
+          <p class="text-muted small mb-0">Daily summary</p>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeDay()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12 col-sm-6">
+          <div class="inner-panel text-center">
+            <small class="text-muted">Total Calories</small>
+            <h5 class="mb-0">
+              {{ selectedDailyGoal?.caloriesDone ?? 0 }} kcal
+            </h5>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6">
+          <div class="inner-panel text-center">
+            <small class="text-muted">Water</small>
+            <h5 class="mb-0">{{ selectedDailyGoal?.waterDone ?? 0 }} l</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-muted small text-center mt-3">
+        {{ selectedCell.progress }}% of your daily goal
       </div>
     </div>
   </div>

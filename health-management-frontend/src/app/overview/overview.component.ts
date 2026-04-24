@@ -47,6 +47,9 @@ export class OverviewComponent implements OnInit {
   calendarCells: Array<CalendarCell | null> = [];
   isLoading = false;
 
+  selectedCell: CalendarCell | null = null;
+  selectedDailyGoal: IDailyGoal | null = null;
+
   constructor(
     private authService: AuthService,
     private dailyGoalService: DailyGoalService,
@@ -121,9 +124,39 @@ export class OverviewComponent implements OnInit {
     };
   }
 
+  isClickableCell(cell: CalendarCell): boolean {
+    return cell.hasData && !cell.isFuture;
+  }
+
+  openDay(cell: CalendarCell): void {
+    if (!this.isClickableCell(cell)) return;
+    this.selectedCell = cell;
+    this.selectedDailyGoal =
+      this.dailyGoalMap.get(this.toIsoKey(cell.date)) ?? null;
+  }
+
+  closeDay(): void {
+    this.selectedCell = null;
+    this.selectedDailyGoal = null;
+  }
+
+  get selectedDateLabel(): string {
+    if (!this.selectedCell) return '';
+    return this.selectedCell.date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
+
   private buildCalendar(): void {
     const first = new Date(this.currentYear, this.currentMonth, 1);
-    const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+    const lastDay = new Date(
+      this.currentYear,
+      this.currentMonth + 1,
+      0,
+    ).getDate();
     const firstWeekday = (first.getDay() + 6) % 7; // Monday-first offset
 
     const cells: Array<CalendarCell | null> = [];
