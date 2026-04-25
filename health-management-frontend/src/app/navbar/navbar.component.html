@@ -1,9 +1,13 @@
 <nav
-  class="navbar navbar-expand-lg py-2 bg-white"
+  class="navbar navbar-expand-lg py-2 navbar-glass"
   data-bs-theme="light"
 >
   <div class="container-fluid">
-    <a class="navbar-brand fw-semibold fs-4 text-dark" href="#">Fitbite</a>
+    <a
+      class="navbar-brand fw-semibold fs-4 text-dark"
+      routerLink="/dashboard"
+      >Fitbite</a
+    >
 
     <button
       class="navbar-toggler"
@@ -21,26 +25,33 @@
       <ul
         class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-end align-items-lg-center"
       >
-        <li class="nav-item" *ngIf="isDashboardPage">
+        <li class="nav-item">
           <a
-            class="nav-link me-lg-2 fs-5 text-dark"
-            (click)="navigateToOverview()"
-            >Overview</a
+            class="nav-link me-lg-2 fs-5 text-dark nav-pill"
+            routerLink="/dashboard"
+            routerLinkActive="nav-active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
-        </li>
-        <li class="nav-item" *ngIf="isOverviewPage">
-          <a
-            class="nav-link me-lg-2 fs-5 text-dark"
-            (click)="navigateToDashboard()"
-            >Dashboard</a
-          >
+            Dashboard
+          </a>
         </li>
         <li class="nav-item">
-          <button
-            type="button"
-            class="btn nav-link text-dark p-0 border-0 bg-transparent fs-5"
+          <a
+            class="nav-link me-lg-2 fs-5 text-dark nav-pill"
+            routerLink="/overview"
+            routerLinkActive="nav-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Overview
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link text-dark p-0 border-0 bg-transparent fs-5 nav-pill profile-link"
+            routerLink="/profile"
+            routerLinkActive="nav-active"
+            [routerLinkActiveOptions]="{ exact: true }"
             aria-label="Profile management"
-            (click)="navigateToProfile()"
           >
             <span class="d-inline d-lg-none">Profile</span>
             <svg
@@ -58,7 +69,7 @@
                 d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10.5 8 10.5c3.195 0 4.757.726 5.468 1.87A7 7 0 0 0 8 1z"
               />
             </svg>
-          </button>
+          </a>
         </li>
       </ul>
     </div>
