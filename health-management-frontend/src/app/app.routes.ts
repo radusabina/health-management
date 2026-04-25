@@ -5,12 +5,15 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AddMealComponent } from './add-meal/add-meal.component';
 import { UpdateUserComponent } from './update-user/update-user.component';
 import { OverviewComponent } from './overview/overview.component';
+import { StartPageComponent } from './start-page/start-page.component';
 
 export const routes: Routes = [
+  {path: '', redirectTo: 'start', pathMatch: 'full'},
   { path: 'login', component: LoginComponent },
   { path: 'signUp', component: SignComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'addMeal', component: AddMealComponent },
   { path: 'profile', component: UpdateUserComponent },
   { path: 'overview', component: OverviewComponent },
+  { path: 'start', component: StartPageComponent },
 ];
