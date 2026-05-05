@@ -6,6 +6,7 @@ import { UserService } from '../services/user/user.service';
 import { MealService } from '../services/meal/meal.service';
 import { GeneralGoalService } from '../services/general-goal/general-goal.service';
 import { AddGeneralGoalComponent } from '../add-general-goal/add-general-goal.component';
+import { EditGeneralGoalComponent } from '../edit-general-goal/edit-general-goal.component';
 import { IMeal } from '../dtos/meal/IMeal';
 import { Router, RouterOutlet } from '@angular/router';
 import { DailyGoalService } from '../services/daily-goal/daily-goal.service';
@@ -17,13 +18,14 @@ import { NavbarComponent } from '../navbar/navbar.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, AddGeneralGoalComponent, NavbarComponent],
+  imports: [CommonModule, FormsModule, AddGeneralGoalComponent, EditGeneralGoalComponent, NavbarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
   // state
   showGoalModal = false;
+  showEditGoalModal = false;
   user: IUser | null = null;
   isNewUser = false;
   meals: IMeal[] = [];
@@ -117,6 +119,36 @@ export class DashboardComponent implements OnInit {
 
   onGoalClose(): void {
     this.showGoalModal = false;
+  }
+
+  openEditGoalModal(): void {
+    this.showEditGoalModal = true;
+  }
+
+  onEditGoalClose(): void {
+    this.showEditGoalModal = false;
+  }
+
+  onEditGoalSave(goal: Partial<IGeneralGoal>): void {
+    if (!this.user) return;
+
+    this.generalGoalService
+      .updateForUser({
+        userId: this.user.id,
+        calorieGoal: goal.calorieGoal!,
+        waterGoal: goal.waterGoal!,
+        weightTarget: goal.weightTarget!,
+        bottleAmountMl: goal.bottleAmountMl!,
+      })
+      .subscribe({
+        next: () => {
+          this.showEditGoalModal = false;
+          this.refreshDashboard();
+        },
+        error: (err) => {
+          console.error('updateGeneralGoalForUser failed:', err);
+        },
+      });
   }
 
   // toggle meal details

@@ -367,7 +367,7 @@
                   <div class="mt-auto text-center">
                     <button
                       class="btn btn-outline-fitbite w-50"
-                      (click)="openGoalModal()"
+                      (click)="openEditGoalModal()"
                     >
                       Edit Goal
                     </button>
@@ -472,11 +472,20 @@
       </div>
     </div>
   </div>
-  <!-- MODAL -->
+  <!-- ADD GOAL MODAL -->
   <app-add-general-goal
     [isOpen]="showGoalModal"
     (close)="onGoalClose()"
     (save)="onGoalSave($event)"
   >
   </app-add-general-goal>
+
+  <!-- EDIT GOAL MODAL -->
+  <app-edit-general-goal
+    [isOpen]="showEditGoalModal"
+    [currentGoal]="generalGoal"
+    (close)="onEditGoalClose()"
+    (save)="onEditGoalSave($event)"
+  >
+  </app-edit-general-goal>
 </div>
