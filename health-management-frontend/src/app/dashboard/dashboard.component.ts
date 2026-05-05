@@ -195,15 +195,19 @@ export class DashboardComponent implements OnInit {
   get progressBar(): number {
     if (!this.dailyGoal || !this.generalGoal) return 0;
 
-    const caloriesProgress =
+    const caloriesRaw =
       (this.dailyGoal.caloriesDone / this.generalGoal.calorieGoal) * 100;
 
-    const waterProgress =
+    const waterRaw =
       (this.dailyGoal.waterDone / this.generalGoal.waterGoal) * 100;
 
-    const avg = (caloriesProgress + waterProgress) / 2;
+    // Only allow the average to exceed 100% when both goals are over 100%.
+    // If just one exceeds 100%, cap it at 100 so it doesn't inflate the total.
+    const bothOver100 = caloriesRaw >= 100 && waterRaw >= 100;
+    const caloriesForAvg = bothOver100 ? caloriesRaw : Math.min(100, caloriesRaw);
+    const waterForAvg = bothOver100 ? waterRaw : Math.min(100, waterRaw);
 
-    return Math.min(100, Math.round(avg));
+    return Math.round((caloriesForAvg + waterForAvg) / 2);
   }
 
   get caloriesProgress(): number {
