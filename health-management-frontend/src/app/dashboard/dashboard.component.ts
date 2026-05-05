@@ -36,6 +36,8 @@ export class DashboardComponent implements OnInit {
   expandedMeals: Set<number> = new Set();
   showWaterToast = false;
   toastMessage = '';
+  showErrorToast = false;
+  errorToastMessage = '';
 
   constructor(
     private router: Router,
@@ -233,15 +235,26 @@ export class DashboardComponent implements OnInit {
   deleteMeal(): void {
     if (!this.mealPendingDelete) return;
     this.mealService.deleteMeal(this.mealPendingDelete.id).subscribe({
-      next: () => {
+      next: (success: boolean) => {
         this.mealPendingDelete = null;
-        this.refreshDashboard();
+        if (success === false) {
+          this.showToastError('Something went wrong when trying to delete meal. Please try again later.');
+        } else {
+          this.refreshDashboard();
+        }
       },
       error: (err) => {
         console.error('deleteMeal failed:', err);
         this.mealPendingDelete = null;
+        this.showToastError('Something went wrong when trying to delete meal. Please try again later.');
       },
     });
+  }
+
+  private showToastError(message: string): void {
+    this.errorToastMessage = message;
+    this.showErrorToast = true;
+    setTimeout(() => (this.showErrorToast = false), 4000);
   }
 
   // dashboard refresh

@@ -21,6 +21,28 @@
     </div>
     <div class="toast-body">{{ toastMessage }}</div>
   </div>
+
+  <!-- ERROR TOAST -->
+  <div
+    *ngIf="showErrorToast"
+    class="toast show position-fixed top-0 end-0 m-3"
+    style="z-index: 99999; margin-top: 5rem !important"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div class="toast-header">
+      <strong class="me-auto text-danger">Error</strong>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="showErrorToast = false"
+      ></button>
+    </div>
+    <div class="toast-body">{{ errorToastMessage }}</div>
+  </div>
+
   <div class="container py-4">
     <!-- LOADING -->
     <div *ngIf="!user" class="text-center mt-5">
