@@ -206,6 +206,24 @@ export class DashboardComponent implements OnInit {
     return Math.min(100, Math.round(avg));
   }
 
+  get caloriesProgress(): number {
+    if (!this.dailyGoal || !this.generalGoal || !this.generalGoal.calorieGoal) {
+      return 0;
+    }
+    return Math.round(
+      (this.dailyGoal.caloriesDone / this.generalGoal.calorieGoal) * 100,
+    );
+  }
+
+  get waterProgress(): number {
+    if (!this.dailyGoal || !this.generalGoal || !this.generalGoal.waterGoal) {
+      return 0;
+    }
+    return Math.round(
+      (this.dailyGoal.waterDone / this.generalGoal.waterGoal) * 100,
+    );
+  }
+
   getMealNutrition(meal: IMeal) {
     return meal.items.reduce(
       (acc, item) => {
