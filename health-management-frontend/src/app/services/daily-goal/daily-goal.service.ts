@@ -61,6 +61,12 @@ export class DailyGoalService {
     });
   }
 
+  // PUT /api/daily-goal/updateTodayWeight?id=...&weight=...
+  updateTodayWeight(id: string, weight: number): Observable<void> {
+    const params = new HttpParams().set('id', id).set('weight', weight);
+    return this.http.put<void>(`${this.baseUrl}/updateTodayWeight`, null, { params });
+  }
+
   // DELETE /api/daily-goal/{id}
   delete(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);

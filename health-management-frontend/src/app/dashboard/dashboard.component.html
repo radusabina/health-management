@@ -373,6 +373,38 @@
                     </button>
                   </div>
                 </div>
+
+                <!-- LOG WEIGHT -->
+                <div class="inner-panel d-flex flex-column flex-grow-1">
+                  <h5>Log today's weight</h5>
+
+                  <p class="text-muted small">
+                    💡 For best accuracy, weigh yourself once a week, in the morning, on an empty stomach, after using the bathroom.
+                  </p>
+
+                  <div class="mt-auto d-flex gap-2 align-items-center justify-content-center">
+                    <input
+                      type="number"
+                      class="form-control w-50"
+                      placeholder="e.g. 72.5"
+                      [(ngModel)]="todayWeightInput"
+                      min="1"
+                      step="0.1"
+                    />
+                    <span class="text-muted small">kg</span>
+                    <button
+                      class="btn btn-fitbite text-white"
+                      [disabled]="todayWeightInput === null"
+                      (click)="saveTodayWeight()"
+                    >
+                      Save
+                    </button>
+                  </div>
+
+                  <div *ngIf="dailyGoal?.todayWeight !== null && dailyGoal?.todayWeight !== undefined" class="text-center small text-muted mt-2">
+                    Logged today: {{ dailyGoal!.todayWeight }} kg
+                  </div>
+                </div>
               </div>
             </div>
           </div>

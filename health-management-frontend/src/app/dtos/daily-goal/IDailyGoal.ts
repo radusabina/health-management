@@ -4,4 +4,5 @@ export interface IDailyGoal {
   caloriesDone: number;
   waterDone: number;
   generalGoalId: string;
+  todayWeight: number | null;
 }

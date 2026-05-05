@@ -54,6 +54,9 @@ public class DailyGoal {
     @Builder.Default
     private int waterDone = 0;
 
+    @Column(name = "today_weight", nullable = true)
+    private Double todayWeight;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore

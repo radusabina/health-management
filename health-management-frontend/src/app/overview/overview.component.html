@@ -176,6 +176,22 @@
             />
           </div>
         </div>
+
+        <div
+          *ngIf="selectedDailyGoal?.todayWeight !== null && selectedDailyGoal?.todayWeight !== undefined"
+          class="col-12"
+        >
+          <div class="inner-panel text-center">
+            <small class="text-muted">Weight logged</small>
+            <input
+              type="text"
+              class="form-control modal-metric-input text-center"
+              [value]="selectedDailyGoal!.todayWeight + ' kg'"
+              readonly
+              aria-label="Weight logged for selected day"
+            />
+          </div>
+        </div>
       </div>
 
       <div class="text-muted small text-center mt-3">

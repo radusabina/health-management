@@ -121,6 +121,17 @@ public class DailyGoalController {
         }
     }
 
+    @PutMapping("/updateTodayWeight")
+    public ResponseEntity<Object> updateTodayWeight(@RequestParam("id") UUID id,
+                                                    @RequestParam("weight") Double weight) {
+        try {
+            dailyGoalService.updateTodayWeight(id, weight);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return handleException(e);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable("id") UUID id) {
         try {
@@ -144,6 +155,7 @@ public class DailyGoalController {
                 .waterDone(dailyGoal.getWaterDone())
                 .caloriesDone(dailyGoal.getCaloriesDone())
                 .generalGoalId(dailyGoal.getGeneralGoal().getId())
+                .todayWeight(dailyGoal.getTodayWeight())
                 .build();
     }
 
@@ -161,5 +173,6 @@ public class DailyGoalController {
         private Integer caloriesDone;
         private Integer waterDone;
         private UUID generalGoalId;
+        private Double todayWeight;
     }
 }

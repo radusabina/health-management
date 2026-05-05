@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit {
   // state
   showGoalModal = false;
   showEditGoalModal = false;
+  todayWeightInput: number | null = null;
   user: IUser | null = null;
   isNewUser = false;
   meals: IMeal[] = [];
@@ -91,6 +92,7 @@ export class DashboardComponent implements OnInit {
       next: (goal: IDailyGoal) => {
         this.dailyGoal = goal;
         this.dailyGoal.waterDone = this.dailyGoal.waterDone / 1000;
+        this.todayWeightInput = goal.todayWeight ?? null;
       },
       error: (err: any) => {
         console.error('getTodayDailyGoal failed:', err);
@@ -199,6 +201,25 @@ export class DashboardComponent implements OnInit {
         console.error('addWater failed:', err);
       },
     });
+  }
+
+  saveTodayWeight(): void {
+    if (!this.dailyGoal || this.todayWeightInput === null) return;
+
+    this.dailyGoalService
+      .updateTodayWeight(this.dailyGoal.id, this.todayWeightInput)
+      .subscribe({
+        next: () => {
+          this.toastMessage = `Weight saved: ${this.todayWeightInput} kg`;
+          this.showWaterToast = true;
+          setTimeout(() => (this.showWaterToast = false), 3000);
+          this.refreshDashboard();
+          this.todayWeightInput = null;
+        },
+        error: (err: any) => {
+          console.error('updateTodayWeight failed:', err);
+        },
+      });
   }
 
   // dashboard refresh

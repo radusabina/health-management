@@ -157,6 +157,17 @@ public class DailyGoalService {
         LOGGER.info("Daily goal water incremented: " + id);
     }
 
+    public void updateTodayWeight(UUID id, Double weight) {
+        DailyGoal dailyGoal = dailyGoalRepository.findById(id)
+                .orElseThrow(() -> new NoDailyGoalFoundException("No daily goal found"));
+
+        dailyGoal.setTodayWeight(weight);
+        dailyGoal.setUpdatedAt(LocalDateTime.now());
+
+        dailyGoalRepository.save(dailyGoal);
+        LOGGER.info("Today's weight updated for daily goal: " + id);
+    }
+
     public boolean deleteDailyGoal(UUID id) {
         DailyGoal dailyGoal = dailyGoalRepository.findById(id).orElse(null);
         if (dailyGoal == null) {
