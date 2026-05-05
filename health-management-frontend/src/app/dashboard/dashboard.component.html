@@ -235,7 +235,6 @@
               <div class="inner-panel h-100">
                 <h6 class="mb-3">Water</h6>
 
-                <!-- MOBILE: 2 coloane (+ stânga / - dreapta) -->
                 <div class="d-md-none">
                   <div class="row g-2">
                     <!-- PLUS -->
@@ -245,7 +244,6 @@
                       <button
                         class="btn btn-outline-fitbite w-100"
                         (click)="addWater(250)"
-                        [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
                       >
                         +1 glass
                       </button>
@@ -253,7 +251,6 @@
                       <button
                         class="btn btn-outline-fitbite w-100"
                         (click)="addWater(500)"
-                        [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
                       >
                         +1 bottle
                       </button>
@@ -261,7 +258,6 @@
                       <button
                         class="btn btn-outline-fitbite w-100"
                         (click)="addWater(1000)"
-                        [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
                       >
                         +2 bottles
                       </button>
@@ -297,7 +293,6 @@
                   <button
                     class="btn btn-outline-fitbite w-75 water-action-btn"
                     (click)="addWater(250)"
-                    [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
                   >
                     +1 glass
                   </button>
@@ -305,7 +300,6 @@
                   <button
                     class="btn btn-outline-fitbite w-75 water-action-btn"
                     (click)="addWater(500)"
-                    [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
                   >
                     +1 bottle
                   </button>
@@ -313,7 +307,6 @@
                   <button
                     class="btn btn-outline-fitbite w-75 water-action-btn"
                     (click)="addWater(1000)"
-                    [disabled]="dailyGoal.waterDone >= generalGoal.waterGoal"
                   >
                     +2 bottles
                   </button>

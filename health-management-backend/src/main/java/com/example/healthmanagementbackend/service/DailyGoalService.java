@@ -147,9 +147,12 @@ public class DailyGoalService {
         DailyGoal dailyGoal = dailyGoalRepository.findById(id)
                 .orElseThrow(() -> new NoDailyGoalFoundException("No daily goal found"));
 
-        dailyGoal.setWaterDone(dailyGoal.getWaterDone() + waterToAdd);
-        dailyGoal.setUpdatedAt(LocalDateTime.now());
-
+        if (waterToAdd < 0 && dailyGoal.getWaterDone() + waterToAdd < 0) {
+            dailyGoal.setWaterDone(0);
+        } else {
+            dailyGoal.setWaterDone(dailyGoal.getWaterDone() + waterToAdd);
+            dailyGoal.setUpdatedAt(LocalDateTime.now());
+        }
         dailyGoalRepository.save(dailyGoal);
         LOGGER.info("Daily goal water incremented: " + id);
     }
