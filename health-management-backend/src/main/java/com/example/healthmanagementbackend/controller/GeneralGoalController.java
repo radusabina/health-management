@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -31,84 +30,46 @@ public class GeneralGoalController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> add(@RequestBody GeneralGoalRequest request) {
-        try {
-            boolean alreadyExists = generalGoalService.existsForUser(request.getUserId());
-            GeneralGoal generalGoal = generalGoalService.addGeneralGoal(request.getUserId(),
-                    request.getCalorieGoal(), request.getWaterGoal(), request.getWeightTarget(),
-                    request.getBottleAmountMl());
-
-            return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<GeneralGoalDto> add(@RequestBody GeneralGoalRequest request) {
+        boolean alreadyExists = generalGoalService.existsForUser(request.getUserId());
+        GeneralGoal generalGoal = generalGoalService.addGeneralGoal(
+                request.getUserId(), request.getCalorieGoal(), request.getWaterGoal(),
+                request.getWeightTarget(), request.getBottleAmountMl());
+        return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<Object> update(@RequestBody UpdateGeneralGoalRequest request) {
-        try {
-            generalGoalService.updateGeneralGoal(request.getGeneralGoalId(), request.getCalorieGoal(),
-                    request.getWaterGoal(), request.getWeightTarget(), request.getBottleAmountMl());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Void> update(@RequestBody UpdateGeneralGoalRequest request) {
+        generalGoalService.updateGeneralGoal(request.getGeneralGoalId(), request.getCalorieGoal(),
+                request.getWaterGoal(), request.getWeightTarget(), request.getBottleAmountMl());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/getByUserId/{userId}")
-    public ResponseEntity<Object> getGeneralGoalByUserId(@PathVariable("userId") UUID userId) {
-        try {
-            GeneralGoal generalGoal = generalGoalService.getGeneralGoalByUserId(userId);
-            return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), HttpStatus.OK);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<GeneralGoalDto> getGeneralGoalByUserId(@PathVariable("userId") UUID userId) {
+        return ResponseEntity.ok(mapToGeneralGoalDto(generalGoalService.getGeneralGoalByUserId(userId)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getGeneralGoalById(@PathVariable("id") UUID id) {
-        try {
-            GeneralGoal generalGoal = generalGoalService.getGeneralGoalById(id);
-            return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), HttpStatus.OK);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<GeneralGoalDto> getGeneralGoalById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(mapToGeneralGoalDto(generalGoalService.getGeneralGoalById(id)));
     }
 
     @PutMapping("/updateGeneralGoalForUser")
-    public ResponseEntity<Object> updateGeneralGoalForUser(@RequestBody UpdateGeneralGoalForUserRequest req) {
-        try {
-            generalGoalService.updateGeneralGoalForUser(req.getUserId(), req.getCalorieGoal(),
-                    req.getWaterGoal(), req.getWeightTarget(), req.getBottleAmountMl());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Void> updateGeneralGoalForUser(@RequestBody UpdateGeneralGoalForUserRequest req) {
+        generalGoalService.updateGeneralGoalForUser(req.getUserId(), req.getCalorieGoal(),
+                req.getWaterGoal(), req.getWeightTarget(), req.getBottleAmountMl());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable("id") UUID id) {
-        try {
-            return ResponseEntity.ok(generalGoalService.deleteGeneralGoal(id));
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Boolean> delete(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(generalGoalService.deleteGeneralGoal(id));
     }
 
     @DeleteMapping("/deleteByUserId/{userId}")
-    public ResponseEntity<Object> deleteGeneralGoalForUser(@PathVariable("userId") UUID userId) {
-        try {
-            return ResponseEntity.ok(generalGoalService.deleteGeneralGoalForUser(userId));
-        } catch (Exception e) {
-            return handleException(e);
-        }
-    }
-
-    private static ResponseEntity<Object> handleException(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("type", e.getClass().getSimpleName(),
-                        "message", e.getMessage()));
+    public ResponseEntity<Boolean> deleteGeneralGoalForUser(@PathVariable("userId") UUID userId) {
+        return ResponseEntity.ok(generalGoalService.deleteGeneralGoalForUser(userId));
     }
 
     private GeneralGoalDto mapToGeneralGoalDto(GeneralGoal generalGoal) {

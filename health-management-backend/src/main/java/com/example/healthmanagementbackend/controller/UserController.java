@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,68 +30,38 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getUserById(@PathVariable UUID id) {
-        try {
-            User user = userService.getUserById(id);
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable("id") UUID id, @RequestBody UpdateUserRequest request) {
-        try {
-            userService.updateUser(id, request.getEmail(),
-                    request.getFullName(), request.getHeightCm(), request.getWeightKg(),
-                    request.getGender(), request.getAge());
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Void> update(@PathVariable("id") UUID id, @RequestBody UpdateUserRequest request) {
+        userService.updateUser(id, request.getEmail(), request.getFullName(),
+                request.getHeightCm(), request.getWeightKg(), request.getGender(), request.getAge());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/is-password-valid")
-    public ResponseEntity<Object> isPasswordValid(@RequestParam String password, @RequestParam UUID userId) {
-        try {
-            return ResponseEntity.ok().body(Map.of("valid", userService.isPasswordValid(password, userId)));
-        }  catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Map<String, Boolean>> isPasswordValid(@RequestParam String password,
+                                                                @RequestParam UUID userId) {
+        return ResponseEntity.ok(Map.of("valid", userService.isPasswordValid(password, userId)));
     }
 
     @GetMapping("/is-new-user/{userId}")
-    public ResponseEntity<Object> isNewUser(@PathVariable UUID userId) {
-        try {
-            return ResponseEntity.ok().body(new IsNewUserResponse(userService.isNewUser(userId)));
-        }  catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<IsNewUserResponse> isNewUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(new IsNewUserResponse(userService.isNewUser(userId)));
     }
 
     @PutMapping("/password/{id}")
-    public ResponseEntity<Void> updatePassword(
-            @PathVariable("id") UUID id,
-            @RequestBody UpdatePasswordRequest request
-    ) {
+    public ResponseEntity<Void> updatePassword(@PathVariable("id") UUID id,
+                                               @RequestBody UpdatePasswordRequest request) {
         userService.updatePassword(id, request.newPassword());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable UUID id) {
-        try {
-            return ResponseEntity.ok(userService.deleteUser(id));
-        } catch (Exception e) {
-            return handleException(e);
-        }
-    }
-
-    private static ResponseEntity<Object> handleException(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("type", e.getClass().getSimpleName(),
-                        "message", e.getMessage()));
+    public ResponseEntity<Boolean> delete(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 
     public record UpdatePasswordRequest(String newPassword) {}

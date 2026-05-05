@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -37,89 +36,45 @@ public class MealController {
 
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody MealRequest request) {
-        try {
-            Meal meal = mealService.addMeal(request.getMealType(), request.getDescription(), request.getUserId(), request.getItems());
-            return new ResponseEntity<>(meal, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+        Meal meal = mealService.addMeal(request.getMealType(), request.getDescription(), request.getUserId(), request.getItems());
+        return new ResponseEntity<>(meal, HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<Object> update(@RequestBody UpdateMealRequest request) {
-        try {
-            mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription());
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Void> update(@RequestBody UpdateMealRequest request) {
+        mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Object> getMealsByUserId(@PathVariable UUID userId) {
-        try {
-            List<MealDto> meals = mealService.getMealsForUser(userId);
-            return ResponseEntity.ok(meals);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<List<MealDto>> getMealsByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(mealService.getMealsForUser(userId));
     }
 
     @GetMapping
-    public ResponseEntity<Object> getMealsForUserByType(@RequestParam("userId") UUID userId,
-                                                        @RequestParam("mealType") MealType mealType) {
-        try {
-            List<MealDto> meals = mealService.getMealsForUserByType(userId, mealType);
-            return ResponseEntity.ok(meals);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<List<MealDto>> getMealsForUserByType(@RequestParam("userId") UUID userId,
+                                                               @RequestParam("mealType") MealType mealType) {
+        return ResponseEntity.ok(mealService.getMealsForUserByType(userId, mealType));
     }
 
     @GetMapping("/today")
-    public ResponseEntity<Object> getTodayMealsForUser(@RequestParam("userId") UUID userId) {
-        try {
-            List<MealDto> meals = mealService.getTodayMealsForUser(userId);
-            return ResponseEntity.ok(meals);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<List<MealDto>> getTodayMealsForUser(@RequestParam("userId") UUID userId) {
+        return ResponseEntity.ok(mealService.getTodayMealsForUser(userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getMealById(@PathVariable("id") UUID id) {
-        try {
-            MealDto meal = mealService.getMealById(id);
-            return ResponseEntity.ok(meal);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<MealDto> getMealById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(mealService.getMealById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable UUID id) {
-        try {
-            return ResponseEntity.ok(mealService.deleteMeal(id));
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Boolean> delete(@PathVariable UUID id) {
+        return ResponseEntity.ok(mealService.deleteMeal(id));
     }
 
     @PostMapping("/analyze")
-    public ResponseEntity<Object> analyze(@RequestParam String description) {
-        try{
-            AnalyzeResponse meal = mealService.analyzeMeal(description);
-            return ResponseEntity.ok(meal);
-        } catch (Exception e) {
-            return handleException(e);
-        }
-    }
-
-    private static ResponseEntity<Object> handleException(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("type", e.getClass().getSimpleName(),
-                        "message", e.getMessage()));
+    public ResponseEntity<AnalyzeResponse> analyze(@RequestParam String description) {
+        return ResponseEntity.ok(mealService.analyzeMeal(description));
     }
 
     @NoArgsConstructor @AllArgsConstructor
@@ -133,7 +88,7 @@ public class MealController {
 
     @NoArgsConstructor @AllArgsConstructor
     @Getter @Setter
-    public class UpdateMealRequest {
+    public static class UpdateMealRequest {
         private UUID mealId;
         private MealType mealType;
         private String description;
