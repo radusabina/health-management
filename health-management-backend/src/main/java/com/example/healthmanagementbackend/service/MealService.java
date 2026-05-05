@@ -1,9 +1,8 @@
 package com.example.healthmanagementbackend.service;
 
 import com.example.healthmanagementbackend.apininjas.CalorieNinjasClient;
-import com.example.healthmanagementbackend.dto.*;
-import com.example.healthmanagementbackend.model.*;
 import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
+import com.example.healthmanagementbackend.model.*;
 import com.example.healthmanagementbackend.exception.NoMealFoundException;
 import com.example.healthmanagementbackend.exception.NoUserFoundException;
 import com.example.healthmanagementbackend.model.enums.MealType;
@@ -13,11 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import static com.example.healthmanagementbackend.controller.MealController.MealItemRequest;
 
 @Service
 public class MealService {
@@ -25,16 +25,14 @@ public class MealService {
     private static final Logger LOGGER = Logger.getLogger(MealService.class.getName());
 
     private final MealRepository mealRepository;
-    private final MealItemRepository mealItemRepository;
     private final FoodItemRepository foodItemRepository;
     private final UserRepository userRepository;
     private final CalorieNinjasClient calorieNinjasClient;
     private final DailyGoalRepository dailyGoalRepository;
 
-    public MealService(MealRepository mealRepository, MealItemRepository mealItemRepository,
-                       FoodItemRepository foodItemRepository, UserRepository userRepository, CalorieNinjasClient calorieNinjasClient, DailyGoalRepository dailyGoalRepository) {
+    public MealService(MealRepository mealRepository, FoodItemRepository foodItemRepository, UserRepository userRepository,
+                       CalorieNinjasClient calorieNinjasClient, DailyGoalRepository dailyGoalRepository) {
         this.mealRepository = mealRepository;
-        this.mealItemRepository = mealItemRepository;
         this.foodItemRepository = foodItemRepository;
         this.userRepository = userRepository;
         this.dailyGoalRepository = dailyGoalRepository;
@@ -50,40 +48,22 @@ public class MealService {
                 .mealType(mealType)
                 .description(description)
                 .date(LocalDate.now())
-                .updatedAt(LocalDateTime.now()).build();
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         meal = mealRepository.save(meal);
-
         setMealItems(items, meal);
-
         meal = mealRepository.save(meal);
 
-        // add calories to daily goal if necessary
-        MealDto mealDto = mapToDto(meal);
         Optional<DailyGoal> dailyGoal = dailyGoalRepository.findByUserIdAndDate(userId, LocalDate.now());
         if (dailyGoal.isPresent()) {
             int currentCalories = dailyGoal.get().getCaloriesDone();
-            dailyGoal.get().setCaloriesDone(currentCalories + mealDto.getTotalCalories());
+            dailyGoal.get().setCaloriesDone(currentCalories + calculateTotalCalories(meal));
             dailyGoalRepository.save(dailyGoal.get());
         }
 
         LOGGER.info("Operation=addMeal, Message=Meal added for userId=" + userId);
         return meal;
-    }
-
-    private void setMealItems(List<MealItemRequest> itemsInMeal, Meal meal) {
-        for (MealItemRequest item : itemsInMeal) {
-            String normalizedFoodItemName = normalize(item.getName());
-            FoodItem foodItem = foodItemRepository.findByNameIgnoreCase(normalizedFoodItemName)
-                    .orElseGet(() -> calorieNinjasClient.fetchFoodItem(normalizedFoodItemName));
-
-            MealItem mealItem = MealItem.builder()
-                    .foodItem(foodItem)
-                    .meal(meal)
-                    .quantityGrams(item.getQuantityGrams()).build();
-
-            meal.getItems().add(mealItem);
-        }
     }
 
     public void updateMeal(UUID mealId, MealType mealType, String description) {
@@ -95,8 +75,7 @@ public class MealService {
         meal.setUpdatedAt(LocalDateTime.now());
         meal.getItems().clear();
 
-        List<MealItemResponse> itemsInMeal =
-                calorieNinjasClient.getFoodItemsFromDescription(description);
+        List<MealItemResponse> itemsInMeal = calorieNinjasClient.getFoodItemsFromDescription(description);
 
         for (MealItemResponse item : itemsInMeal) {
             String normalizedName = normalize(item.getName());
@@ -116,42 +95,32 @@ public class MealService {
         LOGGER.info("Operation=updateMeal, Message=Meal updated for userId=" + meal.getUser().getId());
     }
 
-    public List<MealDto> getMealsForUser(UUID userId) {
+    public List<Meal> getMealsForUser(UUID userId) {
         userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("No user found"));
         List<Meal> meals = mealRepository.getMealsByUserId(userId);
         LOGGER.info("Operation=getMealsForUser, Message=Meals size: " + meals.size() + ", userId=" + userId);
-
-        return meals.stream()
-                .map(this::mapToDto)
-                .toList();
+        return meals;
     }
 
-    public List<MealDto> getMealsForUserByType(UUID userId, MealType mealType) {
+    public List<Meal> getMealsForUserByType(UUID userId, MealType mealType) {
         userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("No user found"));
         List<Meal> meals = mealRepository.getMealsByUserIdAndMealType(userId, mealType);
         LOGGER.info("Operation=getMealsForUserByType, Message=Meals size: " + meals.size() + ", userId=" + userId);
-
-        return meals.stream()
-                .map(this::mapToDto)
-                .toList();
+        return meals;
     }
 
-    public List<MealDto> getTodayMealsForUser(UUID userId) {
+    public List<Meal> getTodayMealsForUser(UUID userId) {
         userRepository.findById(userId).orElseThrow(() -> new NoUserFoundException("No user found"));
         List<Meal> meals = mealRepository.getMealsByUserIdAndDate(userId, LocalDate.now());
         LOGGER.info("Operation=getTodayMealsForUser, Message=Meals size: " + meals.size() + ", userId=" + userId);
-
-        return meals.stream()
-                .map(this::mapToDto)
-                .toList();
+        return meals;
     }
 
-    public MealDto getMealById(UUID mealId) {
+    public Meal getMealById(UUID mealId) {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new NoMealFoundException("No meal found"));
         LOGGER.info("Operation=getMealById, MealId=" + mealId);
-
-        return mapToDto(meal);
+        return meal;
     }
 
     @Transactional
@@ -160,97 +129,43 @@ public class MealService {
             LOGGER.info("Operation=deleteMeal, Message=Meal not found, MealId=" + mealId);
             return false;
         }
-
         mealRepository.deleteById(mealId);
         LOGGER.info("Operation=deleteMeal, mealId=" + mealId);
-
         return true;
     }
 
-    public AnalyzeResponse analyzeMeal(String description) {
-        List<MealItemResponse> itemsInMeal = calorieNinjasClient.getFoodItemsFromDescription(description);
+    public List<MealItemResponse> analyzeMeal(String description) {
+        List<MealItemResponse> items = calorieNinjasClient.getFoodItemsFromDescription(description);
         LOGGER.info("Operation=analyzeMeal");
-        return mapToAnalyzeResponse(itemsInMeal);
+        return items;
+    }
+
+    // ── private helpers ───────────────────────────────────────────────────────
+    private void setMealItems(List<MealItemRequest> itemsInMeal, Meal meal) {
+        for (MealItemRequest item : itemsInMeal) {
+            String normalizedFoodItemName = normalize(item.getName());
+            FoodItem foodItem = foodItemRepository.findByNameIgnoreCase(normalizedFoodItemName)
+                    .orElseGet(() -> calorieNinjasClient.fetchFoodItem(normalizedFoodItemName));
+
+            MealItem mealItem = MealItem.builder()
+                    .foodItem(foodItem)
+                    .meal(meal)
+                    .quantityGrams(item.getQuantityGrams())
+                    .build();
+
+            meal.getItems().add(mealItem);
+        }
+    }
+
+    private int calculateTotalCalories(Meal meal) {
+        return (int) Math.round(
+                meal.getItems().stream()
+                        .mapToDouble(item -> item.getFoodItem().getCalories() * (item.getQuantityGrams() / 100.0))
+                        .sum()
+        );
     }
 
     private String normalize(String name) {
-        return name == null ? "" :
-                name.trim().toLowerCase().replaceAll("\\s+", " ");
-    }
-
-    private double roundDecimalCustom(double value) {
-        double decimal = value - Math.floor(value);
-        decimal = Math.round(decimal * 1000.0) / 1000.0;
-
-        if (decimal < 0.1) {
-            return Math.floor(value);
-        }
-        if (decimal > 0.9) {
-            return Math.ceil(value);
-        }
-
-        return Math.round(value * 10.0) / 10.0;
-    }
-
-    private MealDto mapToDto(Meal meal) {
-        List<MealItemDto> itemDtos = new ArrayList<>();
-
-        double totalCalories = 0;
-
-        for (MealItem item : meal.getItems()) {
-            FoodItem food = item.getFoodItem();
-            double factor = item.getQuantityGrams() / 100.0;
-
-            double itemCalories = roundDecimalCustom(food.getCalories() * factor);
-
-            double itemSugar = roundDecimalCustom(food.getSugarG() * factor);
-            double itemFiber = roundDecimalCustom(food.getFiberG() * factor);
-            double itemSodium = roundDecimalCustom(food.getSodiumMg() * factor);
-            double itemPotassium = roundDecimalCustom(food.getPotassiumMg() * factor);
-            double itemFatSat = roundDecimalCustom(food.getFatSaturatedG() * factor);
-            double itemCholesterol = roundDecimalCustom(food.getCholesterolMg() * factor);
-            double itemProtein = roundDecimalCustom(food.getProteinG() * factor);
-            double itemCarbs = roundDecimalCustom(food.getCarbohydratesTotalG() * factor);
-
-            MealItemDto dto = MealItemDto.builder()
-                    .name(food.getName())
-                    .quantityGrams(item.getQuantityGrams())
-                    .calories(itemCalories)
-                    .sugarG(itemSugar)
-                    .fiberG(itemFiber)
-                    .sodiumMg(itemSodium)
-                    .potassiumMg(itemPotassium)
-                    .fatSaturatedG(itemFatSat)
-                    .cholesterolMg(itemCholesterol)
-                    .proteinG(itemProtein)
-                    .carbohydratesTotalG(itemCarbs)
-                    .build();
-
-            itemDtos.add(dto);
-
-            totalCalories += itemCalories;
-        }
-
-        return MealDto.builder()
-                .mealType(meal.getMealType())
-                .description(meal.getDescription())
-                .date(meal.getDate())
-                .totalCalories((int) Math.round(totalCalories))
-                .items(itemDtos)
-                .build();
-    }
-
-    private AnalyzeResponse mapToAnalyzeResponse(List<MealItemResponse> items) {
-        List<AnalyzeItem> analyzeItems = items.stream()
-                .map(item -> AnalyzeItem.builder()
-                        .name(item.getName())
-                        .quantityGrams(item.getQuantityGrams())
-                        .build()
-                )
-                .toList();
-
-        return AnalyzeResponse.builder()
-                .items(analyzeItems)
-                .build();
+        return name == null ? "" : name.trim().toLowerCase().replaceAll("\\s+", " ");
     }
 }
