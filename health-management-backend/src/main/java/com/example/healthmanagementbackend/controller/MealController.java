@@ -2,11 +2,14 @@ package com.example.healthmanagementbackend.controller;
 
 import com.example.healthmanagementbackend.dto.AnalyzeResponse;
 import com.example.healthmanagementbackend.dto.MealDto;
-import com.example.healthmanagementbackend.dto.MealRequest;
-import com.example.healthmanagementbackend.dto.UpdateMealRequest;
+import com.example.healthmanagementbackend.dto.MealItemRequest;
 import com.example.healthmanagementbackend.model.Meal;
 import com.example.healthmanagementbackend.model.enums.MealType;
 import com.example.healthmanagementbackend.service.MealService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -119,5 +122,20 @@ public class MealController {
                         "message", e.getMessage()));
     }
 
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class MealRequest {
+        private UUID userId;
+        private MealType mealType;
+        private String description;
+        private List<MealItemRequest> items;
+    }
 
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public class UpdateMealRequest {
+        private UUID mealId;
+        private MealType mealType;
+        private String description;
+    }
 }

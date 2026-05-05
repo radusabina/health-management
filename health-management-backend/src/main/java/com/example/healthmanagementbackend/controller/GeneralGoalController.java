@@ -1,6 +1,5 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.dto.UpdateGeneralGoalForUserRequest;
 import com.example.healthmanagementbackend.model.GeneralGoal;
 import com.example.healthmanagementbackend.service.GeneralGoalService;
 import lombok.AllArgsConstructor;
@@ -145,6 +144,16 @@ public class GeneralGoalController {
     @NoArgsConstructor @AllArgsConstructor
     @Getter @Setter
     public static class GeneralGoalRequest {
+        private UUID userId;
+        private int calorieGoal;
+        private int waterGoal;
+        private int weightTarget;
+        private int bottleAmountMl;
+    }
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class UpdateGeneralGoalForUserRequest {
         private UUID userId;
         private int calorieGoal;
         private int waterGoal;

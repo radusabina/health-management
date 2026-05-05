@@ -1,8 +1,12 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.dto.UpdateUserRequest;
 import com.example.healthmanagementbackend.model.User;
+import com.example.healthmanagementbackend.model.enums.Gender;
 import com.example.healthmanagementbackend.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -93,4 +97,15 @@ public class UserController {
 
     public record UpdatePasswordRequest(String newPassword) {}
     public record IsNewUserResponse(boolean isNewUser) {}
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class UpdateUserRequest {
+        private String email;
+        private String fullName;
+        private int age;
+        private Gender gender;
+        private int heightCm;
+        private int weightKg;
+    }
 }

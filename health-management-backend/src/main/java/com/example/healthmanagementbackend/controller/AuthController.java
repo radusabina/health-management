@@ -1,12 +1,10 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.dto.LoginRequest;
-import com.example.healthmanagementbackend.dto.LoginResponse;
-import com.example.healthmanagementbackend.dto.RegisterRequest;
-import com.example.healthmanagementbackend.dto.UserDto;
 import com.example.healthmanagementbackend.model.User;
+import com.example.healthmanagementbackend.model.enums.Gender;
 import com.example.healthmanagementbackend.service.UserService;
 import com.example.healthmanagementbackend.service.security.JwtService;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,4 +81,44 @@ public class AuthController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class LoginRequest {
+        private String email;
+        private String password;
+    }
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class LoginResponse {
+        private UserDto user;
+        private String accessToken;
+        private String refreshToken;
+    }
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public class RegisterRequest {
+        private String email;
+        private String password;
+        private String fullName;
+        private int age;
+        private Gender gender;
+        private int weightKg;
+        private int heightCm;
+    }
+
+    @Getter @Setter @Builder
+    public static class UserDto {
+        private UUID id;
+        private String email;
+        private String password;
+        private String fullName;
+        private int age;
+        private Gender gender;
+        private int heightCm;
+        private int weightKg;
+    }
+
 }
