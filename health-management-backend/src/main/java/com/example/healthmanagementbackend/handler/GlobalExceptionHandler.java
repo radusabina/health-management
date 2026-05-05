@@ -1,6 +1,7 @@
 package com.example.healthmanagementbackend.handler;
 
 import com.example.healthmanagementbackend.exception.InvalidCredentialsException;
+import com.example.healthmanagementbackend.exception.MealNotRecognizedException;
 import com.example.healthmanagementbackend.exception.NoDailyGoalFoundException;
 import com.example.healthmanagementbackend.exception.NoGeneralGoalFoundException;
 import com.example.healthmanagementbackend.exception.NoMealFoundException;
@@ -8,10 +9,12 @@ import com.example.healthmanagementbackend.exception.NoUserFoundException;
 import com.example.healthmanagementbackend.exception.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,10 +42,26 @@ public class GlobalExceptionHandler {
         return body(HttpStatus.UNAUTHORIZED, e);
     }
 
+    // ── 422 Unprocessable Entity ─────────────────────────────────────────────
+    @ExceptionHandler(MealNotRecognizedException.class)
+    public ResponseEntity<Map<String, String>> handleMealNotRecognized(MealNotRecognizedException e) {
+        return body(HttpStatus.UNPROCESSABLE_ENTITY, e);
+    }
+
     // ── 400 Bad Request ──────────────────────────────────────────────────────
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleBadRequest(IllegalArgumentException e) {
         return body(HttpStatus.BAD_REQUEST, e);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException e) {
+        String errors = e.getBindingResult().getFieldErrors().stream()
+                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("type", "ValidationException", "message", errors));
     }
 
     // ── 500 Internal Server Error (fallback) ─────────────────────────────────

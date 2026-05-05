@@ -2,6 +2,7 @@ package com.example.healthmanagementbackend.apininjas;
 
 import com.example.healthmanagementbackend.apininjas.dto.FoodItemResponse;
 import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
+import com.example.healthmanagementbackend.exception.MealNotRecognizedException;
 import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.repository.FoodItemRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -56,7 +57,7 @@ public class CalorieNinjasClient {
         }
 
         if (response == null || response.getItems() == null || response.getItems().isEmpty()) {
-            throw new IllegalArgumentException("No nutrition information found for meal: " + description);
+            throw new MealNotRecognizedException("No nutrition information found for the provided description. Try describing your meal differently or add items manually.");
         }
 
         return response.getItems();
@@ -80,7 +81,7 @@ public class CalorieNinjasClient {
                 .body(ClientNinjasFoodItemWrapper.class);
 
         if (response == null || response.getItems() == null || response.getItems().isEmpty()) {
-            throw new IllegalArgumentException("No nutrition information found for: " + name);
+            throw new MealNotRecognizedException("No nutrition information found for: \"" + name + "\". Please check the item name and try again.");
         }
 
         FoodItemResponse firstItem = response.getItems().get(0);

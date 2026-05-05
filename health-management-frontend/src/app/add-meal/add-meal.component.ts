@@ -23,6 +23,9 @@ export class AddMealComponent implements OnInit, OnDestroy {
   manualMode: boolean = false;
   isAnalyzing = false;
   isSaving = false;
+  analyzeErrorMsg = '';
+  descriptionError = '';
+  saveMealError = '';
 
   // form fields
   description = '';
@@ -58,7 +61,12 @@ export class AddMealComponent implements OnInit, OnDestroy {
   }
 
   analyzeMeal() {
-    if (!this.description?.trim()) return;
+    this.descriptionError = '';
+
+    if (!this.description?.trim()) {
+      this.descriptionError = 'Please enter a meal description before analyzing.';
+      return;
+    }
 
     this.isAnalyzing = true;
 
@@ -71,6 +79,16 @@ export class AddMealComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Analyze failed:', err);
         this.isAnalyzing = false;
+
+        if (err?.status === 422) {
+          // API couldn't recognize the meal → inline error below the button, stay on step 1
+          this.analyzeErrorMsg =
+            err?.error?.message ?? 'Your description could not be processed. Try describing your meal differently or add items manually.';
+        } else {
+          // 400 blank description or other client error → inline field error
+          this.descriptionError =
+            err?.error?.message ?? 'Invalid description. Please check your input and try again.';
+        }
       },
     });
   }
@@ -147,16 +165,18 @@ export class AddMealComponent implements OnInit, OnDestroy {
     };
 
     this.isSaving = true;
+    this.saveMealError = '';
 
     this.mealService.addMeal(request).subscribe({
       next: () => {
         this.isSaving = false;
-        console.log('Meal added successfully');
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         console.error('Add meal failed', err);
         this.isSaving = false;
+        this.saveMealError =
+          err?.error?.message ?? 'Could not save the meal. Please check the item names and try again.';
       },
     });
   }

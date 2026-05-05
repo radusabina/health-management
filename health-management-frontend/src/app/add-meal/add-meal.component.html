@@ -19,11 +19,17 @@
           </div>
 
           <textarea
-            class="form-control mb-3"
+            class="form-control"
+            [class.is-invalid]="descriptionError"
             rows="3"
             [(ngModel)]="description"
+            (ngModelChange)="descriptionError = ''; analyzeErrorMsg = ''"
             placeholder="e.g. chicken 200g, rice 100g"
           ></textarea>
+          <div *ngIf="descriptionError" class="text-danger small mt-1 mb-2">
+            {{ descriptionError }}
+          </div>
+          <div *ngIf="!descriptionError" class="mb-3"></div>
 
           <button
             class="btn btn-fitbite text-white w-100 mb-2"
@@ -33,6 +39,10 @@
             <span *ngIf="!isAnalyzing">Analyze meal</span>
             <span *ngIf="isAnalyzing">Analyzing...</span>
           </button>
+
+          <div *ngIf="analyzeErrorMsg" class="text-danger small mb-2">
+            {{ analyzeErrorMsg }}
+          </div>
 
           <button class="btn btn-link w-100 p-0" (click)="enableManualMode()">
             Add items manually
@@ -133,6 +143,7 @@
                         required
                         #nameCtrl="ngModel"
                         placeholder="Food name"
+                        (ngModelChange)="saveMealError = ''"
                       />
 
                       <div
@@ -198,8 +209,12 @@
                     (click)="submitMeal(mealForm)"
                     [disabled]="isSaving"
                   >
-                    Save Meal
+                    <span *ngIf="!isSaving">Save Meal</span>
+                    <span *ngIf="isSaving">Saving...</span>
                   </button>
+                  <div class="text-danger small" style="min-height: 1.25rem">
+                    {{ saveMealError }}
+                  </div>
                 </div>
               </div>
             </div>

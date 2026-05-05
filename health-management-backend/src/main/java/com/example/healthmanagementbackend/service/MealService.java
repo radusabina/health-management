@@ -39,6 +39,7 @@ public class MealService {
         this.calorieNinjasClient = calorieNinjasClient;
     }
 
+    @Transactional
     public Meal addMeal(MealType mealType, String description, UUID userId, List<MealItemRequest> items) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoUserFoundException("No user found"));
@@ -66,6 +67,7 @@ public class MealService {
         return meal;
     }
 
+    @Transactional
     public void updateMeal(UUID mealId, MealType mealType, String description) {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new NoMealFoundException("No meal found"));

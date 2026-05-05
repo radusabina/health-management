@@ -3,6 +3,9 @@ package com.example.healthmanagementbackend.controller;
 import com.example.healthmanagementbackend.exception.NoDailyGoalFoundException;
 import com.example.healthmanagementbackend.model.DailyGoal;
 import com.example.healthmanagementbackend.service.DailyGoalService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
@@ -70,7 +73,7 @@ public class DailyGoalController {
     }
 
     @PutMapping
-    public ResponseEntity<DailyGoalDto> update(@RequestBody UpdateDailyGoalRequest req) {
+    public ResponseEntity<DailyGoalDto> update(@Valid @RequestBody UpdateDailyGoalRequest req) {
         return ResponseEntity.ok(mapToDailyGoalDto(
                 dailyGoalService.updateDailyGoal(req.id(), req.caloriesDone(), req.waterDone())));
     }
@@ -112,7 +115,11 @@ public class DailyGoalController {
                 .build();
     }
 
-    public record UpdateDailyGoalRequest(UUID id, Integer caloriesDone, Integer waterDone) {}
+    public record UpdateDailyGoalRequest(
+            @NotNull UUID id,
+            @NotNull @Min(value = 0, message = "caloriesDone cannot be negative") Integer caloriesDone,
+            @NotNull @Min(value = 0, message = "waterDone cannot be negative") Integer waterDone
+    ) {}
 
     public record DailyGoalRequest(UUID userId, UUID generalGoalId, LocalDate date) {}
 
