@@ -331,7 +331,10 @@
                 </div>
 
                 <div class="text-center small text-muted mt-3">
-                  1 glass = 250ml &nbsp;·&nbsp; 1 bottle = {{ generalGoal.bottleAmountMl }}ml
+                  1 glass = 250ml 
+                </div>
+                <div class="text-center small text-muted mt-3">
+                  1 bottle = {{ generalGoal.bottleAmountMl }}ml
                 </div>
               </div>
             </div>
@@ -382,7 +385,7 @@
                     💡 For best accuracy, weigh yourself once a week, in the morning, on an empty stomach, after using the bathroom.
                   </p>
 
-                  <div class="mt-auto d-flex gap-2 align-items-center justify-content-center">
+                  <div class="mt-auto d-flex gap-2 align-items-center">
                     <input
                       type="number"
                       class="form-control w-50"
@@ -401,7 +404,7 @@
                     </button>
                   </div>
 
-                  <div *ngIf="dailyGoal?.todayWeight !== null && dailyGoal?.todayWeight !== undefined" class="text-center small text-muted mt-2">
+                  <div *ngIf="dailyGoal?.todayWeight !== null && dailyGoal?.todayWeight !== undefined" class="small text-muted mt-2">
                     Logged today: {{ dailyGoal!.todayWeight }} kg
                   </div>
                 </div>

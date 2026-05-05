@@ -92,7 +92,6 @@ export class DashboardComponent implements OnInit {
       next: (goal: IDailyGoal) => {
         this.dailyGoal = goal;
         this.dailyGoal.waterDone = this.dailyGoal.waterDone / 1000;
-        this.todayWeightInput = goal.todayWeight ?? null;
       },
       error: (err: any) => {
         console.error('getTodayDailyGoal failed:', err);
