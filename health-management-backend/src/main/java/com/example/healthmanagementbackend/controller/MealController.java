@@ -119,6 +119,7 @@ public class MealController {
         }
 
         return MealDto.builder()
+                .id(meal.getId())
                 .mealType(meal.getMealType())
                 .description(meal.getDescription())
                 .date(meal.getDate())
@@ -166,6 +167,7 @@ public class MealController {
 
     @Getter @Setter @Builder
     public static class MealDto {
+        private UUID id;
         private MealType mealType;
         private String description;
         private LocalDate date;

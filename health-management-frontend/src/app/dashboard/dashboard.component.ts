@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
   showGoalModal = false;
   showEditGoalModal = false;
   todayWeightInput: number | null = null;
+  mealPendingDelete: IMeal | null = null;
   user: IUser | null = null;
   isNewUser = false;
   meals: IMeal[] = [];
@@ -219,6 +220,28 @@ export class DashboardComponent implements OnInit {
           console.error('updateTodayWeight failed:', err);
         },
       });
+  }
+
+  confirmDeleteMeal(meal: IMeal): void {
+    this.mealPendingDelete = meal;
+  }
+
+  cancelDeleteMeal(): void {
+    this.mealPendingDelete = null;
+  }
+
+  deleteMeal(): void {
+    if (!this.mealPendingDelete) return;
+    this.mealService.deleteMeal(this.mealPendingDelete.id).subscribe({
+      next: () => {
+        this.mealPendingDelete = null;
+        this.refreshDashboard();
+      },
+      error: (err) => {
+        console.error('deleteMeal failed:', err);
+        this.mealPendingDelete = null;
+      },
+    });
   }
 
   // dashboard refresh
