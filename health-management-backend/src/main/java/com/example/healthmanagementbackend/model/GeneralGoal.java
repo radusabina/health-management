@@ -46,6 +46,9 @@ public class GeneralGoal {
     @Column(name = "weight_target")
     private int weightTarget;
 
+    @Column(name = "bottle_amount_ml")
+    private int bottleAmountMl;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

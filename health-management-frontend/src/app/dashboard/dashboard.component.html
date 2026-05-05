@@ -250,14 +250,14 @@
 
                       <button
                         class="btn btn-outline-fitbite w-100"
-                        (click)="addWater(500)"
+                        (click)="addWater(generalGoal.bottleAmountMl)"
                       >
                         +1 bottle
                       </button>
 
                       <button
                         class="btn btn-outline-fitbite w-100"
-                        (click)="addWater(1000)"
+                        (click)="addWater(generalGoal.bottleAmountMl * 2)"
                       >
                         +2 bottles
                       </button>
@@ -277,7 +277,7 @@
 
                       <button
                         class="btn btn-outline-danger w-100"
-                        (click)="addWater(-500)"
+                        (click)="addWater(-generalGoal.bottleAmountMl)"
                         [disabled]="dailyGoal.waterDone <= 0"
                       >
                         -1 bottle
@@ -299,14 +299,14 @@
 
                   <button
                     class="btn btn-outline-fitbite w-75 water-action-btn"
-                    (click)="addWater(500)"
+                    (click)="addWater(generalGoal.bottleAmountMl)"
                   >
                     +1 bottle
                   </button>
 
                   <button
                     class="btn btn-outline-fitbite w-75 water-action-btn"
-                    (click)="addWater(1000)"
+                    (click)="addWater(generalGoal.bottleAmountMl * 2)"
                   >
                     +2 bottles
                   </button>
@@ -323,7 +323,7 @@
 
                   <button
                     class="btn btn-outline-danger w-75 water-action-btn"
-                    (click)="addWater(-500)"
+                    (click)="addWater(-generalGoal.bottleAmountMl)"
                     [disabled]="dailyGoal.waterDone <= 0"
                   >
                     -1 bottle
@@ -331,7 +331,7 @@
                 </div>
 
                 <div class="text-center small text-muted mt-3">
-                  1 glass = 250ml
+                  1 glass = 250ml &nbsp;·&nbsp; 1 bottle = {{ generalGoal.bottleAmountMl }}ml
                 </div>
               </div>
             </div>

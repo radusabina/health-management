@@ -24,4 +24,6 @@ public class UpdateGeneralGoalForUserRequest {
 
     @NotBlank(message = "Weight target must not be blank")
     private int weightTarget;
+
+    private int bottleAmountMl;
 }

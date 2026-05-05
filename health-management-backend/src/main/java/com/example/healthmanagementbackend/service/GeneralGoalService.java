@@ -30,7 +30,7 @@ public class GeneralGoalService {
         this.userRepository = userRepository;
     }
 
-    public GeneralGoal addGeneralGoal(UUID userId, int calorieGoal, int waterGoal, int weightTarget) {
+    public GeneralGoal addGeneralGoal(UUID userId, int calorieGoal, int waterGoal, int weightTarget, int bottleAmountMl) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoUserFoundException("No user found"));
 
@@ -39,11 +39,14 @@ public class GeneralGoalService {
             return existingGeneralGoal;
         }
 
+        int resolvedBottleAmount = bottleAmountMl > 0 ? bottleAmountMl : 500;
+
         GeneralGoal generalGoal = GeneralGoal.builder()
                 .user(user)
                 .calorieGoal(calorieGoal)
                 .waterGoal(waterGoal)
                 .weightTarget(weightTarget)
+                .bottleAmountMl(resolvedBottleAmount)
                 .updatedAt(LocalDateTime.now())
                 .build();
 
@@ -61,13 +64,14 @@ public class GeneralGoalService {
                 .orElseThrow(() -> new NoGeneralGoalFoundException("No general goal found"));
     }
 
-    public void updateGeneralGoal(UUID generalGoalId, int calorieGoal, int waterGoal, int weightTarget) {
+    public void updateGeneralGoal(UUID generalGoalId, int calorieGoal, int waterGoal, int weightTarget, int bottleAmountMl) {
         GeneralGoal generalGoal = generalGoalRepository.findById(generalGoalId)
                 .orElseThrow(() -> new NoGeneralGoalFoundException("No general goal found"));
 
         generalGoal.setCalorieGoal(calorieGoal);
         generalGoal.setWaterGoal(waterGoal);
         generalGoal.setWeightTarget(weightTarget);
+        generalGoal.setBottleAmountMl(bottleAmountMl > 0 ? bottleAmountMl : 500);
         generalGoal.setUpdatedAt(LocalDateTime.now());
 
         generalGoalRepository.save(generalGoal);
@@ -83,12 +87,13 @@ public class GeneralGoalService {
         return getGeneralGoalForUser(userId);
     }
 
-    public void updateGeneralGoalForUser(UUID userId, int calorieGoal, int waterGoal, int weightTarget) {
+    public void updateGeneralGoalForUser(UUID userId, int calorieGoal, int waterGoal, int weightTarget, int bottleAmountMl) {
         GeneralGoal generalGoal = getGeneralGoalForUser(userId);
 
         generalGoal.setCalorieGoal(calorieGoal);
         generalGoal.setWaterGoal(waterGoal);
         generalGoal.setWeightTarget(weightTarget);
+        generalGoal.setBottleAmountMl(bottleAmountMl > 0 ? bottleAmountMl : 500);
         generalGoal.setUpdatedAt(LocalDateTime.now());
 
         generalGoalRepository.save(generalGoal);

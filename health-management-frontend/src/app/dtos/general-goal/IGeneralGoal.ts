@@ -3,4 +3,5 @@ export interface IGeneralGoal {
   calorieGoal: number;
   waterGoal: number;
   weightTarget: number;
+  bottleAmountMl: number;
 }

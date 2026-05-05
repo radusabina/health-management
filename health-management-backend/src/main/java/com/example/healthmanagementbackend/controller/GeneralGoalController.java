@@ -36,7 +36,8 @@ public class GeneralGoalController {
         try {
             boolean alreadyExists = generalGoalService.existsForUser(request.getUserId());
             GeneralGoal generalGoal = generalGoalService.addGeneralGoal(request.getUserId(),
-                    request.getCalorieGoal(), request.getWaterGoal(), request.getWeightTarget());
+                    request.getCalorieGoal(), request.getWaterGoal(), request.getWeightTarget(),
+                    request.getBottleAmountMl());
 
             return new ResponseEntity<>(mapToGeneralGoalDto(generalGoal), alreadyExists ? HttpStatus.OK : HttpStatus.CREATED);
         } catch (Exception e) {
@@ -48,7 +49,7 @@ public class GeneralGoalController {
     public ResponseEntity<Object> update(@RequestBody UpdateGeneralGoalRequest request) {
         try {
             generalGoalService.updateGeneralGoal(request.getGeneralGoalId(), request.getCalorieGoal(),
-                    request.getWaterGoal(), request.getWeightTarget());
+                    request.getWaterGoal(), request.getWeightTarget(), request.getBottleAmountMl());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
@@ -79,7 +80,7 @@ public class GeneralGoalController {
     public ResponseEntity<Object> updateGeneralGoalForUser(@RequestBody UpdateGeneralGoalForUserRequest req) {
         try {
             generalGoalService.updateGeneralGoalForUser(req.getUserId(), req.getCalorieGoal(),
-                    req.getWaterGoal(), req.getWeightTarget());
+                    req.getWaterGoal(), req.getWeightTarget(), req.getBottleAmountMl());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return handleException(e);
@@ -116,7 +117,9 @@ public class GeneralGoalController {
                 .id(generalGoal.getId())
                 .calorieGoal(generalGoal.getCalorieGoal())
                 .waterGoal(generalGoal.getWaterGoal())
-                .weightTarget(generalGoal.getWeightTarget()).build();
+                .weightTarget(generalGoal.getWeightTarget())
+                .bottleAmountMl(generalGoal.getBottleAmountMl())
+                .build();
     }
 
     @NoArgsConstructor @AllArgsConstructor
@@ -126,6 +129,7 @@ public class GeneralGoalController {
         private int calorieGoal;
         private int waterGoal;
         private int weightTarget;
+        private int bottleAmountMl;
     }
 
     @NoArgsConstructor @AllArgsConstructor
@@ -135,6 +139,7 @@ public class GeneralGoalController {
         private int calorieGoal;
         private int waterGoal;
         private int weightTarget;
+        private int bottleAmountMl;
     }
 
     @NoArgsConstructor @AllArgsConstructor
@@ -144,6 +149,7 @@ public class GeneralGoalController {
         private int calorieGoal;
         private int waterGoal;
         private int weightTarget;
+        private int bottleAmountMl;
     }
 
 }

@@ -25,6 +25,7 @@ export class AddGeneralGoalComponent {
     calorieGoal: null,
     waterGoal: null,
     weightTarget: null,
+    bottleAmountMl: null,
   };
 
   onClose(): void {
@@ -53,6 +54,7 @@ export class AddGeneralGoalComponent {
       calorieGoal: null,
       waterGoal: null,
       weightTarget: null,
+      bottleAmountMl: null,
     };
   }
 }
