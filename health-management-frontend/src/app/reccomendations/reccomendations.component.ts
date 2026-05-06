@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { RecommendationService } from '../services/recommendation/recommendation.service';
 import { IRecommendation } from '../dtos/recommendation/IRecommendation';
@@ -26,7 +27,10 @@ export class ReccomendationsComponent implements OnInit {
   expandedCards = new Set<number>();
   activeTab: Record<number, 'ingredients' | 'steps'> = {};
 
-  constructor(private recommendationService: RecommendationService) {}
+  constructor(
+    private recommendationService: RecommendationService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.loadRandom();
@@ -86,6 +90,12 @@ export class ReccomendationsComponent implements OnInit {
     this.expandedCards.clear();
     this.activeTab = {};
     this.loadRandom();
+  }
+
+  goToDetails(rec: IRecommendation): void {
+    this.router.navigate(['/recommendations', rec.spoonacularId], {
+      state: { recommendation: rec },
+    });
   }
 
   toggleCard(id: number): void {

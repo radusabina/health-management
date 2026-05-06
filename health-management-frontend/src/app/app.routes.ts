@@ -7,6 +7,7 @@ import { UpdateUserComponent } from './update-user/update-user.component';
 import { OverviewComponent } from './overview/overview.component';
 import { StartPageComponent } from './start-page/start-page.component';
 import { ReccomendationsComponent } from './reccomendations/reccomendations.component';
+import { ReccomendationDetailsComponent } from './reccomendation-details/reccomendation-details.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'start', pathMatch: 'full'},
@@ -18,4 +19,5 @@ export const routes: Routes = [
   { path: 'overview', component: OverviewComponent },
   { path: 'start', component: StartPageComponent },
   { path: 'recommendations', component: ReccomendationsComponent },
+  { path: 'recommendations/:id', component: ReccomendationDetailsComponent },
 ];

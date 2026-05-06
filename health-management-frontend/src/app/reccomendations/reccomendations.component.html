@@ -87,73 +87,69 @@
     </div>
 
     <!-- LOADING SKELETON -->
-    <div *ngIf="isLoading" class="row g-3">
-      <div class="col-12 col-md-6 col-xl-4" *ngFor="let _ of [1,2,3,4,5,6]">
-        <div class="card content-card recs-glass border-0 h-100 skeleton-card">
-          <div class="skeleton-img"></div>
-          <div class="p-3">
-            <div class="skeleton-line w-75 mb-2"></div>
-            <div class="skeleton-line w-50 mb-2"></div>
-            <div class="skeleton-line w-25"></div>
-          </div>
+    <div *ngIf="isLoading" class="d-flex flex-column gap-3">
+      <div class="recs-card skeleton-card d-flex" *ngFor="let _ of [1,2,3,4,5]">
+        <div class="skeleton-img recs-row-img flex-shrink-0"></div>
+        <div class="p-3 flex-grow-1">
+          <div class="skeleton-line w-50 mb-2"></div>
+          <div class="skeleton-line w-75 mb-2"></div>
+          <div class="skeleton-line w-25"></div>
         </div>
       </div>
     </div>
 
-    <!-- RESULTS GRID -->
-    <div *ngIf="!isLoading && recommendations.length > 0" class="row g-3">
-      <div
-        class="col-12 col-md-6 col-xl-4"
-        *ngFor="let rec of recommendations"
-      >
-        <div class="card recs-card border-0 h-100 d-flex flex-column">
+    <!-- RESULTS LIST -->
+    <div *ngIf="!isLoading && recommendations.length > 0" class="d-flex flex-column gap-3">
+      <div class="recs-card border-0" *ngFor="let rec of recommendations">
 
-          <!-- RECIPE IMAGE -->
-          <div class="recs-img-wrapper">
+        <!-- ROW: image left, content right -->
+        <div class="d-flex flex-column flex-md-row">
+
+          <!-- IMAGE -->
+          <div class="recs-row-img-wrapper flex-shrink-0">
             <img
               *ngIf="rec.imageUrl"
               [src]="rec.imageUrl"
               [alt]="rec.title"
-              class="recs-img"
+              class="recs-row-img"
               loading="lazy"
             />
-            <div *ngIf="!rec.imageUrl" class="recs-img-placeholder d-flex align-items-center justify-content-center">
+            <div *ngIf="!rec.imageUrl" class="recs-row-img recs-img-placeholder d-flex align-items-center justify-content-center">
               <i class="bi bi-image text-muted fs-1"></i>
             </div>
 
             <!-- cuisine badges -->
             <div *ngIf="rec.cuisines?.length" class="recs-cuisine-badges">
-              <span
-                *ngFor="let c of rec.cuisines.slice(0, 2)"
-                class="badge recs-badge-cuisine"
-              >{{ c }}</span>
+              <span *ngFor="let c of rec.cuisines.slice(0, 2)" class="badge recs-badge-cuisine">{{ c }}</span>
             </div>
           </div>
 
-          <!-- CARD BODY -->
-          <div class="p-3 d-flex flex-column flex-grow-1">
+          <!-- CONTENT -->
+          <div class="p-3 p-md-4 d-flex flex-column flex-grow-1 min-w-0">
 
-            <!-- title -->
-            <h6 class="fw-semibold mb-2 recs-title">{{ rec.title }}</h6>
+            <!-- title + details -->
+            <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+              <h5 class="fw-semibold mb-0 recs-row-title">{{ rec.title }}</h5>
+              <button
+                class="btn btn-sm btn-outline-fitbite flex-shrink-0"
+                (click)="goToDetails(rec)"
+              >
+                <i class="bi bi-arrow-right-circle me-1"></i>Details
+              </button>
+            </div>
 
-            <!-- quick stats row -->
+            <!-- quick stats -->
             <div class="d-flex flex-wrap gap-2 mb-3">
-              <span class="recs-stat">
-                <i class="bi bi-clock me-1"></i>{{ rec.readyInMinutes }} min
-              </span>
-              <span class="recs-stat">
-                <i class="bi bi-people me-1"></i>{{ rec.servings }} servings
-              </span>
-              <span class="recs-stat">
-                <i class="bi bi-fire me-1"></i>{{ rec.totalCalories | number:'1.0-0' }} kcal
-              </span>
+              <span class="recs-stat"><i class="bi bi-clock me-1"></i>{{ rec.readyInMinutes }} min</span>
+              <span class="recs-stat"><i class="bi bi-people me-1"></i>{{ rec.servings }} servings</span>
+              <span class="recs-stat"><i class="bi bi-fire me-1"></i>{{ rec.totalCalories | number:'1.0-0' }} kcal</span>
               <span class="recs-stat" [ngClass]="healthScoreColor(rec.healthScore)">
                 <i class="bi bi-heart-pulse me-1"></i>{{ rec.healthScore | number:'1.0-0' }}
               </span>
             </div>
 
             <!-- macros bar -->
-            <div class="mb-3">
+            <div class="mb-2">
               <div class="d-flex justify-content-between small text-muted mb-1">
                 <span>Protein {{ rec.percentProtein | number:'1.0-0' }}%</span>
                 <span>Fat {{ rec.percentFat | number:'1.0-0' }}%</span>
@@ -161,77 +157,20 @@
               </div>
               <div class="recs-macro-bar">
                 <div class="recs-macro-protein" [style.width.%]="rec.percentProtein"></div>
-                <div class="recs-macro-fat" [style.width.%]="rec.percentFat"></div>
-                <div class="recs-macro-carbs" [style.width.%]="rec.percentCarbs"></div>
+                <div class="recs-macro-fat"     [style.width.%]="rec.percentFat"></div>
+                <div class="recs-macro-carbs"   [style.width.%]="rec.percentCarbs"></div>
               </div>
             </div>
 
-            <!-- expand / collapse toggle -->
-            <button
-              class="btn btn-sm btn-outline-fitbite mt-auto w-100"
-              (click)="toggleCard(rec.spoonacularId)"
-            >
-              <i class="bi" [ngClass]="isExpanded(rec.spoonacularId) ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
-              {{ isExpanded(rec.spoonacularId) ? 'Less' : 'More details' }}
-            </button>
-
-            <!-- EXPANDED DETAILS -->
-            <div *ngIf="isExpanded(rec.spoonacularId)" class="recs-details mt-3">
-
-              <!-- summary -->
-              <p *ngIf="rec.summary" class="small text-muted recs-summary mb-3">
-                {{ stripHtml(rec.summary) | slice:0:220 }}…
-              </p>
-
-              <!-- tabs -->
-              <div class="recs-tabs mb-3">
-                <button
-                  class="recs-tab"
-                  [class.active]="activeTab[rec.spoonacularId] === 'ingredients'"
-                  (click)="setTab(rec.spoonacularId, 'ingredients')"
-                >
-                  <i class="bi bi-basket me-1"></i>Ingredients
-                </button>
-                <button
-                  class="recs-tab"
-                  [class.active]="activeTab[rec.spoonacularId] === 'steps'"
-                  (click)="setTab(rec.spoonacularId, 'steps')"
-                >
-                  <i class="bi bi-list-ol me-1"></i>Steps
-                </button>
-              </div>
-
-              <!-- INGREDIENTS TAB -->
-              <div *ngIf="activeTab[rec.spoonacularId] === 'ingredients'">
-                <ul class="list-unstyled mb-0 recs-ingredient-list">
-                  <li *ngFor="let ing of rec.ingredients" class="recs-ingredient-item">
-                    <i class="bi bi-dot"></i>
-                    <span class="fw-medium">{{ ing.name }}</span>
-                    <span class="text-muted ms-1">
-                      {{ ing.amount | number:'1.0-2' }}{{ ing.unit ? ' ' + ing.unit : '' }}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- STEPS TAB -->
-              <div *ngIf="activeTab[rec.spoonacularId] === 'steps'">
-                <ol class="recs-steps-list ps-3 mb-0">
-                  <li *ngFor="let step of rec.steps" class="recs-step-item mb-2">
-                    {{ step.stepText }}
-                  </li>
-                </ol>
-              </div>
-
-            </div>
-            <!-- /expanded -->
 
           </div>
-          <!-- /card body -->
+          <!-- /content -->
         </div>
+        <!-- /row -->
+
       </div>
     </div>
-    <!-- /grid -->
+    <!-- /list -->
 
     <!-- EMPTY STATE (after search) -->
     <div

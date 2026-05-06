@@ -1,0 +1,138 @@
+<app-navbar></app-navbar>
+
+<div class="min-vh-100 bg-fitbite">
+  <div class="container py-4">
+
+    <!-- NOT FOUND -->
+    <div *ngIf="!rec" class="det-glass p-5 text-center">
+      <i class="bi bi-exclamation-circle fs-1 text-muted mb-3 d-block"></i>
+      <h5 class="text-muted">Recipe not found</h5>
+      <p class="text-muted small mb-4">The recipe data could not be loaded. Please go back and try again.</p>
+      <button class="btn btn-outline-secondary" (click)="goBack()">Go back</button>
+    </div>
+
+    <!-- DETAILS CARD -->
+    <div *ngIf="rec" class="det-glass overflow-hidden">
+
+      <!-- BACK BUTTON -->
+      <button class="btn btn-outline-secondary btn-sm m-4 d-inline-flex align-items-center gap-2" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back to Recommendations
+      </button>
+
+      <!-- BODY -->
+      <div class="p-4">
+
+        <!-- TITLE -->
+        <h2 class="fw-bold mb-3">{{ rec.title }}</h2>
+
+        <!-- QUICK STATS ROW -->
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <div class="d-flex align-items-center bg-white bg-opacity-75 border rounded-3 px-3 py-2 shadow-sm">
+            <i class="bi bi-clock-history me-2 text-muted"></i>
+            <span class="text-muted small me-1">ready in</span>
+            <span class="fw-semibold">{{ rec.readyInMinutes }} min</span>
+          </div>
+          <div class="d-flex align-items-center bg-white bg-opacity-75 border rounded-3 px-3 py-2 shadow-sm">
+            <i class="bi bi-people me-2 text-muted"></i>
+            <span class="fw-semibold me-1">{{ rec.servings }}</span>
+            <span class="text-muted small">serving(s)</span>
+          </div>
+          <div class="d-flex align-items-center bg-white bg-opacity-75 border rounded-3 px-3 py-2 shadow-sm">
+            <i class="bi bi-fire me-2 text-muted"></i>
+            <span class="fw-semibold me-1">{{ rec.totalCalories | number:'1.0-0' }} kcal</span>
+            <span class="text-muted small">total / serving</span>
+          </div>
+          <div class="d-flex align-items-center bg-white bg-opacity-75 border rounded-3 px-3 py-2 shadow-sm" [ngClass]="healthScoreColor(rec.healthScore)">
+            <i class="bi bi-heart-pulse me-2"></i>
+            <span class="fw-semibold me-1">{{ rec.healthScore | number:'1.0-0' }}</span>
+            <span class="small">health score</span>
+          </div>
+        </div>
+
+        <!-- MACRO SECTION -->
+        <div class="bg-white bg-opacity-50 border rounded-3 p-3 mb-4">
+          <h6 class="text-uppercase fw-bold small text-secondary mb-3">
+            <i class="bi bi-pie-chart me-2"></i>Macros
+          </h6>
+          <div class="d-flex flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2 bg-white bg-opacity-75 border rounded-3 px-3 py-2">
+              <span class="det-macro-dot det-macro-dot--protein"></span>
+              <div>
+                <div class="fw-semibold small">Protein</div>
+                <div class="text-muted" style="font-size:0.75rem;">{{ rec.percentProtein | number:'1.0-1' }}%</div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 bg-white bg-opacity-75 border rounded-3 px-3 py-2">
+              <span class="det-macro-dot det-macro-dot--fat"></span>
+              <div>
+                <div class="fw-semibold small">Fat</div>
+                <div class="text-muted" style="font-size:0.75rem;">{{ rec.percentFat | number:'1.0-1' }}%</div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 bg-white bg-opacity-75 border rounded-3 px-3 py-2">
+              <span class="det-macro-dot det-macro-dot--carbs"></span>
+              <div>
+                <div class="fw-semibold small">Carbs</div>
+                <div class="text-muted" style="font-size:0.75rem;">{{ rec.percentCarbs | number:'1.0-1' }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div *ngIf="rec.summary" class="bg-white bg-opacity-50 border rounded-3 p-3 mb-4">
+          <h6 class="text-uppercase fw-bold small text-secondary mb-2">
+            <i class="bi bi-info-circle me-2"></i>About this recipe
+          </h6>
+          <p class="text-muted small mb-0 lh-lg">{{ stripHtml(rec.summary) }}</p>
+        </div>
+
+        <!-- INGREDIENTS & STEPS TWO-COLUMN -->
+        <div class="row g-4">
+
+          <!-- LEFT: INGREDIENTS -->
+          <div class="col-12 col-md-5">
+            <div class="bg-white bg-opacity-50 border rounded-3 p-3 h-100">
+              <h6 class="text-uppercase fw-bold small text-secondary mb-3">
+                <i class="bi bi-basket me-2"></i>Ingredients
+                <span class="badge ms-2 text-bg-success bg-opacity-25">{{ rec.ingredients.length }}</span>
+              </h6>
+              <ul class="list-unstyled d-flex flex-column gap-1 mb-0">
+                <li *ngFor="let ing of rec.ingredients" class="det-ingredient-item d-flex align-items-center gap-2 px-2 py-1 rounded small">
+                  <span class="det-ingredient-dot flex-shrink-0"></span>
+                  <span class="fw-medium">{{ ing.name }}</span>
+                  <span class="text-muted ms-auto">
+                    {{ ing.amount | number:'1.0-2' }}{{ ing.unit ? ' ' + ing.unit : '' }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- RIGHT: INSTRUCTIONS -->
+          <div class="col-12 col-md-7">
+            <div class="bg-white bg-opacity-50 border rounded-3 p-3 h-100">
+              <h6 class="text-uppercase fw-bold small text-secondary mb-3">
+                <i class="bi bi-list-ol me-2"></i>Instructions
+                <span class="badge ms-2 text-bg-success bg-opacity-25">{{ rec.steps.length }} steps</span>
+              </h6>
+              <ol class="list-unstyled mb-0">
+                <li *ngFor="let step of rec.steps; last as isLast" class="d-flex align-items-start gap-3 py-3 border-bottom" [class.border-bottom-0]="isLast">
+                  <span class="det-step-number flex-shrink-0">{{ step.stepNumber }}</span>
+                  <p class="mb-0 small lh-lg">{{ step.stepText }}</p>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+        </div>
+        <!-- /two-column -->
+
+      </div>
+      <!-- /body -->
+
+    </div>
+    <!-- /details card -->
+
+  </div>
+</div>
