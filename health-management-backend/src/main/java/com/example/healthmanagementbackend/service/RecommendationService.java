@@ -6,11 +6,13 @@ import com.example.healthmanagementbackend.model.Recommendation;
 import com.example.healthmanagementbackend.model.RecommendationIngredient;
 import com.example.healthmanagementbackend.model.RecommendationStep;
 import com.example.healthmanagementbackend.repository.RecommendationRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -29,27 +31,32 @@ public class RecommendationService {
         this.recommendationRepository = recommendationRepository;
     }
 
-    /**
-     * Returns up to 10 recipe recommendations.
-     * Each recipe is looked up in the DB cache by its Spoonacular id first.
-     *
-     * @param includeIngredients comma-separated required ingredients
-     * @param excludeIngredients comma-separated excluded ingredients (nullable)
-     * @param maxCalories        max calories per serving (nullable)
-     */
+    private static final int CACHE_HIT_THRESHOLD = 5;
+    private static final int MAX_CACHE_RESULTS   = 50;
+
     @Transactional
     public List<Recommendation> getRecommendations(String includeIngredients,
                                                     String excludeIngredients,
                                                     Integer maxCalories) {
+        List<String> ingredientNames = parseIngredients(includeIngredients);
+
+        List<Recommendation> cached = recommendationRepository.findByAnyIngredient(
+                ingredientNames, PageRequest.of(0, MAX_CACHE_RESULTS));
+
+        if (cached.size() >= CACHE_HIT_THRESHOLD) {
+            LOGGER.info("Cache satisfied: " + cached.size() + " recommendations found for " + ingredientNames);
+            return cached;
+        }
+
+        LOGGER.info("Cache miss (" + cached.size() + " found), querying Spoonacular for " + ingredientNames);
         List<SpoonacularRecipe> recipes =
                 spoonacularClient.searchRecipes(includeIngredients, excludeIngredients, maxCalories);
 
         List<Recommendation> result = new ArrayList<>();
         for (SpoonacularRecipe recipe : recipes) {
-            Optional<Recommendation> cached = recommendationRepository.findBySpoonacularId(recipe.getId());
-            if (cached.isPresent()) {
-                LOGGER.info("Cache hit for Spoonacular recipe id=" + recipe.getId());
-                result.add(cached.get());
+            Optional<Recommendation> existing = recommendationRepository.findBySpoonacularId(recipe.getId());
+            if (existing.isPresent()) {
+                result.add(existing.get());
             } else {
                 result.add(mapAndSave(recipe));
             }
@@ -57,7 +64,15 @@ public class RecommendationService {
         return result;
     }
 
-    // ── private helpers ───────────────────────────────────────────────────────
+    // private helpers
+    private List<String> parseIngredients(String includeIngredients) {
+        if (includeIngredients == null || includeIngredients.isBlank()) return List.of();
+        return Arrays.stream(includeIngredients.split(","))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .filter(s -> !s.isEmpty())
+                .toList();
+    }
 
     private Recommendation mapAndSave(SpoonacularRecipe recipe) {
         Recommendation recommendation = Recommendation.builder()
