@@ -1,6 +1,6 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
+import com.example.healthmanagementbackend.api.dto.MealItemResponse;
 import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.model.Meal;
 import com.example.healthmanagementbackend.model.MealItem;

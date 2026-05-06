@@ -1,4 +1,4 @@
-package com.example.healthmanagementbackend.apininjas.dto;
+package com.example.healthmanagementbackend.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

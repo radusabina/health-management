@@ -1,7 +1,7 @@
-package com.example.healthmanagementbackend.apininjas;
+package com.example.healthmanagementbackend.api;
 
-import com.example.healthmanagementbackend.apininjas.dto.FoodItemResponse;
-import com.example.healthmanagementbackend.apininjas.dto.MealItemResponse;
+import com.example.healthmanagementbackend.api.dto.FoodItemResponse;
+import com.example.healthmanagementbackend.api.dto.MealItemResponse;
 import com.example.healthmanagementbackend.exception.MealNotRecognizedException;
 import com.example.healthmanagementbackend.model.FoodItem;
 import com.example.healthmanagementbackend.repository.FoodItemRepository;
