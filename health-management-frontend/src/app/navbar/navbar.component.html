@@ -47,6 +47,16 @@
         </li>
         <li class="nav-item">
           <a
+            class="nav-link me-lg-2 fs-5 text-dark nav-pill"
+            routerLink="/recommendations"
+            routerLinkActive="nav-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Recommendations
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
             class="nav-link text-dark p-0 border-0 bg-transparent fs-5 nav-pill profile-link"
             routerLink="/profile"
             routerLinkActive="nav-active"

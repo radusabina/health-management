@@ -26,6 +26,19 @@ public class RecommendationController {
     }
 
     /**
+     * GET /api/recommendations/random?count=25
+     * Returns randomly ordered cached recommendations for the initial page load.
+     */
+    @GetMapping("/random")
+    public ResponseEntity<List<RecommendationDto>> getRandomRecommendations(
+            @RequestParam(defaultValue = "25") int count) {
+
+        return ResponseEntity.ok(
+                recommendationService.getRandomCached(count)
+                        .stream().map(this::mapToDto).toList());
+    }
+
+    /**
      * GET /api/recommendations
      *
      * @param includeIngredients comma-separated ingredients to include (required)

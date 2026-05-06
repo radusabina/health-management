@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -95,6 +96,17 @@ public class RecommendationService {
         recommendation.setSteps(buildSteps(recipe, recommendation));
 
         return recommendationRepository.save(recommendation);
+    }
+
+    /**
+     * Returns up to {@code count} randomly ordered cached recommendations.
+     * Used for the initial page load before the user performs a search.
+     */
+    @Transactional(readOnly = true)
+    public List<Recommendation> getRandomCached(int count) {
+        List<Recommendation> all = new ArrayList<>(recommendationRepository.findAll());
+        Collections.shuffle(all);
+        return all.stream().limit(count).toList();
     }
 
     private double extractTotalCalories(SpoonacularRecipe recipe) {
