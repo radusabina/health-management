@@ -27,6 +27,52 @@ export class ReccomendationsComponent implements OnInit {
   expandedCards = new Set<number>();
   activeTab: Record<number, 'ingredients' | 'steps'> = {};
 
+  // client-side filters
+  showFilters = false;
+  filterMaxCalories: number | null = null;
+  filterMinHealthScore: number | null = null;
+  filterMaxReadyTime: number | null = null;
+  sortBy: 'none' | 'calories-asc' | 'calories-desc' | 'health-desc' | 'time-asc' = 'none';
+
+  get filteredRecommendations(): IRecommendation[] {
+    let result = [...this.recommendations];
+
+    if (this.filterMaxCalories != null) {
+      result = result.filter(r => r.totalCalories <= this.filterMaxCalories!);
+    }
+    if (this.filterMinHealthScore != null) {
+      result = result.filter(r => r.healthScore >= this.filterMinHealthScore!);
+    }
+    if (this.filterMaxReadyTime != null) {
+      result = result.filter(r => r.readyInMinutes <= this.filterMaxReadyTime!);
+    }
+
+    switch (this.sortBy) {
+      case 'calories-asc':  result.sort((a, b) => a.totalCalories - b.totalCalories); break;
+      case 'calories-desc': result.sort((a, b) => b.totalCalories - a.totalCalories); break;
+      case 'health-desc':   result.sort((a, b) => b.healthScore - a.healthScore); break;
+      case 'time-asc':      result.sort((a, b) => a.readyInMinutes - b.readyInMinutes); break;
+    }
+
+    return result;
+  }
+
+  get activeFilterCount(): number {
+    let count = 0;
+    if (this.filterMaxCalories != null) count++;
+    if (this.filterMinHealthScore != null) count++;
+    if (this.filterMaxReadyTime != null) count++;
+    if (this.sortBy !== 'none') count++;
+    return count;
+  }
+
+  clearFilters(): void {
+    this.filterMaxCalories = null;
+    this.filterMinHealthScore = null;
+    this.filterMaxReadyTime = null;
+    this.sortBy = 'none';
+  }
+
   constructor(
     private recommendationService: RecommendationService,
     private router: Router,

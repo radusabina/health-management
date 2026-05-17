@@ -206,6 +206,11 @@
   line-height: 1.5;
 }
 
+/* ── filter bar ──────────────────────────────────────────────────── */
+.text-fitbite {
+  color: var(--fitbite-primary) !important;
+}
+
 /* ── skeleton loading ────────────────────────────────────────────── */
 .skeleton-card {
   pointer-events: none;

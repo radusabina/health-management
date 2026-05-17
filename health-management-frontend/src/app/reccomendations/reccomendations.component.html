@@ -63,21 +63,102 @@
             />
           </div>
 
-          <!-- submit -->
-          <div class="col-12 d-flex justify-content-end">
-            <button
-              type="submit"
-              class="btn btn-fitbite text-white px-4"
-              [disabled]="!includeIngredients.trim() || isLoading"
-            >
-              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
-              <i *ngIf="!isLoading" class="bi bi-search me-1"></i>
-              {{ isLoading ? 'Searching…' : 'Search' }}
-            </button>
+          <!-- submit + filter toggle -->
+          <div class="col-12 d-flex justify-content-between align-items-center gap-2 flex-wrap">
+            <!-- left: result count + clear filters -->
+            <div class="d-flex align-items-center gap-2">
+              <small *ngIf="!isLoading && recommendations.length > 0 && activeFilterCount > 0" class="text-muted">
+                {{ filteredRecommendations.length }} / {{ recommendations.length }} recipes
+              </small>
+              <button
+                *ngIf="!isLoading && activeFilterCount > 0"
+                type="button"
+                class="btn btn-sm btn-link p-0 text-muted"
+                (click)="clearFilters()"
+              >
+                <i class="bi bi-x me-1"></i>Clear filters
+              </button>
+            </div>
+
+            <!-- right: filter toggle + search (same height) -->
+            <div class="d-flex gap-2">
+              <button
+                *ngIf="!isLoading && recommendations.length > 0"
+                type="button"
+                class="btn px-4"
+                [class.btn-fitbite]="showFilters"
+                [class.text-white]="showFilters"
+                [class.btn-outline-secondary]="!showFilters"
+                (click)="showFilters = !showFilters"
+              >
+                <i class="bi bi-sliders me-1"></i>Filter &amp; Sort
+                <span *ngIf="activeFilterCount > 0" class="badge bg-white text-fitbite ms-1">{{ activeFilterCount }}</span>
+              </button>
+
+              <button
+                type="submit"
+                class="btn btn-fitbite text-white px-4"
+                [disabled]="!includeIngredients.trim() || isLoading"
+              >
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                <i *ngIf="!isLoading" class="bi bi-search me-1"></i>
+                {{ isLoading ? 'Searching…' : 'Search' }}
+              </button>
+            </div>
           </div>
 
         </div>
       </form>
+
+      <!-- collapsible filter inputs -->
+      <div *ngIf="showFilters && recommendations.length > 0" class="mt-3 pt-3 border-top">
+        <div class="row g-3">
+          <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label small text-muted">Max Calories</label>
+            <input
+              type="number"
+              class="form-control form-control-sm"
+              placeholder="e.g. 600"
+              [(ngModel)]="filterMaxCalories"
+              min="1"
+            />
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label small text-muted">Min Health Score</label>
+            <input
+              type="number"
+              class="form-control form-control-sm"
+              placeholder="e.g. 50"
+              [(ngModel)]="filterMinHealthScore"
+              min="0"
+              max="100"
+            />
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label small text-muted">Max Ready Time (min)</label>
+            <input
+              type="number"
+              class="form-control form-control-sm"
+              placeholder="e.g. 30"
+              [(ngModel)]="filterMaxReadyTime"
+              min="1"
+            />
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <label class="form-label small text-muted">Sort by</label>
+            <select class="form-select form-select-sm" [(ngModel)]="sortBy">
+              <option value="none">Default</option>
+              <option value="calories-asc">Calories ↑</option>
+              <option value="calories-desc">Calories ↓</option>
+              <option value="health-desc">Health Score ↓</option>
+              <option value="time-asc">Ready Time ↑</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ERROR MESSAGE -->
@@ -100,7 +181,21 @@
 
     <!-- RESULTS LIST -->
     <div *ngIf="!isLoading && recommendations.length > 0" class="d-flex flex-column gap-3">
-      <div class="recs-card border-0" *ngFor="let rec of recommendations">
+
+      <!-- filtered empty state -->
+      <div
+        *ngIf="filteredRecommendations.length === 0"
+        class="card content-card recs-glass border-0 p-5 text-center"
+      >
+        <i class="bi bi-funnel fs-1 text-muted mb-3 d-block"></i>
+        <h5 class="text-muted">No recipes match your filters</h5>
+        <p class="text-muted small mb-3">Try relaxing the filter values.</p>
+        <button class="btn btn-outline-secondary mx-auto" style="width:fit-content" (click)="clearFilters()">
+          Clear filters
+        </button>
+      </div>
+
+      <div class="recs-card border-0" *ngFor="let rec of filteredRecommendations">
 
         <!-- ROW: image left, content right -->
         <div class="d-flex flex-column flex-md-row">
