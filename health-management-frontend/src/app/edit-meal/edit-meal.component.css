@@ -41,3 +41,23 @@
   padding: 28px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
+
+/* Reserve space under inputs so validation errors don't shift the row */
+.field-error-slot {
+  min-height: 2.5rem;
+  margin-top: 0.25rem;
+  line-height: 1.25;
+}
+
+.meal-item-delete {
+  padding-top: 0.375rem;
+}
+
+.back-btn {
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  color: #343a40;
+}
