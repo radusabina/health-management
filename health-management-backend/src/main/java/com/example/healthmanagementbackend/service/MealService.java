@@ -68,8 +68,8 @@ public class MealService {
     }
 
     @Transactional
-    public void updateMeal(UUID mealId, MealType mealType, String description) {
-        Meal meal = mealRepository.findById(mealId)
+    public void updateMeal(UUID mealId, MealType mealType, String description, List<MealItemRequest> items) {
+        Meal meal = mealRepository.findMealById(mealId)
                 .orElseThrow(() -> new NoMealFoundException("No meal found"));
 
         meal.setMealType(mealType);
@@ -77,21 +77,8 @@ public class MealService {
         meal.setUpdatedAt(LocalDateTime.now());
         meal.getItems().clear();
 
-        List<MealItemResponse> itemsInMeal = calorieNinjasClient.getFoodItemsFromDescription(description);
-
-        for (MealItemResponse item : itemsInMeal) {
-            String normalizedName = normalize(item.getName());
-            FoodItem foodItem = foodItemRepository
-                    .findByNameIgnoreCase(normalizedName)
-                    .orElseGet(() -> calorieNinjasClient.fetchFoodItem(normalizedName));
-
-            MealItem mealItem = MealItem.builder()
-                    .foodItem(foodItem)
-                    .quantityGrams(item.getQuantityGrams())
-                    .build();
-
-            meal.getItems().add(mealItem);
-        }
+        List<MealItemRequest> itemsToSet = resolveItemsForUpdate(description, items);
+        setMealItems(itemsToSet, meal);
 
         mealRepository.save(meal);
         LOGGER.info("Operation=updateMeal, Message=Meal updated for userId=" + meal.getUser().getId());
@@ -119,7 +106,7 @@ public class MealService {
     }
 
     public Meal getMealById(UUID mealId) {
-        Meal meal = mealRepository.findById(mealId)
+        Meal meal = mealRepository.findMealById(mealId)
                 .orElseThrow(() -> new NoMealFoundException("No meal found"));
         LOGGER.info("Operation=getMealById, MealId=" + mealId);
         return meal;
@@ -143,6 +130,16 @@ public class MealService {
     }
 
     // ── private helpers ───────────────────────────────────────────────────────
+    private List<MealItemRequest> resolveItemsForUpdate(String description, List<MealItemRequest> items) {
+        if (items != null && !items.isEmpty()) {
+            return items;
+        }
+
+        return calorieNinjasClient.getFoodItemsFromDescription(description).stream()
+                .map(item -> new MealItemRequest(item.getName(), item.getQuantityGrams()))
+                .toList();
+    }
+
     private void setMealItems(List<MealItemRequest> itemsInMeal, Meal meal) {
         for (MealItemRequest item : itemsInMeal) {
             String normalizedFoodItemName = normalize(item.getName());
@@ -151,10 +148,9 @@ public class MealService {
 
             MealItem mealItem = MealItem.builder()
                     .foodItem(foodItem)
-                    .meal(meal)
                     .quantityGrams(item.getQuantityGrams())
                     .build();
-
+            mealItem.setMeal(meal);
             meal.getItems().add(mealItem);
         }
     }

@@ -1,0 +1,43 @@
+:host {
+  display: block;
+  background-image: url("/assets/bg-desktop.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.logo-responsive {
+  width: 120px;
+  height: auto;
+}
+
+@media (min-width: 576px) {
+  .logo-responsive {
+    width: 150px;
+  }
+}
+
+@media (min-width: 992px) {
+  .logo-responsive {
+    width: 180px;
+  }
+}
+
+.title-meal {
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .title-meal {
+    font-size: 1.6rem;
+  }
+}
+
+.content-card {
+  max-width: 960px;
+  background: #ffffffee;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}

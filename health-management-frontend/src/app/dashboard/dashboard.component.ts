@@ -224,6 +224,10 @@ export class DashboardComponent implements OnInit {
       });
   }
 
+  navigateToEditMeal(meal: IMeal): void {
+    this.router.navigate(['/editMeal', meal.id]);
+  }
+
   confirmDeleteMeal(meal: IMeal): void {
     this.mealPendingDelete = meal;
   }

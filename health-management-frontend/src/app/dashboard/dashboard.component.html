@@ -472,6 +472,13 @@
                   <div class="small text-fitbite">Show details</div>
                 </div>
                 <button
+                  class="btn btn-sm btn-outline-fitbite"
+                  (click)="navigateToEditMeal(meal); $event.stopPropagation()"
+                  title="Edit meal"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
                   class="btn btn-sm btn-outline-danger"
                   (click)="confirmDeleteMeal(meal); $event.stopPropagation()"
                   title="Delete meal"

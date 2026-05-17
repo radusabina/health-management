@@ -46,7 +46,7 @@ public class MealController {
 
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody UpdateMealRequest request) {
-        mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription());
+        mealService.updateMeal(request.getMealId(), request.getMealType(), request.getDescription(), request.getItems());
         return ResponseEntity.ok().build();
     }
 
@@ -163,6 +163,7 @@ public class MealController {
         private UUID mealId;
         private MealType mealType;
         private String description;
+        private List<MealItemRequest> items;
     }
 
     @Getter @Setter @Builder

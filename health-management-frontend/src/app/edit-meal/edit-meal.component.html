@@ -1,0 +1,221 @@
+<div
+  class="bg-fitbite d-flex align-items-center justify-content-center"
+  style="min-height: 100vh"
+>
+  <div class="container py-4">
+    <div class="w-100 mx-auto content-card">
+      <div *ngIf="isLoading" class="text-center text-muted py-5">
+        Loading meal...
+      </div>
+
+      <div *ngIf="!isLoading && loadError" class="text-center py-5">
+        <p class="text-danger mb-3">{{ loadError }}</p>
+        <button class="btn btn-outline-secondary" (click)="cancel()">
+          Back to dashboard
+        </button>
+      </div>
+
+      <form *ngIf="!isLoading && !loadError" #mealForm="ngForm" novalidate>
+        <div class="d-flex align-items-center mb-4">
+          <img src="assets/fitbite.png" class="me-2 logo-responsive" alt="Fitbite" />
+          <div class="text-start ms-3">
+            <h1 class="mb-0 title-meal">Edit Meal</h1>
+            <small class="text-muted d-block fs-6">
+              Update the description or adjust items manually.
+            </small>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- LEFT: description + analyze -->
+          <div class="col-12 col-md-5">
+            <h5 class="mb-3">Meal</h5>
+
+            <label class="form-label text-muted">Meal Type</label>
+            <select
+              class="form-select"
+              [(ngModel)]="mealType"
+              name="mealType"
+              required
+              #mealTypeCtrl="ngModel"
+            >
+              <option value="" disabled>Select meal type</option>
+              <option *ngFor="let type of mealTypes" [value]="type">
+                {{ type }}
+              </option>
+            </select>
+
+            <div
+              *ngIf="mealTypeCtrl.touched && mealTypeCtrl.invalid"
+              class="text-danger small mt-1 mb-3"
+            >
+              Please select a meal type.
+            </div>
+
+            <label class="form-label text-muted">Description</label>
+            <textarea
+              class="form-control"
+              [class.is-invalid]="descriptionError"
+              rows="4"
+              [(ngModel)]="description"
+              name="description"
+              required
+              #descriptionCtrl="ngModel"
+              (ngModelChange)="descriptionError = ''; analyzeErrorMsg = ''; saveMealError = ''"
+              placeholder="e.g. chicken 200g, rice 100g"
+            ></textarea>
+
+            <div *ngIf="descriptionError" class="text-danger small mt-1 mb-2">
+              {{ descriptionError }}
+            </div>
+            <div *ngIf="!descriptionError" class="mb-2"></div>
+
+            <button
+              type="button"
+              class="btn btn-fitbite text-white w-100 mb-2"
+              (click)="analyzeMeal()"
+              [disabled]="isAnalyzing"
+            >
+              <span *ngIf="!isAnalyzing">Re-analyze meal</span>
+              <span *ngIf="isAnalyzing">Analyzing...</span>
+            </button>
+
+            <div *ngIf="analyzeErrorMsg" class="text-danger small mb-2">
+              {{ analyzeErrorMsg }}
+            </div>
+
+            <small class="text-muted d-block">
+              Re-analyzing replaces the items on the right with results from your description.
+            </small>
+          </div>
+
+          <!-- RIGHT: save + manual items -->
+          <div class="col-12 col-md-7 d-flex flex-column">
+            <button
+              type="button"
+              class="btn btn-fitbite text-white w-100 mb-2"
+              (click)="submitMeal(mealForm)"
+              [disabled]="isSaving"
+            >
+              <span *ngIf="!isSaving">Save Meal</span>
+              <span *ngIf="isSaving">Saving...</span>
+            </button>
+
+            <div class="text-danger small mb-3" style="min-height: 1.25rem">
+              {{ saveMealError }}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0">Items</h5>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="addItem()"
+                [disabled]="!canAddItem()"
+              >
+                + Add item
+              </button>
+            </div>
+
+            <div *ngIf="itemsError" class="text-danger small mt-1 mb-2">
+              Add at least one food item.
+            </div>
+
+            <div
+              *ngIf="mealItems.items.length > 0"
+              class="row small text-muted fw-semibold mb-2"
+            >
+              <div class="col-6">Name</div>
+              <div class="col-4">Quantity</div>
+            </div>
+
+            <div
+              class="d-flex flex-column flex-grow-1"
+              style="
+                max-height: 360px;
+                min-height: 200px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                width: 100%;
+              "
+            >
+              <div
+                *ngFor="let item of mealItems.items; let i = index"
+                class="row g-2 align-items-center mb-2 w-100"
+                style="min-width: 0"
+              >
+                <div class="col-6">
+                  <input
+                    class="form-control w-100"
+                    [(ngModel)]="item.name"
+                    name="itemName{{ i }}"
+                    required
+                    #nameCtrl="ngModel"
+                    placeholder="Food name"
+                    (ngModelChange)="itemsError = false; saveMealError = ''"
+                  />
+                  <div
+                    *ngIf="nameCtrl.touched && nameCtrl.invalid && !itemsError"
+                    class="text-danger small mt-1"
+                  >
+                    Enter a food name.
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <input
+                    class="form-control w-100"
+                    type="number"
+                    [(ngModel)]="item.quantityGrams"
+                    name="itemQty{{ i }}"
+                    required
+                    min="1"
+                    #qtyCtrl="ngModel"
+                    placeholder="g"
+                    (ngModelChange)="itemsError = false; saveMealError = ''"
+                  />
+                  <div
+                    *ngIf="qtyCtrl.touched && qtyCtrl.invalid && !itemsError"
+                    class="text-danger small mt-1"
+                  >
+                    <div *ngIf="qtyCtrl.errors?.['required']">
+                      Enter a quantity in grams.
+                    </div>
+                    <div *ngIf="qtyCtrl.errors?.['min']">
+                      Quantity must be greater than 0.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-2 d-flex justify-content-end">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    (click)="removeItem(i)"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div
+              *ngIf="mealItems.items.length === 0"
+              class="text-muted small text-center py-3"
+            >
+              No items yet. Re-analyze from the description or add items manually.
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary mt-3"
+              (click)="cancel()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
