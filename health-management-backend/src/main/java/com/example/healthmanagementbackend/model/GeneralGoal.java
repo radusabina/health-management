@@ -1,5 +1,6 @@
 package com.example.healthmanagementbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
@@ -45,11 +46,15 @@ public class GeneralGoal {
     @Column(name = "weight_target")
     private int weightTarget;
 
+    @Column(name = "bottle_amount_ml")
+    private int bottleAmountMl;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "generalGoal")

@@ -1,0 +1,191 @@
+<div class="min-vh-100 bg-fitbite d-flex align-items-center position-relative py-4">
+  <div class="card content-card shadow-sm border-0 container">
+    <div class="mb-3">
+      <button
+        type="button"
+        class="btn btn-link text-decoration-none px-0 d-inline-flex align-items-center gap-2"
+        aria-label="Back"
+        (click)="goBack()"
+      >
+        <span aria-hidden="true">&larr;</span>
+        <span>Back</span>
+      </button>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+          <div class="card-body p-4 p-md-5">
+            <h3 class="mb-1">Manage Profile</h3>
+            <p class="text-muted mb-4">
+              Update your account details and keep your profile accurate.
+            </p>
+
+            <form>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="fullName" class="form-label">Full name</label>
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Your full name"
+                    [(ngModel)]="userUpdate.fullName"
+                  />
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="form-control"
+                    placeholder="you@example.com"
+                    [(ngModel)]="userUpdate.email"
+                  />
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label for="age" class="form-label">Age</label>
+                  <input
+                    id="age"
+                    name="age"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 27"
+                    min="1"
+                    [(ngModel)]="userUpdate.age"
+                  />
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label for="gender" class="form-label">Gender</label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    class="form-select"
+                    [(ngModel)]="userUpdate.gender"
+                  >
+                    <option value="" disabled>Select gender</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label for="weightKg" class="form-label">Weight (kg)</label>
+                  <input
+                    id="weightKg"
+                    name="weightKg"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 68"
+                    min="1"
+                    [(ngModel)]="userUpdate.weightKg"
+                  />
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <label for="heightCm" class="form-label">Height (cm)</label>
+                  <input
+                    id="heightCm"
+                    name="heightCm"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 172"
+                    min="1"
+                    [(ngModel)]="userUpdate.heightCm"
+                  />
+                </div>
+              </div>
+
+              <hr class="my-4" />
+
+              <h5 class="mb-3">Password</h5>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="currentPassword" class="form-label"
+                    >Current password</label
+                  >
+                  <input
+                    id="currentPassword"
+                    name="currentPassword"
+                    type="password"
+                    class="form-control"
+                    placeholder="Enter current password to unlock password change"
+                    [(ngModel)]="currentPassword"
+                    (ngModelChange)="onCurrentPasswordInput()"
+                    (blur)="onCurrentPasswordBlur()"
+                    (keyup.enter)="onCurrentPasswordBlur()"
+                  />
+                  <div class="form-text" *ngIf="isCheckingPassword">
+                    Validating current password...
+                  </div>
+                  <div
+                    class="form-text text-danger"
+                    *ngIf="currentPassword && passwordValidationAttempted && !isCheckingPassword && !isCurrentPasswordValid"
+                  >
+                    Current password is invalid.
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6" *ngIf="isCurrentPasswordValid">
+                  <label for="newPassword" class="form-label">New password</label>
+                  <input
+                    id="newPassword"
+                    name="newPassword"
+                    type="password"
+                    class="form-control"
+                    placeholder="Enter a new password"
+                    [(ngModel)]="newPassword"
+                  />
+                </div>
+
+                <div class="col-12 col-md-6" *ngIf="isCurrentPasswordValid">
+                  <label for="confirmPassword" class="form-label"
+                    >Confirm new password</label
+                  >
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    class="form-control"
+                    placeholder="Re-enter new password"
+                    [required]="!!newPassword"
+                    [class.is-invalid]="
+                      !!confirmPassword && newPassword !== confirmPassword
+                    "
+                    [(ngModel)]="confirmPassword"
+                  />
+                  <div
+                    class="invalid-feedback d-block"
+                    *ngIf="!!confirmPassword && newPassword !== confirmPassword"
+                  >
+                    New password and confirm password must match.
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4"
+              >
+                <button type="button" class="btn btn-outline-danger px-4">
+                  Delete
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-fitbite text-white px-4"
+                  (click)="onUpdateUser()"
+                  [disabled]="!!newPassword && newPassword !== confirmPassword"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

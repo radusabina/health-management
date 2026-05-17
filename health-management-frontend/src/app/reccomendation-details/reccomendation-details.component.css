@@ -1,0 +1,73 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-image: url("/assets/bg-desktop.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* glassmorphism card — no Bootstrap equivalent */
+.det-glass {
+  background: linear-gradient(135deg, rgba(239, 228, 228, 0.6) 0%, rgba(255, 255, 255, 0.35) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+/* macro bar — Bootstrap's progress bar uses fixed height/radius we don't want */
+.det-macro-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.det-macro-protein { background: #569069; transition: width 0.4s ease; }
+.det-macro-fat     { background: #e0a84b; transition: width 0.4s ease; }
+.det-macro-carbs   { background: #6baed6; transition: width 0.4s ease; }
+
+/* small colored legend dots */
+.det-macro-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.det-macro-dot--protein { background: #569069; }
+.det-macro-dot--fat     { background: #e0a84b; }
+.det-macro-dot--carbs   { background: #6baed6; }
+
+/* ingredient row hover tint */
+.det-ingredient-item:hover {
+  background: rgba(86, 144, 105, 0.07);
+}
+
+/* bullet dot in brand color */
+.det-ingredient-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fitbite-primary, #569069);
+}
+
+/* numbered step circle in brand color */
+.det-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 50%;
+  background: var(--fitbite-primary, #569069);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}

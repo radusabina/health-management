@@ -1,9 +1,12 @@
 package com.example.healthmanagementbackend.controller;
 
-import com.example.healthmanagementbackend.dto.UpdateUserRequest;
 import com.example.healthmanagementbackend.model.User;
+import com.example.healthmanagementbackend.model.enums.Gender;
 import com.example.healthmanagementbackend.service.UserService;
-import org.springframework.http.HttpStatus;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +23,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -28,49 +30,51 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getUserById(@PathVariable UUID id) {
-        try {
-            User user = userService.getUserById(id);
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Object> update(@RequestBody UpdateUserRequest request) {
-        try {
-            userService.updateUser(request.getUserId(), request.getEmail(), request.getPassword(),
-                    request.getFullName(), request.getHeightCm(), request.getWeightKg(),
-                    request.getGender(), request.getAge());
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable("id") UUID id, @RequestBody UpdateUserRequest request) {
+        userService.updateUser(id, request.getEmail(), request.getFullName(),
+                request.getHeightCm(), request.getWeightKg(), request.getGender(), request.getAge());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/is-password-valid")
-    public ResponseEntity<Object> isPasswordValid(@RequestParam String password) {
-        try {
-            return ResponseEntity.ok(userService.isPasswordValid(password));
-        }  catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Map<String, Boolean>> isPasswordValid(@RequestParam String password,
+                                                                @RequestParam UUID userId) {
+        return ResponseEntity.ok(Map.of("valid", userService.isPasswordValid(password, userId)));
+    }
+
+    @GetMapping("/is-new-user/{userId}")
+    public ResponseEntity<IsNewUserResponse> isNewUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(new IsNewUserResponse(userService.isNewUser(userId)));
+    }
+
+    @PutMapping("/password/{id}")
+    public ResponseEntity<Void> updatePassword(@PathVariable("id") UUID id,
+                                               @RequestBody UpdatePasswordRequest request) {
+        userService.updatePassword(id, request.newPassword());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable UUID id) {
-        try {
-            return ResponseEntity.ok(userService.deleteUser(id));
-        } catch (Exception e) {
-            return handleException(e);
-        }
+    public ResponseEntity<Boolean> delete(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 
-    private static ResponseEntity<Object> handleException(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("type", e.getClass().getSimpleName(),
-                        "message", e.getMessage()));
+    public record UpdatePasswordRequest(String newPassword) {}
+    public record IsNewUserResponse(boolean isNewUser) {}
+
+    @NoArgsConstructor @AllArgsConstructor
+    @Getter @Setter
+    public static class UpdateUserRequest {
+        private String email;
+        private String fullName;
+        private int age;
+        private Gender gender;
+        private int heightCm;
+        private int weightKg;
     }
 }

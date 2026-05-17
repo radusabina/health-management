@@ -1,0 +1,600 @@
+<app-navbar></app-navbar>
+<div class="min-vh-100 d-flex bg-fitbite">
+  <div
+    *ngIf="showWaterToast"
+    class="toast show position-fixed top-0 end-0 m-3"
+    style="z-index: 99999"
+    role="alert"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <div class="toast-header">
+      <strong class="me-auto" style="color: var(--fitbite-primary)"
+        >Success</strong
+      >
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="showWaterToast = false"
+      ></button>
+    </div>
+    <div class="toast-body">{{ toastMessage }}</div>
+  </div>
+
+  <!-- ERROR TOAST -->
+  <div
+    *ngIf="showErrorToast"
+    class="toast show position-fixed top-0 end-0 m-3"
+    style="z-index: 99999; margin-top: 5rem !important"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div class="toast-header">
+      <strong class="me-auto text-danger">Error</strong>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="showErrorToast = false"
+      ></button>
+    </div>
+    <div class="toast-body">{{ errorToastMessage }}</div>
+  </div>
+
+  <div class="container py-4">
+    <!-- LOADING -->
+    <div *ngIf="!user" class="text-center mt-5">
+      <p>Loading user...</p>
+    </div>
+
+    <!-- DASHBOARD NEW USER-->
+    <div *ngIf="user && isNewUser">
+      <div class="card content-card dashboard-glass border-0 p-4 p-md-5">
+        <!-- HEADER -->
+        <section>
+          <h3 class="mb-1">Welcome, {{ user.fullName }} 👋</h3>
+          <p class="text-muted mb-3">
+            Track meals, monitor progress, and explore recommendations anytime.
+          </p>
+
+          <h6 class="mb-2">Daily Progress</h6>
+
+          <div class="progress mb-2" style="height: 8px">
+            <div class="progress-bar" style="width: 0%"></div>
+          </div>
+
+          <small class="text-muted"
+            >Set a goal or add a meal to see your daily progress.</small
+          >
+        </section>
+
+        <hr class="glass-divider" />
+
+        <!-- QUICK STATS -->
+        <section>
+          <div class="row g-3">
+            <div class="col-6 col-md-4">
+              <div class="inner-panel text-center">
+                <small class="text-muted">Calories Today</small>
+                <h5 class="mb-0">0</h5>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-4">
+              <div class="inner-panel text-center">
+                <small class="text-muted">Meals Logged</small>
+                <h5 class="mb-0">0</h5>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="inner-panel text-center">
+                <small class="text-muted">Goal Progress</small>
+                <h5 class="mb-0">0%</h5>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr class="glass-divider" />
+
+        <!-- ACTIONS (EQUAL IMPORTANCE) -->
+        <section>
+          <div class="text-muted small mb-3">
+            You can start by doing one of the above:
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-4">
+              <div class="inner-panel h-100 d-flex flex-column">
+                <h5>Personalize your plan</h5>
+
+                <p class="text-muted small">
+                  Optional setup to improve personalization of calories and
+                  recommendations.
+                </p>
+
+                <div class="mt-auto">
+                  <button
+                    class="btn btn-fitbite text-white w-100"
+                    (click)="openGoalModal()"
+                  >
+                    Set Goal
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="inner-panel h-100 d-flex flex-column">
+                <h5>Log a meal</h5>
+
+                <p class="text-muted small">
+                  Track what you eat to monitor calories and nutrition.
+                </p>
+
+                <div class="mt-auto">
+                  <button
+                    class="btn btn-outline-fitbite w-100"
+                    (click)="navigateToAddMeal()"
+                  >
+                    Add Meal
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <div class="inner-panel h-100 d-flex flex-column">
+                <h5>Recommendations</h5>
+
+                <p class="text-muted small">
+                  Get meal suggestions based on your activity and preferences.
+                </p>
+
+                <div class="mt-auto">
+                  <button class="btn btn-outline-secondary w-100">View</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr class="glass-divider" />
+
+        <!-- RECENT MEALS -->
+        <section>
+          <h6 class="mb-3">Today’s Meals</h6>
+
+          <div class="text-muted small">
+            No meals logged yet. Add your first meal to start tracking.
+          </div>
+        </section>
+
+        <!-- CONTEXTUAL TIP (NOT SEPARATE SECTION) -->
+        <div class="text-muted small mt-3">
+          💡 Tip: Logging meals regularly improves accuracy of your nutrition
+          insights.
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD EXISTING USER -->
+    <div *ngIf="user && !isNewUser">
+      <div class="card content-card dashboard-glass border-0 p-4 p-md-5">
+        <!-- HEADER -->
+        <section>
+          <h3 class="mb-1">Good to see you back, {{ user.fullName }} 👋</h3>
+          <p class="text-muted mb-3">Here is your daily overview.</p>
+
+          <div
+            *ngIf="generalGoal && dailyGoal"
+            class="d-flex justify-content-between align-items-center mb-2"
+          >
+            <h6 class="mb-0">Daily Progress</h6>
+            <p class="text-muted fs-3 mb-0">{{ progressBar }}%</p>
+          </div>
+
+          <div
+            *ngIf="generalGoal && dailyGoal"
+            class="progress mb-2"
+            style="height: 8px"
+          >
+            <div class="progress-bar" [style.width.%]="progressBar"></div>
+          </div>
+        </section>
+
+        <hr class="glass-divider" *ngIf="generalGoal && dailyGoal" />
+
+        <!-- QUICK STATS -->
+        <section *ngIf="generalGoal && dailyGoal">
+          <div class="row g-3 align-items-stretch">
+            <div class="col-6 col-md-3 d-flex">
+              <div class="inner-panel text-center w-100 d-flex flex-column justify-content-center">
+                <small class="text-muted">Calories Today</small>
+                <h5 class="mb-0">
+                  {{ dailyGoal.caloriesDone }} / {{ generalGoal.calorieGoal }}
+                </h5>
+                <small class="text-muted">{{ caloriesProgress }}% completed</small>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-3 d-flex">
+              <div class="inner-panel text-center w-100 d-flex flex-column justify-content-center">
+                <small class="text-muted">Meals Logged</small>
+                <h5 class="mb-0">{{ meals.length }}</h5>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-3 d-flex">
+              <div class="inner-panel text-center w-100 d-flex flex-column justify-content-center">
+                <small class="text-muted">Water</small>
+                <h5 class="mb-0">
+                  {{ dailyGoal.waterDone }} / {{ generalGoal.waterGoal }} l
+                </h5>
+                <small class="text-muted">{{ waterProgress }}% completed</small>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-3 d-flex">
+              <div class="inner-panel text-center w-100 d-flex flex-column justify-content-center">
+                <small class="text-muted">Goal</small>
+                <h5 class="mb-0">{{ generalGoal.weightTarget }} kg</h5>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr class="glass-divider" *ngIf="generalGoal && dailyGoal" />
+
+        <!-- ACTIONS -->
+        <section *ngIf="generalGoal && dailyGoal">
+          <div class="row g-3">
+            <!-- LEFT: WATER QUICK ACTIONS (20%) -->
+            <div class="col-12 col-md-4">
+              <div class="inner-panel h-100">
+                <h6 class="mb-3">Water</h6>
+
+                <div class="d-md-none">
+                  <div class="row g-2">
+                    <!-- PLUS -->
+                    <div
+                      class="col-6 d-flex flex-column gap-2 align-items-center"
+                    >
+                      <button
+                        class="btn btn-outline-fitbite w-100"
+                        (click)="addWater(250)"
+                      >
+                        +1 glass
+                      </button>
+
+                      <button
+                        class="btn btn-outline-fitbite w-100"
+                        (click)="addWater(generalGoal.bottleAmountMl)"
+                      >
+                        +1 bottle
+                      </button>
+
+                      <button
+                        class="btn btn-outline-fitbite w-100"
+                        (click)="addWater(generalGoal.bottleAmountMl * 2)"
+                      >
+                        +2 bottles
+                      </button>
+                    </div>
+
+                    <!-- MINUS -->
+                    <div
+                      class="col-6 d-flex flex-column gap-2 align-items-center"
+                    >
+                      <button
+                        class="btn btn-outline-danger w-100"
+                        (click)="addWater(-250)"
+                        [disabled]="dailyGoal.waterDone <= 0"
+                      >
+                        -1 glass
+                      </button>
+
+                      <button
+                        class="btn btn-outline-danger w-100"
+                        (click)="addWater(-generalGoal.bottleAmountMl)"
+                        [disabled]="dailyGoal.waterDone <= 0"
+                      >
+                        -1 bottle
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- DESKTOP: coloană verticală -->
+                <div
+                  class="d-none d-md-flex flex-column gap-2 align-items-center"
+                >
+                  <button
+                    class="btn btn-outline-fitbite w-75 water-action-btn"
+                    (click)="addWater(250)"
+                  >
+                    +1 glass
+                  </button>
+
+                  <button
+                    class="btn btn-outline-fitbite w-75 water-action-btn"
+                    (click)="addWater(generalGoal.bottleAmountMl)"
+                  >
+                    +1 bottle
+                  </button>
+
+                  <button
+                    class="btn btn-outline-fitbite w-75 water-action-btn"
+                    (click)="addWater(generalGoal.bottleAmountMl * 2)"
+                  >
+                    +2 bottles
+                  </button>
+
+                  <hr class="w-75 my-2" />
+
+                  <button
+                    class="btn btn-outline-danger w-75 water-action-btn"
+                    (click)="addWater(-250)"
+                    [disabled]="dailyGoal.waterDone <= 0"
+                  >
+                    -1 glass
+                  </button>
+
+                  <button
+                    class="btn btn-outline-danger w-75 water-action-btn"
+                    (click)="addWater(-generalGoal.bottleAmountMl)"
+                    [disabled]="dailyGoal.waterDone <= 0"
+                  >
+                    -1 bottle
+                  </button>
+                </div>
+
+                <div class="text-center small text-muted mt-3">
+                  1 glass = 250ml 
+                </div>
+                <div class="text-center small text-muted mt-3">
+                  1 bottle = {{ generalGoal.bottleAmountMl }}ml
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: MAIN ACTIONS (80%) -->
+            <div class="col-12 col-md-8">
+              <div class="d-flex flex-column gap-3 h-100">
+                <!-- LOG MEAL -->
+                <div class="inner-panel d-flex flex-column flex-grow-1">
+                  <h5>Log a meal</h5>
+                  <p class="text-muted small">
+                    Add what you eat and track your nutrition instantly.
+                  </p>
+
+                  <div class="mt-auto text-center">
+                    <button
+                      class="btn btn-fitbite text-white w-50"
+                      (click)="navigateToAddMeal()"
+                    >
+                      Add Meal
+                    </button>
+                  </div>
+                </div>
+
+                <!-- GOAL -->
+                <div class="inner-panel d-flex flex-column flex-grow-1">
+                  <h5>Update goals</h5>
+
+                  <p class="text-muted small">
+                    Adjust your daily calorie and water targets.
+                  </p>
+
+                  <div class="mt-auto text-center">
+                    <button
+                      class="btn btn-outline-fitbite w-50"
+                      (click)="openEditGoalModal()"
+                    >
+                      Edit Goal
+                    </button>
+                  </div>
+                </div>
+
+                <!-- LOG WEIGHT -->
+                <div class="inner-panel d-flex flex-column flex-grow-1">
+                  <h5>Log today's weight</h5>
+
+                  <p class="text-muted small">
+                    💡 For best accuracy, weigh yourself once a week, in the morning, on an empty stomach, after using the bathroom.
+                  </p>
+
+                  <div class="mt-auto d-flex gap-2 align-items-center">
+                    <input
+                      type="number"
+                      class="form-control w-50"
+                      placeholder="e.g. 72.5"
+                      [(ngModel)]="todayWeightInput"
+                      min="1"
+                      step="0.1"
+                    />
+                    <span class="text-muted small">kg</span>
+                    <button
+                      class="btn btn-fitbite text-white"
+                      [disabled]="todayWeightInput === null"
+                      (click)="saveTodayWeight()"
+                    >
+                      Save
+                    </button>
+                  </div>
+
+                  <div *ngIf="dailyGoal?.todayWeight !== null && dailyGoal?.todayWeight !== undefined" class="small text-muted mt-2">
+                    Logged today: {{ dailyGoal!.todayWeight }} kg
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr class="glass-divider" />
+
+        <!-- RECENT MEALS -->
+        <section>
+          <h6 class="mb-3">Today’s Meals</h6>
+
+          <div *ngIf="meals.length === 0" class="text-muted small">
+            No meals logged today.
+          </div>
+
+          <div *ngFor="let meal of meals; let i = index" class="mb-3">
+            <!-- HEADER -->
+            <div
+              class="d-flex justify-content-between align-items-center"
+            >
+              <div
+                class="d-flex align-items-center gap-2 flex-grow-1"
+                data-bs-toggle="collapse"
+                [attr.data-bs-target]="'#meal-' + i"
+                style="cursor: pointer"
+              >
+                <div>
+                  <strong>{{ meal.mealType }}</strong>
+                  <div class="small text-muted">{{ meal.description }}</div>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center gap-3">
+                <div class="text-end"
+                  data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#meal-' + i"
+                  style="cursor: pointer"
+                >
+                  <small class="text-muted">{{ meal.totalCalories }} kcal</small>
+                  <div class="small text-fitbite">Show details</div>
+                </div>
+                <button
+                  class="btn btn-sm btn-outline-fitbite"
+                  (click)="navigateToEditMeal(meal); $event.stopPropagation()"
+                  title="Edit meal"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="confirmDeleteMeal(meal); $event.stopPropagation()"
+                  title="Delete meal"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- COLLAPSE -->
+            <div class="collapse mt-2" [id]="'meal-' + i">
+              <div class="inner-panel">
+                <div class="row">
+                  <!-- LEFT: NUTRITION -->
+                  <div class="col-12 col-md-6 border-end">
+                    <div class="row g-2 small">
+                      <div class="col-6">
+                        Protein:
+                        {{ getMealNutrition(meal).protein | number: "1.0-0" }} g
+                      </div>
+                      <div class="col-6">
+                        Carbs:
+                        {{ getMealNutrition(meal).carbs | number: "1.0-0" }} g
+                      </div>
+                      <div class="col-6">
+                        Fat:
+                        {{ getMealNutrition(meal).fat | number: "1.0-0" }} g
+                      </div>
+                      <div class="col-6">
+                        Sugar:
+                        {{ getMealNutrition(meal).sugar | number: "1.0-0" }} g
+                      </div>
+                      <div class="col-6">
+                        Fiber:
+                        {{ getMealNutrition(meal).fiber | number: "1.0-0" }} g
+                      </div>
+                      <div class="col-6">
+                        Sodium:
+                        {{ getMealNutrition(meal).sodium | number: "1.0-0" }} mg
+                      </div>
+                      <div class="col-6">
+                        Potassium:
+                        {{ getMealNutrition(meal).potassium | number: "1.0-0" }}
+                        mg
+                      </div>
+                      <div class="col-6">
+                        Cholesterol:
+                        {{
+                          getMealNutrition(meal).cholesterol | number: "1.0-0"
+                        }}
+                        mg
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- RIGHT: ITEMS -->
+                  <div class="col-12 col-md-6">
+                    <div class="small text-muted mb-2">Items</div>
+
+                    <div *ngFor="let item of meal.items" class="mb-1">
+                      <div class="d-flex justify-content-between">
+                        <span>{{ item.name }}</span>
+                        <span>{{ item.quantityGrams }}g</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <!-- ADD GOAL MODAL -->
+  <app-add-general-goal
+    [isOpen]="showGoalModal"
+    (close)="onGoalClose()"
+    (save)="onGoalSave($event)"
+  >
+  </app-add-general-goal>
+
+  <!-- EDIT GOAL MODAL -->
+  <app-edit-general-goal
+    [isOpen]="showEditGoalModal"
+    [currentGoal]="generalGoal"
+    (close)="onEditGoalClose()"
+    (save)="onEditGoalSave($event)"
+  >
+  </app-edit-general-goal>
+
+  <!-- DELETE MEAL CONFIRMATION MODAL -->
+  <div
+    *ngIf="mealPendingDelete"
+    class="modal-backdrop-custom"
+    (click)="cancelDeleteMeal()"
+  ></div>
+  <div
+    *ngIf="mealPendingDelete"
+    class="modal-dialog-custom"
+  >
+    <div class="modal-content-custom p-4">
+      <h5 class="mb-2">Delete meal</h5>
+      <p class="text-muted mb-1">
+        Are you sure you want to delete
+        <strong>{{ mealPendingDelete.mealType }}</strong>?
+      </p>
+      <p class="small text-muted mb-3">{{ mealPendingDelete.description }}</p>
+      <div class="d-flex gap-2 justify-content-end">
+        <button class="btn btn-outline-secondary" (click)="cancelDeleteMeal()">
+          Cancel
+        </button>
+        <button class="btn btn-danger" (click)="deleteMeal()">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

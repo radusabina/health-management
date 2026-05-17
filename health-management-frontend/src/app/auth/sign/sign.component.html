@@ -1,0 +1,323 @@
+<div
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="
+    background: linear-gradient(
+      to bottom,
+      var(--fitbite-bg-start),
+      var(--fitbite-bg-end)
+    );
+  "
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-10 col-xl-7">
+        <div class="card border-0 shadow">
+          <div class="card-body text-center pt-3 pb-2">
+            <div class="d-flex justify-content-center">
+              <div
+                class="rounded-circle overflow-hidden border border-2"
+                style="
+                  width: 6rem;
+                  height: 6rem;
+                  border-color: var(--fitbite-primary) !important;
+                "
+              >
+                <img src="assets/fitbite.png" class="img-fluid" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="card-body pt-2">
+            <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+              <p class="small mb-2">
+                Fields marked with <span class="text-danger">*</span> are
+                mandatory.
+              </p>
+
+              <div class="row">
+                <!-- Email -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Email <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    required
+                    email
+                    [(ngModel)]="email"
+                    #emailCtrl="ngModel"
+                    [class.is-invalid]="
+                      emailCtrl.invalid &&
+                      (emailCtrl.touched || emailCtrl.dirty)
+                    "
+                  />
+
+                  <div class="invalid-feedback">Valid email is required</div>
+                </div>
+
+                <!-- Password -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Password <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    required
+                    minlength="6"
+                    [(ngModel)]="password"
+                    #passCtrl="ngModel"
+                    [class.is-invalid]="
+                      passCtrl.invalid && (passCtrl.touched || passCtrl.dirty)
+                    "
+                  />
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="passCtrl.errors?.['required']"
+                  >
+                    Password is required
+                  </div>
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="passCtrl.errors?.['minlength']"
+                  >
+                    Minimum 6 characters
+                  </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Confirm password <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="password"
+                    class="form-control"
+                    name="confirmPassword"
+                    required
+                    minlength="6"
+                    [(ngModel)]="confirmPassword"
+                    #confirmCtrl="ngModel"
+                    [class.is-invalid]="
+                      (confirmCtrl.invalid &&
+                        (confirmCtrl.touched || confirmCtrl.dirty)) ||
+                      (password !== confirmPassword &&
+                        (confirmCtrl.touched || confirmCtrl.dirty))
+                    "
+                  />
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="confirmCtrl.errors?.['required']"
+                  >
+                    Confirmation is required
+                  </div>
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="confirmCtrl.errors?.['minlength']"
+                  >
+                    Minimum 6 characters
+                  </div>
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      !confirmCtrl.errors &&
+                      password !== confirmPassword &&
+                      (confirmCtrl.touched || confirmCtrl.dirty)
+                    "
+                  >
+                    Passwords do not match
+                  </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Full name <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="fullName"
+                    required
+                    [(ngModel)]="fullName"
+                    #nameCtrl="ngModel"
+                    [class.is-invalid]="
+                      nameCtrl.invalid && (nameCtrl.touched || nameCtrl.dirty)
+                    "
+                  />
+
+                  <div class="invalid-feedback">Full name is required</div>
+                </div>
+
+                <!-- Age -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Age <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="age"
+                    required
+                    min="1"
+                    max="120"
+                    [(ngModel)]="age"
+                    #ageCtrl="ngModel"
+                    [class.is-invalid]="
+                      (ageCtrl.invalid && (ageCtrl.touched || ageCtrl.dirty)) ||
+                      (age != null &&
+                        age < 18 &&
+                        (ageCtrl.touched || ageCtrl.dirty))
+                    "
+                  />
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="ageCtrl.errors?.['required']"
+                  >
+                    Age is required
+                  </div>
+
+                  <div class="invalid-feedback" *ngIf="age != null && age < 18">
+                    Minimum age is 18
+                  </div>
+                </div>
+
+                <!-- Gender -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Gender <span class="text-danger">*</span>
+                  </label>
+
+                  <select
+                    class="form-select"
+                    name="gender"
+                    required
+                    [(ngModel)]="gender"
+                    #genderCtrl="ngModel"
+                    [class.is-invalid]="
+                      genderCtrl.invalid &&
+                      (genderCtrl.touched || genderCtrl.dirty)
+                    "
+                  >
+                    <option value="" disabled>Select gender</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+
+                  <div class="invalid-feedback">Please select a gender</div>
+                </div>
+
+                <!-- Height -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Height (cm) <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="heightCm"
+                    required
+                    min="130"
+                    max="250"
+                    [(ngModel)]="heightCm"
+                    #heightCtrl="ngModel"
+                    [class.is-invalid]="
+                      heightCtrl.invalid &&
+                      (heightCtrl.touched || heightCtrl.dirty)
+                    "
+                  />
+
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="heightCtrl.errors?.['required']"
+                  >
+                    Height is required
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      heightCm != null && (heightCm < 130 || heightCm > 250)
+                    "
+                  >
+                    Please enter a realistic height
+                  </div>
+                </div>
+
+                <!-- Weight -->
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">
+                    Weight (kg) <span class="text-danger">*</span>
+                  </label>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="weightKg"
+                    required
+                    [(ngModel)]="weightKg"
+                    #weightCtrl="ngModel"
+                    [class.is-invalid]="
+                      weightCtrl.invalid &&
+                      (weightCtrl.touched || weightCtrl.dirty)
+                    "
+                  />
+
+                  <div class="invalid-feedback">Weight is required</div>
+                </div>
+              </div>
+
+              <div class="d-grid mt-2">
+                <button
+                  type="submit"
+                  class="btn btn-fitbite text-white"
+                  [disabled]="
+                    registerForm.invalid ||
+                    password !== confirmPassword ||
+                    loading
+                  "
+                >
+                  <span *ngIf="!loading">Create account</span>
+                  <span *ngIf="loading">Creating...</span>
+                </button>
+              </div>
+
+              <p
+                *ngIf="errorMessage"
+                class="text-danger mt-3 text-center small"
+              >
+                {{ errorMessage }}
+              </p>
+            </form>
+          </div>
+
+          <div class="card-body pt-0 text-center">
+            <a
+              href="/login"
+              class="text-decoration-none"
+              style="color: var(--fitbite-secondary)"
+            >
+              Log in
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

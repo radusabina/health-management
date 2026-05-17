@@ -20,8 +20,8 @@ public class FoodItem {
     @Column(name = "sugar_g")
     private double sugarG;
 
-    @Column(name = "serving_size_g")
-    private double servingSizeG;
+    @Column(name = "quantity_grams")
+    private double quantityGrams;
 
     @Column(name = "fiber_g")
     private double fiberG;

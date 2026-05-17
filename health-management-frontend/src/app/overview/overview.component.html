@@ -1,0 +1,202 @@
+<div class="min-vh-100 bg-fitbite d-flex flex-column">
+  <app-navbar></app-navbar>
+
+  <div class="flex-grow-1 d-flex align-items-center">
+    <div class="container py-4 w-100">
+      <div class="row justify-content-center m-0">
+        <div class="col-12 col-xl-10">
+          <div class="card content-card overview-glass border-0 p-3 p-md-5">
+            <div class="mb-4">
+              <h3 class="mb-1">Overview</h3>
+              <p class="text-muted mb-0">
+                Your daily progress across the year.
+              </p>
+            </div>
+
+            <div
+              class="d-flex justify-content-between align-items-center mb-4 gap-2"
+            >
+              <button
+                type="button"
+                class="btn btn-outline-fitbite"
+                (click)="prevMonth()"
+                aria-label="Previous month"
+              >
+                &larr;
+              </button>
+
+              <div class="fw-semibold fs-5 text-center flex-grow-1">
+                {{ monthLabel }}
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-outline-fitbite"
+                (click)="nextMonth()"
+                aria-label="Next month"
+              >
+                &rarr;
+              </button>
+            </div>
+
+            <div *ngIf="isLoading" class="text-center text-muted small mb-3">
+              Loading your progress...
+            </div>
+
+            <div class="calendar-grid">
+              <div
+                *ngFor="let label of weekdayLabels"
+                class="text-center small text-muted fw-semibold pb-2"
+              >
+                {{ label }}
+              </div>
+
+              <ng-container *ngFor="let cell of calendarCells; let i = index">
+                <div class="calendar-cell">
+                  <ng-container *ngIf="cell; else emptyCell">
+                    <ng-container
+                      *ngIf="isClickableCell(cell); else nonInteractiveCircle"
+                    >
+                      <button
+                        type="button"
+                        class="progress-circle progress-circle-btn is-clickable"
+                        [class.is-today]="cell.isToday"
+                        [class.is-future]="cell.isFuture"
+                        [class.is-empty]="!cell.hasData"
+                        [ngStyle]="getCircleStyle(cell)"
+                        [title]="cell.progress + '% of goal'"
+                        [attr.aria-label]="getCircleAriaLabel(cell)"
+                        (click)="openDay(cell)"
+                      >
+                        <div class="progress-circle-inner">
+                          <span class="progress-day">{{
+                            cell.date.getDate()
+                          }}</span>
+                        </div>
+                      </button>
+                    </ng-container>
+                    <ng-template #nonInteractiveCircle>
+                      <div
+                        class="progress-circle"
+                        [class.is-today]="cell.isToday"
+                        [class.is-future]="cell.isFuture"
+                        [class.is-empty]="!cell.hasData"
+                        [ngStyle]="getCircleStyle(cell)"
+                        [title]="cell.progress + '% of goal'"
+                      >
+                        <div class="progress-circle-inner">
+                          <span class="progress-day">{{
+                            cell.date.getDate()
+                          }}</span>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </ng-container>
+                  <ng-template #emptyCell>
+                    <div class="progress-circle-placeholder"></div>
+                  </ng-template>
+                </div>
+              </ng-container>
+            </div>
+
+            <div
+              class="d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4 small text-muted"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot legend-empty"></span>
+                No data
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot legend-partial"></span>
+                In progress
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot legend-full"></span>
+                Goal reached
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY DETAILS MODAL -->
+  <div
+    *ngIf="selectedCell"
+    class="overview-modal-backdrop"
+    (click)="closeDay()"
+  >
+    <div
+      #dayDetailsModal
+      class="overview-modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="day-details-title"
+      tabindex="-1"
+      (click)="$event.stopPropagation()"
+      (keydown)="onModalKeydown($event)"
+    >
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h5 id="day-details-title" class="mb-1">{{ selectedDateLabel }}</h5>
+          <p class="text-muted small mb-0">Daily summary</p>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeDay()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12 col-sm-6">
+          <div class="inner-panel text-center">
+            <small class="text-muted">Total Calories</small>
+            <input
+              type="text"
+              class="form-control modal-metric-input text-center"
+              [value]="(selectedDailyGoal?.caloriesDone ?? 0) + ' kcal'"
+              readonly
+              aria-label="Total calories for selected day"
+            />
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6">
+          <div class="inner-panel text-center">
+            <small class="text-muted">Water</small>
+            <input
+              type="text"
+              class="form-control modal-metric-input text-center"
+              [value]="(selectedDailyGoal?.waterDone ?? 0) + ' l'"
+              readonly
+              aria-label="Water for selected day"
+            />
+          </div>
+        </div>
+
+        <div
+          *ngIf="selectedDailyGoal?.todayWeight !== null && selectedDailyGoal?.todayWeight !== undefined"
+          class="col-12"
+        >
+          <div class="inner-panel text-center">
+            <small class="text-muted">Weight logged</small>
+            <input
+              type="text"
+              class="form-control modal-metric-input text-center"
+              [value]="selectedDailyGoal!.todayWeight + ' kg'"
+              readonly
+              aria-label="Weight logged for selected day"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="text-muted small text-center mt-3">
+        {{ selectedCell.progress }}% of your daily goal
+      </div>
+    </div>
+  </div>
+</div>
