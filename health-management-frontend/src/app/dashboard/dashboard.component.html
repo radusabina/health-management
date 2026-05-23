@@ -391,24 +391,6 @@
                   </div>
                 </div>
 
-                <!-- GOAL -->
-                <div class="inner-panel d-flex flex-column flex-grow-1">
-                  <h5>Update goals</h5>
-
-                  <p class="text-muted small">
-                    Adjust your daily calorie and water targets.
-                  </p>
-
-                  <div class="mt-auto text-center">
-                    <button
-                      class="btn btn-outline-fitbite w-50"
-                      (click)="openEditGoalModal()"
-                    >
-                      Edit Goal
-                    </button>
-                  </div>
-                </div>
-
                 <!-- LOG WEIGHT -->
                 <div class="inner-panel d-flex flex-column flex-grow-1">
                   <h5>Log today's weight</h5>
@@ -570,15 +552,6 @@
     (save)="onGoalSave($event)"
   >
   </app-add-general-goal>
-
-  <!-- EDIT GOAL MODAL -->
-  <app-edit-general-goal
-    [isOpen]="showEditGoalModal"
-    [currentGoal]="generalGoal"
-    (close)="onEditGoalClose()"
-    (save)="onEditGoalSave($event)"
-  >
-  </app-edit-general-goal>
 
   <!-- DELETE MEAL CONFIRMATION MODAL -->
   <div

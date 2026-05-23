@@ -1,3 +1,33 @@
+<div
+  *ngIf="goalSaveSuccess"
+  class="toast show position-fixed top-0 end-0 m-3"
+  style="z-index: 99999"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+>
+  <div class="toast-header">
+    <strong class="me-auto" style="color: var(--fitbite-primary)">Success</strong>
+    <button type="button" class="btn-close" aria-label="Close" (click)="goalSaveSuccess = false"></button>
+  </div>
+  <div class="toast-body">Goals saved successfully.</div>
+</div>
+
+<div
+  *ngIf="goalSaveError"
+  class="toast show position-fixed top-0 end-0 m-3"
+  style="z-index: 99999; margin-top: 5rem !important"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+>
+  <div class="toast-header">
+    <strong class="me-auto text-danger">Error</strong>
+    <button type="button" class="btn-close" aria-label="Close" (click)="goalSaveError = false"></button>
+  </div>
+  <div class="toast-body">Failed to save goals. Please try again.</div>
+</div>
+
 <div class="min-vh-100 bg-fitbite d-flex align-items-center position-relative py-4">
   <div class="card content-card shadow-sm border-0 container">
     <div class="mb-3">
@@ -171,8 +201,8 @@
               <div
                 class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4"
               >
-                <button type="button" class="btn btn-outline-danger px-4">
-                  Delete
+                <button type="button" class="btn btn-outline-danger px-4" (click)="showDeleteModal = true">
+                  Delete Account
                 </button>
                 <button
                   type="submit"
@@ -183,9 +213,107 @@
                   Update
                 </button>
               </div>
+
+              <hr class="my-4" />
+
+              <h5 class="mb-1">General Goal</h5>
+              <p class="text-muted small mb-3">Adjust your weight, calorie and water targets.</p>
+
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="calorieGoal" class="form-label">Calorie goal (kcal)</label>
+                  <input
+                    id="calorieGoal"
+                    name="calorieGoal"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 2000"
+                    min="1"
+                    [(ngModel)]="goalForm.calorieGoal"
+                  />
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="waterGoal" class="form-label">Water goal (ml)</label>
+                  <input
+                    id="waterGoal"
+                    name="waterGoal"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 2000"
+                    min="1"
+                    [(ngModel)]="goalForm.waterGoal"
+                  />
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="weightTarget" class="form-label">Target weight (kg)</label>
+                  <input
+                    id="weightTarget"
+                    name="weightTarget"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 70"
+                    min="1"
+                    [(ngModel)]="goalForm.weightTarget"
+                  />
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="bottleAmountMl" class="form-label">Bottle size (ml)</label>
+                  <input
+                    id="bottleAmountMl"
+                    name="bottleAmountMl"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 500"
+                    min="1"
+                    [(ngModel)]="goalForm.bottleAmountMl"
+                  />
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-3">
+                <button
+                  type="button"
+                  class="btn btn-fitbite text-white px-4"
+                  (click)="onSaveGoal()"
+                  [disabled]="!goalForm.calorieGoal || !goalForm.waterGoal || !goalForm.weightTarget || !goalForm.bottleAmountMl"
+                >
+                  Update Goal
+                </button>
+              </div>
             </form>
           </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE ACCOUNT BACKDROP -->
+<div
+  *ngIf="showDeleteModal"
+  class="modal-backdrop-custom"
+  (click)="showDeleteModal = false"
+></div>
+
+<!-- DELETE ACCOUNT MODAL -->
+<div *ngIf="showDeleteModal" class="modal-dialog-custom">
+  <div class="modal-content-custom p-4">
+    <h5 class="mb-2">Delete account</h5>
+    <p class="text-muted mb-1">
+      Are you sure you want to permanently delete your account?
+    </p>
+    <p class="small text-muted mb-3">
+      This will remove all your data including meals, goals, and progress. This action cannot be undone.
+    </p>
+    <div class="d-flex gap-2 justify-content-end">
+      <button class="btn btn-outline-secondary" (click)="showDeleteModal = false">
+        Cancel
+      </button>
+      <button class="btn btn-danger" (click)="onDeleteAccount()">
+        Delete my account
+      </button>
     </div>
   </div>
 </div>
