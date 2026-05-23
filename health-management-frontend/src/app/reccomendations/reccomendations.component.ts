@@ -36,6 +36,9 @@ export class ReccomendationsComponent implements OnInit {
   dailyGoal: IDailyGoal | null = null;
   generalGoal: IGeneralGoal | null = null;
 
+  // search options
+  showAdvancedSearch = false;
+
   // client-side filters
   showFilters = false;
   filterMaxCalories: number | null = null;
@@ -185,6 +188,7 @@ export class ReccomendationsComponent implements OnInit {
     this.errorMessage = '';
     this.expandedCards.clear();
     this.activeTab = {};
+    this.showAdvancedSearch = false;
     this.loadRandom();
   }
 

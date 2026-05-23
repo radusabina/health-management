@@ -276,6 +276,16 @@
   color: var(--fitbite-primary) !important;
 }
 
+.advanced-toggle {
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: #888 !important;
+}
+
+.advanced-toggle:hover {
+  color: var(--fitbite-primary) !important;
+}
+
 /* ── skeleton loading ────────────────────────────────────────────── */
 .skeleton-card {
   pointer-events: none;
