@@ -17,6 +17,25 @@
         </button>
       </div>
 
+      <!-- CALORIE CONTEXT BANNER -->
+      <div *ngIf="generalGoal && dailyGoal" class="calorie-banner mt-3" [ngClass]="calorieStatusClass">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-fire calorie-icon"></i>
+            <div>
+              <span class="calorie-label">Remaining today</span>
+              <span class="calorie-value ms-2">{{ remainingCalories | number:'1.0-0' }} kcal</span>
+            </div>
+          </div>
+          <small class="calorie-meta">
+            {{ dailyGoal.caloriesDone | number:'1.0-0' }} / {{ generalGoal.calorieGoal | number:'1.0-0' }} kcal consumed
+          </small>
+        </div>
+        <div class="calorie-bar mt-2">
+          <div class="calorie-bar-fill" [style.width.%]="caloriesBudgetPercent"></div>
+        </div>
+      </div>
+
       <hr class="glass-divider">
 
     <!-- SEARCH PANEL -->
