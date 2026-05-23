@@ -6,7 +6,10 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -15,6 +18,8 @@ public class JwtService {
 
     private static final String SECRET_KEY = "mysupersecretkeymysupersecretkey123";
     private static final String REFRESH_SECRET_KEY = "myrefreshsupersecretkeymyrefresh123";
+
+    private final Set<String> blacklistedRefreshTokens = Collections.synchronizedSet(new HashSet<>());
 
     public Key getAccessKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -48,7 +53,12 @@ public class JwtService {
         return validate(token, email, getAccessKey());
     }
 
+    public void invalidateRefreshToken(String token) {
+        blacklistedRefreshTokens.add(token);
+    }
+
     public boolean validateRefreshToken(String token, String email) {
+        if (blacklistedRefreshTokens.contains(token)) return false;
         return validate(token, email, getRefreshKey());
     }
 
