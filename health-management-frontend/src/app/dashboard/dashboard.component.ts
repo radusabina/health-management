@@ -322,6 +322,10 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  get progressBarClamped(): number {
+    return Math.min(this.progressBar, 100);
+  }
+
   getMealNutrition(meal: IMeal) {
     return meal.items.reduce(
       (acc, item) => {

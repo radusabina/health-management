@@ -59,10 +59,19 @@
             Track meals, monitor progress, and explore recommendations anytime.
           </p>
 
-          <h6 class="mb-2">Daily Progress</h6>
+          <h6 class="mb-3">Daily Progress</h6>
 
-          <div class="progress mb-2" style="height: 8px">
-            <div class="progress-bar" style="width: 0%"></div>
+          <div class="d-flex justify-content-center mb-2">
+            <div class="cp-wrapper">
+              <svg class="cp-svg" viewBox="0 0 120 120">
+                <circle class="cp-track" cx="60" cy="60" r="50"/>
+                <circle class="cp-arc" cx="60" cy="60" r="50" style="stroke-dashoffset: 314.16"/>
+              </svg>
+              <div class="cp-center">
+                <span class="cp-pct">0%</span>
+                <span class="cp-sub">Daily</span>
+              </div>
+            </div>
           </div>
 
           <small class="text-muted"
@@ -186,23 +195,24 @@
       <div class="card content-card dashboard-glass border-0 p-4 p-md-5">
         <!-- HEADER -->
         <section>
-          <h3 class="mb-1">Good to see you back, {{ user.fullName }} 👋</h3>
-          <p class="text-muted mb-3">Here is your daily overview.</p>
-
-          <div
-            *ngIf="generalGoal && dailyGoal"
-            class="d-flex justify-content-between align-items-center mb-2"
-          >
-            <h6 class="mb-0">Daily Progress</h6>
-            <p class="text-muted fs-3 mb-0">{{ progressBar }}%</p>
-          </div>
-
-          <div
-            *ngIf="generalGoal && dailyGoal"
-            class="progress mb-2"
-            style="height: 8px"
-          >
-            <div class="progress-bar" [style.width.%]="progressBar"></div>
+          <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3">
+            <div>
+              <h3 class="mb-1">Good to see you back, {{ user.fullName }} 👋</h3>
+              <p class="text-muted mb-0">Here is your daily overview.</p>
+            </div>
+            <div *ngIf="generalGoal && dailyGoal" class="d-flex justify-content-center flex-shrink-0">
+              <div class="cp-wrapper">
+                <svg class="cp-svg" viewBox="0 0 120 120">
+                  <circle class="cp-track" cx="60" cy="60" r="50"/>
+                  <circle class="cp-arc" cx="60" cy="60" r="50"
+                    [style.stroke-dashoffset]="314.16 * (1 - progressBarClamped / 100)"/>
+                </svg>
+                <div class="cp-center">
+                  <span class="cp-pct">{{ progressBar }}%</span>
+                  <span class="cp-sub">Daily</span>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
