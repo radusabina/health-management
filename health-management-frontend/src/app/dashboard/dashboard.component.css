@@ -84,6 +84,32 @@
   white-space: nowrap;
 }
 
+/* ── Onboarding ── */
+.onboarding-primary-card {
+  background: rgba(86, 144, 105, 0.07);
+  border: 1px solid rgba(86, 144, 105, 0.22);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+
+.onboarding-step-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--fitbite-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.text-fitbite-color {
+  color: var(--fitbite-primary);
+}
+
 .modal-backdrop-custom {
   position: fixed;
   inset: 0;

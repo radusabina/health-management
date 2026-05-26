@@ -255,6 +255,10 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/addMeal']);
   }
 
+  navigateToRecommendations(): void {
+    this.router.navigate(['/recommendations']);
+  }
+
   get progressBar(): number {
     if (!this.dailyGoal || !this.generalGoal) return 0;
 

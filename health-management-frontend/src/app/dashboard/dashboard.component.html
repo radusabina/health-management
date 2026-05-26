@@ -52,141 +52,73 @@
     <!-- DASHBOARD NEW USER-->
     <div *ngIf="user && isNewUser">
       <div class="card content-card dashboard-glass border-0 p-4 p-md-5">
-        <!-- HEADER -->
-        <section>
-          <h3 class="mb-1">Welcome, {{ user.fullName }} 👋</h3>
-          <p class="text-muted mb-3">
-            Track meals, monitor progress, and explore recommendations anytime.
+
+        <!-- WELCOME -->
+        <section class="text-center py-2">
+          <h3 class="mb-2">Welcome, {{ user.fullName }} 👋</h3>
+          <p class="text-muted mb-0">
+            Let's get your dashboard ready — it only takes a moment.
           </p>
-
-          <h6 class="mb-3">Daily Progress</h6>
-
-          <div class="d-flex justify-content-center mb-2">
-            <div class="cp-wrapper">
-              <svg class="cp-svg" viewBox="0 0 120 120">
-                <circle class="cp-track" cx="60" cy="60" r="50"/>
-                <circle class="cp-arc" cx="60" cy="60" r="50" style="stroke-dashoffset: 314.16"/>
-              </svg>
-              <div class="cp-center">
-                <span class="cp-pct">0%</span>
-                <span class="cp-sub">Daily</span>
-              </div>
-            </div>
-          </div>
-
-          <small class="text-muted"
-            >Set a goal or add a meal to see your daily progress.</small
-          >
         </section>
 
         <hr class="glass-divider" />
 
-        <!-- QUICK STATS -->
+        <!-- PRIMARY ACTION -->
         <section>
-          <div class="row g-3">
-            <div class="col-6 col-md-4">
-              <div class="inner-panel text-center">
-                <small class="text-muted">Calories Today</small>
-                <h5 class="mb-0">0</h5>
-              </div>
-            </div>
-
-            <div class="col-6 col-md-4">
-              <div class="inner-panel text-center">
-                <small class="text-muted">Meals Logged</small>
-                <h5 class="mb-0">0</h5>
-              </div>
-            </div>
-
-            <div class="col-12 col-md-4">
-              <div class="inner-panel text-center">
-                <small class="text-muted">Goal Progress</small>
-                <h5 class="mb-0">0%</h5>
+          <div class="onboarding-primary-card">
+            <div class="d-flex align-items-start gap-3">
+              <div class="onboarding-step-badge">1</div>
+              <div class="flex-grow-1">
+                <h5 class="mb-1">Set up your daily goal</h5>
+                <p class="text-muted small mb-3">
+                  Define your calorie and water targets so the app can track your progress and give you meaningful insights.
+                </p>
+                <button class="btn btn-fitbite text-white px-4" (click)="openGoalModal()">
+                  Get Started
+                </button>
               </div>
             </div>
           </div>
         </section>
 
-        <hr class="glass-divider" />
-
-        <!-- ACTIONS (EQUAL IMPORTANCE) -->
-        <section>
-          <div class="text-muted small mb-3">
-            You can start by doing one of the above:
-          </div>
-
-          <div class="row g-3">
-            <div class="col-12 col-md-4">
-              <div class="inner-panel h-100 d-flex flex-column">
-                <h5>Personalize your plan</h5>
-
-                <p class="text-muted small">
-                  Optional setup to improve personalization of calories and
-                  recommendations.
-                </p>
-
-                <div class="mt-auto">
-                  <button
-                    class="btn btn-fitbite text-white w-100"
-                    (click)="openGoalModal()"
-                  >
-                    Set Goal
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12 col-md-4">
-              <div class="inner-panel h-100 d-flex flex-column">
-                <h5>Log a meal</h5>
-
-                <p class="text-muted small">
-                  Track what you eat to monitor calories and nutrition.
-                </p>
-
-                <div class="mt-auto">
-                  <button
-                    class="btn btn-outline-fitbite w-100"
-                    (click)="navigateToAddMeal()"
-                  >
-                    Add Meal
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12 col-md-4">
-              <div class="inner-panel h-100 d-flex flex-column">
-                <h5>Recommendations</h5>
-
-                <p class="text-muted small">
-                  Get meal suggestions based on your activity and preferences.
-                </p>
-
-                <div class="mt-auto">
-                  <button class="btn btn-outline-secondary w-100">View</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <hr class="glass-divider" />
-
-        <!-- RECENT MEALS -->
-        <section>
-          <h6 class="mb-3">Today’s Meals</h6>
-
-          <div class="text-muted small">
-            No meals logged yet. Add your first meal to start tracking.
-          </div>
-        </section>
-
-        <!-- CONTEXTUAL TIP (NOT SEPARATE SECTION) -->
-        <div class="text-muted small mt-3">
-          💡 Tip: Logging meals regularly improves accuracy of your nutrition
-          insights.
+        <!-- OR DIVIDER -->
+        <div class="d-flex align-items-center gap-3 my-3">
+          <hr class="flex-grow-1 m-0" style="opacity: 0.2" />
+          <small class="text-muted">or explore first</small>
+          <hr class="flex-grow-1 m-0" style="opacity: 0.2" />
         </div>
+
+        <!-- SECONDARY ACTIONS -->
+        <section>
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="inner-panel d-flex align-items-center gap-3">
+                <i class="bi bi-journal-plus fs-4 text-fitbite-color"></i>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-semibold small">Log a meal</div>
+                  <div class="text-muted" style="font-size: 0.78rem">Track what you eat today</div>
+                </div>
+                <button class="btn btn-outline-fitbite btn-sm flex-shrink-0" (click)="navigateToAddMeal()">
+                  Add
+                </button>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="inner-panel d-flex align-items-center gap-3">
+                <i class="bi bi-stars fs-4 text-fitbite-color"></i>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-semibold small">Explore recipes</div>
+                  <div class="text-muted" style="font-size: 0.78rem">Discover meal recommendations</div>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm flex-shrink-0" (click)="navigateToRecommendations()">
+                  Browse
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
     </div>
 
