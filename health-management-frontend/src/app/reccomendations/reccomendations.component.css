@@ -206,8 +206,83 @@
   line-height: 1.5;
 }
 
+/* ── calorie context banner ──────────────────────────────────────── */
+.calorie-banner {
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.calorie-banner.calorie-ok {
+  border-left-color: var(--fitbite-primary);
+}
+
+.calorie-banner.calorie-low {
+  border-left-color: #e0a84b;
+}
+
+.calorie-banner.calorie-over {
+  border-left-color: #dc3545;
+}
+
+.calorie-icon {
+  font-size: 1.1rem;
+}
+
+.calorie-ok .calorie-icon   { color: var(--fitbite-primary); }
+.calorie-low .calorie-icon  { color: #e0a84b; }
+.calorie-over .calorie-icon { color: #dc3545; }
+
+.calorie-label {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.calorie-value {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.calorie-ok .calorie-value   { color: var(--fitbite-primary); }
+.calorie-low .calorie-value  { color: #b07d1a; }
+.calorie-over .calorie-value { color: #dc3545; }
+
+.calorie-meta {
+  color: #888;
+  font-size: 0.78rem;
+}
+
+.calorie-bar {
+  height: 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.calorie-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.calorie-ok .calorie-bar-fill   { background: var(--fitbite-primary); }
+.calorie-low .calorie-bar-fill  { background: #e0a84b; }
+.calorie-over .calorie-bar-fill { background: #dc3545; }
+
 /* ── filter bar ──────────────────────────────────────────────────── */
 .text-fitbite {
+  color: var(--fitbite-primary) !important;
+}
+
+.advanced-toggle {
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: #888 !important;
+}
+
+.advanced-toggle:hover {
   color: var(--fitbite-primary) !important;
 }
 

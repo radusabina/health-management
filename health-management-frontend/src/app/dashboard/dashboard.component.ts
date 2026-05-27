@@ -6,7 +6,6 @@ import { UserService } from '../services/user/user.service';
 import { MealService } from '../services/meal/meal.service';
 import { GeneralGoalService } from '../services/general-goal/general-goal.service';
 import { AddGeneralGoalComponent } from '../add-general-goal/add-general-goal.component';
-import { EditGeneralGoalComponent } from '../edit-general-goal/edit-general-goal.component';
 import { IMeal } from '../dtos/meal/IMeal';
 import { Router, RouterOutlet } from '@angular/router';
 import { DailyGoalService } from '../services/daily-goal/daily-goal.service';
@@ -18,14 +17,13 @@ import { NavbarComponent } from '../navbar/navbar.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, AddGeneralGoalComponent, EditGeneralGoalComponent, NavbarComponent],
+  imports: [CommonModule, FormsModule, AddGeneralGoalComponent, NavbarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
   // state
   showGoalModal = false;
-  showEditGoalModal = false;
   todayWeightInput: number | null = null;
   mealPendingDelete: IMeal | null = null;
   user: IUser | null = null;
@@ -125,35 +123,6 @@ export class DashboardComponent implements OnInit {
     this.showGoalModal = false;
   }
 
-  openEditGoalModal(): void {
-    this.showEditGoalModal = true;
-  }
-
-  onEditGoalClose(): void {
-    this.showEditGoalModal = false;
-  }
-
-  onEditGoalSave(goal: Partial<IGeneralGoal>): void {
-    if (!this.user) return;
-
-    this.generalGoalService
-      .updateForUser({
-        userId: this.user.id,
-        calorieGoal: goal.calorieGoal!,
-        waterGoal: goal.waterGoal!,
-        weightTarget: goal.weightTarget!,
-        bottleAmountMl: goal.bottleAmountMl!,
-      })
-      .subscribe({
-        next: () => {
-          this.showEditGoalModal = false;
-          this.refreshDashboard();
-        },
-        error: (err) => {
-          console.error('updateGeneralGoalForUser failed:', err);
-        },
-      });
-  }
 
   // toggle meal details
   toggleMeal(index: number): void {
@@ -286,6 +255,10 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/addMeal']);
   }
 
+  navigateToRecommendations(): void {
+    this.router.navigate(['/recommendations']);
+  }
+
   get progressBar(): number {
     if (!this.dailyGoal || !this.generalGoal) return 0;
 
@@ -320,6 +293,10 @@ export class DashboardComponent implements OnInit {
     return Math.round(
       (this.dailyGoal.waterDone / this.generalGoal.waterGoal) * 100,
     );
+  }
+
+  get progressBarClamped(): number {
+    return Math.min(this.progressBar, 100);
   }
 
   getMealNutrition(meal: IMeal) {

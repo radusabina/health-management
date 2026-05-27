@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { endpointAPI } from '../../config/appconfig';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
 import { filter, take, map, tap, finalize, catchError } from 'rxjs/operators';
 import { IUser } from '../../dtos/user/IUser';
 import { IUserLogin } from '../../dtos/user/IUserLogin';
@@ -69,6 +69,18 @@ export class AuthService {
 
   register(user: IUserRegister): Observable<any> {
     return this.http.post(endpointAPI + 'auth/register', user);
+  }
+
+  logout(): Observable<void> {
+    const refreshToken = this.authSubject.value?.refreshToken;
+    if (!refreshToken) {
+      this.clearAuth();
+      return of(undefined);
+    }
+    const params = new HttpParams().set('refreshToken', refreshToken);
+    return this.http
+      .post<void>(endpointAPI + 'auth/logout', null, { params })
+      .pipe(finalize(() => this.clearAuth()));
   }
 
   setAuth(response: IUserLoginResponse): void {

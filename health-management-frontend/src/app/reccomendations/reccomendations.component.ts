@@ -5,6 +5,11 @@ import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { RecommendationService } from '../services/recommendation/recommendation.service';
 import { IRecommendation } from '../dtos/recommendation/IRecommendation';
+import { AuthService } from '../services/auth/auth.service';
+import { GeneralGoalService } from '../services/general-goal/general-goal.service';
+import { DailyGoalService } from '../services/daily-goal/daily-goal.service';
+import { IGeneralGoal } from '../dtos/general-goal/IGeneralGoal';
+import { IDailyGoal } from '../dtos/daily-goal/IDailyGoal';
 
 @Component({
   selector: 'app-reccomendations',
@@ -26,6 +31,13 @@ export class ReccomendationsComponent implements OnInit {
   errorMessage = '';
   expandedCards = new Set<number>();
   activeTab: Record<number, 'ingredients' | 'steps'> = {};
+
+  // calorie context
+  dailyGoal: IDailyGoal | null = null;
+  generalGoal: IGeneralGoal | null = null;
+
+  // search options
+  showAdvancedSearch = false;
 
   // client-side filters
   showFilters = false;
@@ -73,13 +85,54 @@ export class ReccomendationsComponent implements OnInit {
     this.sortBy = 'none';
   }
 
+  get remainingCalories(): number {
+    if (!this.dailyGoal || !this.generalGoal) return 0;
+    return this.generalGoal.calorieGoal - this.dailyGoal.caloriesDone;
+  }
+
+  get caloriesBudgetPercent(): number {
+    if (!this.generalGoal?.calorieGoal) return 0;
+    return Math.min(100, Math.round(((this.dailyGoal?.caloriesDone ?? 0) / this.generalGoal.calorieGoal) * 100));
+  }
+
+  get calorieStatusClass(): string {
+    const remaining = this.remainingCalories;
+    const goal = this.generalGoal?.calorieGoal ?? 0;
+    if (remaining < 0) return 'calorie-over';
+    if (remaining < goal * 0.25) return 'calorie-low';
+    return 'calorie-ok';
+  }
+
   constructor(
     private recommendationService: RecommendationService,
     private router: Router,
+    private authService: AuthService,
+    private generalGoalService: GeneralGoalService,
+    private dailyGoalService: DailyGoalService,
   ) {}
 
   ngOnInit(): void {
     this.loadRandom();
+    this.loadCalorieContext();
+  }
+
+  private loadCalorieContext(): void {
+    const user = this.authService.getAuthResponse()?.user;
+    if (!user) return;
+
+    this.generalGoalService.getByUserId(user.id).subscribe({
+      next: (goal) => {
+        this.generalGoal = goal;
+      },
+      error: () => {},
+    });
+
+    this.dailyGoalService.getToday(user.id).subscribe({
+      next: (goal) => {
+        this.dailyGoal = goal;
+      },
+      error: () => {},
+    });
   }
 
   loadRandom(): void {
@@ -135,6 +188,7 @@ export class ReccomendationsComponent implements OnInit {
     this.errorMessage = '';
     this.expandedCards.clear();
     this.activeTab = {};
+    this.showAdvancedSearch = false;
     this.loadRandom();
   }
 

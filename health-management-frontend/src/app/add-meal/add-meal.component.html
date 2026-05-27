@@ -135,9 +135,10 @@
                     style="min-width: 0"
                   >
                     <!-- name -->
-                    <div class="col-6">
+                    <div class="col-6" style="position: relative">
                       <input
                         class="form-control w-100"
+                        [class.is-invalid]="nameCtrl.touched && nameCtrl.invalid && !itemsError"
                         [(ngModel)]="item.name"
                         name="itemName{{ i }}"
                         required
@@ -145,21 +146,19 @@
                         placeholder="Food name"
                         (ngModelChange)="saveMealError = ''"
                       />
-
                       <div
-                        *ngIf="
-                          nameCtrl.touched && nameCtrl.invalid && !itemsError
-                        "
-                        class="text-danger small mt-1"
+                        *ngIf="nameCtrl.touched && nameCtrl.invalid && !itemsError"
+                        class="invalid-tooltip"
                       >
                         Enter a food name.
                       </div>
                     </div>
 
                     <!-- quantity -->
-                    <div class="col-4">
+                    <div class="col-4" style="position: relative">
                       <input
                         class="form-control w-100"
+                        [class.is-invalid]="qtyCtrl.touched && qtyCtrl.invalid && !itemsError"
                         type="number"
                         [(ngModel)]="item.quantityGrams"
                         name="itemQty{{ i }}"
@@ -168,19 +167,12 @@
                         #qtyCtrl="ngModel"
                         placeholder="g"
                       />
-
                       <div
-                        *ngIf="
-                          qtyCtrl.touched && qtyCtrl.invalid && !itemsError
-                        "
-                        class="text-danger small mt-1"
+                        *ngIf="qtyCtrl.touched && qtyCtrl.invalid && !itemsError"
+                        class="invalid-tooltip"
                       >
-                        <div *ngIf="qtyCtrl.errors?.['required']">
-                          Enter a quantity in grams.
-                        </div>
-                        <div *ngIf="qtyCtrl.errors?.['min']">
-                          Quantity must be greater than 0.
-                        </div>
+                        <span *ngIf="qtyCtrl.errors?.['required']">Enter a quantity in grams.</span>
+                        <span *ngIf="qtyCtrl.errors?.['min']">Quantity must be greater than 0.</span>
                       </div>
                     </div>
 

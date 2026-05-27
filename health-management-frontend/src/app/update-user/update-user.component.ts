@@ -7,6 +7,9 @@ import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IUserUpdate } from '../dtos/user/IUserUpdate';
+import { Observable } from 'rxjs';
+import { GeneralGoalService } from '../services/general-goal/general-goal.service';
+import { IGeneralGoal } from '../dtos/general-goal/IGeneralGoal';
 
 @Component({
   selector: 'app-update-user',
@@ -33,17 +36,76 @@ export class UpdateUserComponent implements OnInit {
   passwordValidationAttempted = false;
   private passwordValidationTimer: ReturnType<typeof setTimeout> | null = null;
 
+  // delete state
+  showDeleteModal = false;
+
+  // goal state
+  generalGoal: IGeneralGoal | null = null;
+  goalForm = { calorieGoal: null as number | null, waterGoal: null as number | null, weightTarget: null as number | null, bottleAmountMl: null as number | null };
+  goalSaveSuccess = false;
+  goalSaveError = false;
+
   constructor(private userService: UserService,
     private router: Router,
     private authService: AuthService,
     private location: Location,
+    private generalGoalService: GeneralGoalService,
   ) {}
 
   ngOnInit(): void {
     this.user = this.authService.getAuthResponse()?.user || null;
     if (this.user) {
       this.userUpdate = this.toUpdateModel(this.user);
+      this.loadGoal(this.user.id);
     }
+  }
+
+  private loadGoal(userId: string): void {
+    this.generalGoalService.getByUserId(userId).subscribe({
+      next: (goal) => {
+        this.generalGoal = goal;
+        this.goalForm = {
+          calorieGoal: goal.calorieGoal,
+          waterGoal: goal.waterGoal,
+          weightTarget: goal.weightTarget,
+          bottleAmountMl: goal.bottleAmountMl,
+        };
+      },
+      error: () => {},
+    });
+  }
+
+  onSaveGoal(): void {
+    const userId = this.user?.id;
+    if (!userId || !this.goalForm.calorieGoal || !this.goalForm.waterGoal || !this.goalForm.weightTarget || !this.goalForm.bottleAmountMl) return;
+
+    const req = {
+      userId,
+      calorieGoal: this.goalForm.calorieGoal,
+      waterGoal: this.goalForm.waterGoal,
+      weightTarget: this.goalForm.weightTarget,
+      bottleAmountMl: this.goalForm.bottleAmountMl,
+    };
+
+    const call$: Observable<unknown> = this.generalGoal
+      ? this.generalGoalService.updateForUser(req)
+      : this.generalGoalService.add(req);
+
+    call$.subscribe({
+      next: () => {
+        this.goalSaveSuccess = true;
+        this.goalSaveError = false;
+        if (!this.generalGoal) {
+          this.loadGoal(userId);
+        }
+        setTimeout(() => (this.goalSaveSuccess = false), 3000);
+      },
+      error: () => {
+        this.goalSaveError = true;
+        this.goalSaveSuccess = false;
+        setTimeout(() => (this.goalSaveError = false), 3000);
+      },
+    });
   }
 
   // password validation
@@ -130,6 +192,21 @@ export class UpdateUserComponent implements OnInit {
     } else {
       this.updateUserProfile(userId);
     }
+  }
+
+  onDeleteAccount(): void {
+    const userId = this.user?.id;
+    if (!userId) return;
+
+    this.userService.deleteUser(userId).subscribe({
+      next: () => {
+        this.authService.clearAuth();
+        this.router.navigate(['/start']);
+      },
+      error: () => {
+        this.showDeleteModal = false;
+      },
+    });
   }
 
   goBack(): void {
