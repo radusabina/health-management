@@ -17,101 +17,121 @@
         </button>
       </div>
 
+      <!-- CALORIE CONTEXT BANNER -->
+      <div *ngIf="generalGoal && dailyGoal" class="calorie-banner mt-3" [ngClass]="calorieStatusClass">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-fire calorie-icon"></i>
+            <div>
+              <span class="calorie-label">Remaining today</span>
+              <span class="calorie-value ms-2">{{ remainingCalories | number:'1.0-0' }} kcal</span>
+            </div>
+          </div>
+          <small class="calorie-meta">
+            {{ dailyGoal.caloriesDone | number:'1.0-0' }} / {{ generalGoal.calorieGoal | number:'1.0-0' }} kcal consumed
+          </small>
+        </div>
+        <div class="calorie-bar mt-2">
+          <div class="calorie-bar-fill" [style.width.%]="caloriesBudgetPercent"></div>
+        </div>
+      </div>
+
       <hr class="glass-divider">
 
-    <!-- SEARCH PANEL -->
-      <h6 class="mb-3">Search by Ingredients</h6>
+      <!-- SEARCH PANEL -->
       <form (ngSubmit)="search()" #searchForm="ngForm">
-        <div class="row g-3">
 
-          <!-- include ingredients -->
-          <div class="col-12 col-md-5">
-            <label class="form-label small text-muted">Include Ingredients <span class="text-danger">*</span></label>
+        <!-- PRIMARY: ingredients + search button -->
+        <div class="d-flex gap-2 align-items-start">
+          <div class="flex-grow-1">
             <input
               type="text"
               class="form-control"
-              placeholder="e.g. chicken, quinoa, spinach"
+              placeholder="Search by ingredients, e.g. chicken, quinoa, spinach"
               [(ngModel)]="includeIngredients"
               name="includeIngredients"
               required
             />
-            <div class="form-text">Comma-separated list of ingredients to include.</div>
           </div>
+          <button
+            type="submit"
+            class="btn btn-fitbite text-white px-4 flex-shrink-0"
+            [disabled]="!includeIngredients.trim() || isLoading"
+          >
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            <i *ngIf="!isLoading" class="bi bi-search me-1"></i>
+            {{ isLoading ? 'Searching…' : 'Search' }}
+          </button>
+        </div>
 
-          <!-- exclude ingredients -->
-          <div class="col-12 col-md-4">
+        <!-- ADVANCED OPTIONS TOGGLE -->
+        <button
+          type="button"
+          class="btn btn-link btn-sm p-0 mt-2 text-muted advanced-toggle"
+          (click)="showAdvancedSearch = !showAdvancedSearch"
+        >
+          <i class="bi me-1" [class.bi-chevron-down]="!showAdvancedSearch" [class.bi-chevron-up]="showAdvancedSearch"></i>
+          Advanced options
+          <span *ngIf="excludeIngredients || maxCalories" class="badge bg-secondary ms-1" style="font-size:0.65rem">active</span>
+        </button>
+
+        <!-- ADVANCED OPTIONS PANEL -->
+        <div *ngIf="showAdvancedSearch" class="row g-3 mt-1">
+          <div class="col-12 col-md-7">
             <label class="form-label small text-muted">Exclude Ingredients</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="e.g. nuts, dairy"
               [(ngModel)]="excludeIngredients"
               name="excludeIngredients"
             />
           </div>
-
-          <!-- max calories -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-5">
             <label class="form-label small text-muted">Max Calories</label>
             <input
               type="number"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="e.g. 700"
               [(ngModel)]="maxCalories"
               name="maxCalories"
               min="1"
             />
           </div>
-
-          <!-- submit + filter toggle -->
-          <div class="col-12 d-flex justify-content-between align-items-center gap-2 flex-wrap">
-            <!-- left: result count + clear filters -->
-            <div class="d-flex align-items-center gap-2">
-              <small *ngIf="!isLoading && recommendations.length > 0 && activeFilterCount > 0" class="text-muted">
-                {{ filteredRecommendations.length }} / {{ recommendations.length }} recipes
-              </small>
-              <button
-                *ngIf="!isLoading && activeFilterCount > 0"
-                type="button"
-                class="btn btn-sm btn-link p-0 text-muted"
-                (click)="clearFilters()"
-              >
-                <i class="bi bi-x me-1"></i>Clear filters
-              </button>
-            </div>
-
-            <!-- right: filter toggle + search (same height) -->
-            <div class="d-flex gap-2">
-              <button
-                *ngIf="!isLoading && recommendations.length > 0"
-                type="button"
-                class="btn px-4"
-                [class.btn-fitbite]="showFilters"
-                [class.text-white]="showFilters"
-                [class.btn-outline-secondary]="!showFilters"
-                (click)="showFilters = !showFilters"
-              >
-                <i class="bi bi-sliders me-1"></i>Filter &amp; Sort
-                <span *ngIf="activeFilterCount > 0" class="badge bg-white text-fitbite ms-1">{{ activeFilterCount }}</span>
-              </button>
-
-              <button
-                type="submit"
-                class="btn btn-fitbite text-white px-4"
-                [disabled]="!includeIngredients.trim() || isLoading"
-              >
-                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                <i *ngIf="!isLoading" class="bi bi-search me-1"></i>
-                {{ isLoading ? 'Searching…' : 'Search' }}
-              </button>
-            </div>
-          </div>
-
         </div>
+
       </form>
 
+      <!-- POST-SEARCH: filter & sort bar -->
+      <div *ngIf="!isLoading && recommendations.length > 0" class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-3 border-top">
+        <div class="d-flex align-items-center gap-2">
+          <small *ngIf="activeFilterCount > 0" class="text-muted">
+            {{ filteredRecommendations.length }} / {{ recommendations.length }} recipes
+          </small>
+          <button
+            *ngIf="activeFilterCount > 0"
+            type="button"
+            class="btn btn-sm btn-link p-0 text-muted"
+            (click)="clearFilters()"
+          >
+            <i class="bi bi-x me-1"></i>Clear filters
+          </button>
+        </div>
+        <button
+          type="button"
+          class="btn btn-sm px-3"
+          [class.btn-fitbite]="showFilters"
+          [class.text-white]="showFilters"
+          [class.btn-outline-secondary]="!showFilters"
+          (click)="showFilters = !showFilters"
+        >
+          <i class="bi bi-sliders me-1"></i>Filter &amp; Sort
+          <span *ngIf="activeFilterCount > 0" class="badge bg-white text-fitbite ms-1">{{ activeFilterCount }}</span>
+        </button>
+      </div>
+
       <!-- collapsible filter inputs -->
-      <div *ngIf="showFilters && recommendations.length > 0" class="mt-3 pt-3 border-top">
+      <div *ngIf="showFilters && recommendations.length > 0" class="mt-3">
         <div class="row g-3">
           <div class="col-12 col-sm-6 col-md-3">
             <label class="form-label small text-muted">Max Calories</label>

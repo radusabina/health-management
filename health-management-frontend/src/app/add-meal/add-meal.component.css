@@ -91,3 +91,11 @@
   padding: 28px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
+
+.invalid-tooltip {
+  z-index: 10;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  white-space: normal;
+}

@@ -53,6 +53,12 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponse(userDto, accessToken, refreshToken));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestParam String refreshToken) {
+        jwtService.invalidateRefreshToken(refreshToken);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, String>> refresh(@RequestParam String refreshToken) {
         String email = jwtService.extractEmailFromRefresh(refreshToken);
