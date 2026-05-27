@@ -8,7 +8,6 @@
   background-attachment: fixed;
 }
 
-/* ── glass panel (shared with dashboard) ─────────────────────────── */
 .content-card {
   background: rgba(255, 255, 255, 0.55);
   border-radius: 18px;
@@ -33,7 +32,7 @@
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
 
-/* ── recipe card ─────────────────────────────────────────────────── */
+/* recipe card */
 .recs-card {
   background: rgba(255, 255, 255, 0.6);
   border-radius: 18px;
@@ -50,7 +49,7 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.13);
 }
 
-/* ── row image ───────────────────────────────────────────────────── */
+/* row image */
 .recs-row-img-wrapper {
   position: relative;
   width: 220px;
@@ -75,7 +74,6 @@
   background: rgba(220, 220, 220, 0.35);
 }
 
-/* on mobile stack vertically; image becomes full-width header */
 @media (max-width: 767px) {
   .recs-row-img-wrapper {
     width: 100%;
@@ -101,13 +99,12 @@
   backdrop-filter: blur(4px);
 }
 
-/* ── title ───────────────────────────────────────────────────────── */
 .recs-row-title {
   font-size: 1.05rem;
   line-height: 1.35;
 }
 
-/* ── stat pills ──────────────────────────────────────────────────── */
+/* stat pills */
 .recs-stat {
   font-size: 0.78rem;
   padding: 2px 8px;
@@ -117,7 +114,7 @@
   white-space: nowrap;
 }
 
-/* ── macro bar ───────────────────────────────────────────────────── */
+/* macro bar */
 .recs-macro-bar {
   display: flex;
   height: 6px;
@@ -126,36 +123,19 @@
   background: rgba(0, 0, 0, 0.08);
 }
 
-.recs-macro-protein {
-  background: #569069;
-  transition: width 0.4s ease;
-}
+.recs-macro-protein { background: #569069; transition: width 0.4s ease; }
+.recs-macro-fat     { background: #e0a84b; transition: width 0.4s ease; }
+.recs-macro-carbs   { background: #6baed6; transition: width 0.4s ease; }
 
-.recs-macro-fat {
-  background: #e0a84b;
-  transition: width 0.4s ease;
-}
-
-.recs-macro-carbs {
-  background: #6baed6;
-  transition: width 0.4s ease;
-}
-
-/* ── expanded details ────────────────────────────────────────────── */
+/* expanded details */
 .recs-details {
   border-top: 1px solid rgba(0, 0, 0, 0.07);
   padding-top: 0.75rem;
 }
 
-.recs-summary {
-  line-height: 1.5;
-}
+.recs-summary { line-height: 1.5; }
 
-/* tabs */
-.recs-tabs {
-  display: flex;
-  gap: 6px;
-}
+.recs-tabs { display: flex; gap: 6px; }
 
 .recs-tab {
   flex: 1;
@@ -176,7 +156,6 @@
   border-color: var(--fitbite-primary);
 }
 
-/* ingredient list */
 .recs-ingredient-list {
   max-height: 200px;
   overflow-y: auto;
@@ -195,16 +174,8 @@
   flex-shrink: 0;
 }
 
-/* steps list */
-.recs-steps-list {
-  max-height: 220px;
-  overflow-y: auto;
-}
-
-.recs-step-item {
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
+.recs-steps-list { max-height: 220px; overflow-y: auto; }
+.recs-step-item  { font-size: 0.82rem; line-height: 1.5; }
 
 /* ── calorie context banner ──────────────────────────────────────── */
 .calorie-banner {
@@ -296,6 +267,10 @@
   min-height: 160px;
   flex-shrink: 0;
   border-radius: 18px 0 0 18px;
+}
+
+.skeleton-img,
+.skeleton-line {
   background: linear-gradient(90deg, rgba(200,200,200,0.3) 25%, rgba(220,220,220,0.5) 50%, rgba(200,200,200,0.3) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
@@ -304,14 +279,7 @@
 .skeleton-line {
   height: 12px;
   border-radius: 6px;
-  background: linear-gradient(90deg, rgba(200,200,200,0.3) 25%, rgba(220,220,220,0.5) 50%, rgba(200,200,200,0.3) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
 }
-
-.w-75 { width: 75% !important; }
-.w-50 { width: 50% !important; }
-.w-25 { width: 25% !important; }
 
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
